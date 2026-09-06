@@ -1,13 +1,23 @@
-{% extends 'base.html' %} {% block title %}Add Student Marks
-{% endblock %} {% block page_label %}Academics{% endblock %}
-{% block page_title %}Add Student Marks{% endblock %} {% block content %}
+{% extends 'base.html' %}
+
+{% block title %}Add Student Marks{% endblock %}
+
+{% block page_label %}Academics{% endblock %}
+
+{% block page_title %}Add Student Marks{% endblock %}
+
+{% block content %}
 
 <form method="post">
   {% csrf_token %}
 
   <section class="space-y-6">
+
+    <!-- Exam Information -->
     <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
+
       <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+
         <div>
           <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
             Exam Mark Entry
@@ -17,94 +27,217 @@
             Record marks for the current exam cycle
           </h2>
         </div>
-        {% comment %} New button is added  {% endcomment %}
-         <div class="rounded-2xl border border-slate-200 bg-white p-4">
-       <a href="{% url 'view-marks' %}"
-         class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">
-              ← Back
-        </a>
-      </div>
 
-        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
-          <span class="font-semibold text-slate-900"> Class: {{ classroom|title }} </span>
+        <!-- Back Button -->
+        <div class="rounded-2xl border border-slate-200 bg-white p-4">
+          <a
+            href="{% url 'view-marks' %}"
+            class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800"
+          >
+            ← Back
+          </a>
         </div>
+
+        <!-- Class -->
+        <div class="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-600">
+          <span class="font-semibold text-slate-900">
+            Class: {{ classroom|title }}
+          </span>
+        </div>
+
       </div>
 
-      <div class="mt-6 grid gap-4 md:grid-cols-2">
+
+      <!-- Subject, Exam Name and Full Marks -->
+      <div class="mt-6 grid gap-4 md:grid-cols-3">
+
+        <!-- Subject -->
         <div>
-          <label for="subject" class="mb-2 block text-sm font-medium text-slate-700">
+
+          <label
+            for="subject"
+            class="mb-2 block text-sm font-medium text-slate-700"
+          >
             Subject
           </label>
 
-          <select id="subject" name="subject" required
-            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-700 outline-none focus:border-slate-400">
-            <option value="">Select Subject</option>
-            {% for subject in subjects  %}
-              <option value="{{ subject.id }}">{{ subject.name }}</option>
+          <select
+            id="subject"
+            name="subject"
+            required
+            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-700 outline-none focus:border-slate-400"
+          >
+
+            <option value="">
+              Select Subject
+            </option>
+
+            {% for subject in subjects %}
+
+              <option value="{{ subject.id }}">
+                {{ subject.name }}
+              </option>
+
             {% endfor %}
+
           </select>
+
         </div>
 
+
+        <!-- Exam Name / Term -->
         <div>
-          <label for="exam_name" class="mb-2 block text-sm font-medium text-slate-700">
-            Exam Name
+
+          <label
+            for="exam_name"
+            class="mb-2 block text-sm font-medium text-slate-700"
+          >
+            Exam / Term
           </label>
 
-          <input id="exam_name" name="exam_name" type="text" placeholder="e.g. First Terminal Exam" required
-            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-700 outline-none focus:border-slate-400" />
+          <input
+            id="exam_name"
+            name="exam_name"
+            type="text"
+            placeholder="e.g. First Terminal Exam"
+            required
+            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-700 outline-none focus:border-slate-400"
+          />
+
         </div>
+
+
+        <!-- Full Marks -->
+        <div>
+
+          <label
+            for="full_marks"
+            class="mb-2 block text-sm font-medium text-slate-700"
+          >
+            Full Marks
+          </label>
+
+          <input
+            id="full_marks"
+            name="full_marks"
+            type="number"
+            min="1"
+            max="1000"
+            placeholder="e.g. 100"
+            required
+            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-700 outline-none focus:border-slate-400"
+          />
+
+        </div>
+
       </div>
+
     </div>
 
+
+    <!-- Student Performance -->
     <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
+
       <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+
         <h3 class="text-lg font-semibold text-slate-900">
           Student Performance
         </h3>
+
+        <p class="mt-1 text-sm text-slate-500">
+          Enter the marks obtained by each student.
+        </p>
+
       </div>
 
-      <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-          <thead class="bg-white text-slate-600">
-            <tr>
-              <th class="px-5 py-3 font-semibold">Student Name</th>
 
-              <th class="px-5 py-3 font-semibold">Marks Obtained</th>
+      <div class="overflow-x-auto">
+
+        <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+
+          <thead class="bg-white text-slate-600">
+
+            <tr>
+
+              <th class="px-5 py-3 font-semibold">
+                Student Name
+              </th>
+
+              <th class="px-5 py-3 font-semibold">
+                Marks Obtained
+              </th>
+
             </tr>
+
           </thead>
 
+
           <tbody class="divide-y divide-slate-200 bg-white">
+
             {% for student in students %}
+
             <tr>
+
+              <!-- Student Name -->
               <td class="px-5 py-3 font-medium text-slate-900">
                 {{ student.name }}
               </td>
 
+
+              <!-- Marks Obtained -->
               <td class="px-5 py-3">
-                <input type="number" name="student_{{ student.id }}" min="0" max="100" placeholder="Enter marks"
-                  class="w-full max-w-[140px] rounded-2xl border border-slate-200 px-3 py-2 text-slate-700 outline-none focus:border-slate-400" />
+
+                <input
+                  type="number"
+                  name="student_{{ student.id }}"
+                  min="0"
+                  max="1000"
+                  placeholder="Enter marks"
+                  class="w-full max-w-[180px] rounded-2xl border border-slate-200 px-3 py-2 text-slate-700 outline-none focus:border-slate-400"
+                />
+
               </td>
+
             </tr>
-            
+
             {% empty %}
+
             <tr>
-              <td colspan="2" class="px-5 py-8 text-center text-slate-500">
+
+              <td
+                colspan="2"
+                class="px-5 py-8 text-center text-slate-500"
+              >
                 No students found in this class.
               </td>
+
             </tr>
-          {% endfor %}
+
+            {% endfor %}
+
           </tbody>
+
         </table>
+
       </div>
+
     </div>
 
+
+    <!-- Save Button -->
     <div class="flex justify-end">
-      <button type="submit"
-        class="rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800">
+
+      <button
+        type="submit"
+        class="rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800"
+      >
         Save Marks
       </button>
+
     </div>
+
   </section>
+
 </form>
 
 {% endblock %}

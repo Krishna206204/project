@@ -28,24 +28,38 @@ def add_assignment(request):
     context = {"classroom": classroom, "subjects": subjects}
     return render(request, "academics/assignment_form.html", context)
 
+
+
 @login_required
 def assignment_list(request):
+    classroom = ClassRoom.objects.filter(teacher=request.user).first()
+
+    assignments = Assignment.objects.none()
     search_query = request.GET.get("search", "")
 
-    assignments = Assignment.objects.all()
-
-    if search_query:
-        assignments = assignments.filter(
-            title__icontains=search_query
+    if classroom:
+        assignments = (
+            Assignment.objects.filter(classroom=classroom)
+            .select_related("subject", "classroom")
+            .order_by("-created_at")
         )
+
+        if search_query:
+            assignments = assignments.filter(
+                title__icontains=search_query
+            )
 
     context = {
         "assignments": assignments,
         "search_query": search_query,
     }
 
-    return render(request, "academics/assignment_list.html", context)
-
+    return render(
+        request,
+        "academics/assignment_list.html",
+        context
+    )
+    
 @login_required
 def delete_assignment(request,id):
     assignment = get_object_or_404(Assignment, id=id)
@@ -194,40 +208,122 @@ def admin_add_notice(request):
         "academics/admin_add_notice.html"
     )
 
+
 @login_required
 def add_marks(request):
     classroom = ClassRoom.objects.filter(teacher=request.user).first()
+
     if not classroom:
-        messages.error(request, "No Classroom assigned to you")
+        messages.error(request, "No Classroom assigned to you.")
         return redirect("dashboard")
+
     students = classroom.students.all()
     subjects = Subject.objects.filter(classroom=classroom)
+
     if request.method == "POST":
+
         subject_id = request.POST.get("subject")
         exam_name = request.POST.get("exam_name", "").strip().title()
+        full_marks = request.POST.get("full_marks", "").strip()
 
-        if not subject_id or not exam_name:
-            messages.error(request, "Subject and exam name are required..")
+        # Validate required fields
+        if not subject_id or not exam_name or not full_marks:
+            messages.error(
+                request,
+                "Subject, exam name and full marks are required."
+            )
             return redirect("add-marks")
 
-        subject = Subject.objects.get(id=subject_id, classroom=classroom)
+        # Validate full marks
+        try:
+            full_marks = int(full_marks)
 
+            if full_marks <= 0:
+                messages.error(
+                    request,
+                    "Full marks must be greater than 0."
+                )
+                return redirect("add-marks")
+
+        except ValueError:
+            messages.error(
+                request,
+                "Full marks must be a valid number."
+            )
+            return redirect("add-marks")
+
+        # Get subject belonging to teacher's classroom
+        try:
+            subject = Subject.objects.get(
+                id=subject_id,
+                classroom=classroom
+            )
+        except Subject.DoesNotExist:
+            messages.error(
+                request,
+                "Invalid subject selected."
+            )
+            return redirect("add-marks")
+
+        # Save marks for each student
         for student in students:
-            marks = request.POST.get(f"student_{student.id}")
-            if not marks:
+
+            marks_obtained = request.POST.get(
+                f"student_{student.id}"
+            )
+
+            # Skip students where no marks were entered
+            if marks_obtained == "":
                 continue
+
+            try:
+                marks_obtained = int(marks_obtained)
+
+                # Don't allow marks greater than full marks
+                if marks_obtained < 0 or marks_obtained > full_marks:
+                    messages.error(
+                        request,
+                        f"Marks for {student.name} must be between "
+                        f"0 and {full_marks}."
+                    )
+                    return redirect("add-marks")
+
+            except ValueError:
+                messages.error(
+                    request,
+                    f"Invalid marks entered for {student.name}."
+                )
+                return redirect("add-marks")
+
+            # Create or update marks
             Marks.objects.update_or_create(
                 student=student,
                 subject=subject,
                 exam_name=exam_name,
-                defaults={"marks_obtained": marks},
+                defaults={
+                    "marks_obtained": marks_obtained,
+                    "full_marks": full_marks,
+                },
             )
-        messages.success(request, "Marks saved successfully..")
+
+        messages.success(
+            request,
+            "Marks saved successfully."
+        )
+
         return redirect("add-marks")
 
-    context = {"classroom": classroom, "students": students, "subjects": subjects}
-    return render(request, "academics/marks_form.html", context)
+    context = {
+        "classroom": classroom,
+        "students": students,
+        "subjects": subjects,
+    }
 
+    return render(
+        request,
+        "academics/marks_form.html",
+        context
+    )
 @login_required
 def view_marks(request):
     classroom = ClassRoom.objects.filter(teacher=request.user).first()
