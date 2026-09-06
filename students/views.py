@@ -540,7 +540,21 @@ def student_logout(request):
 @login_required
 def admin_students(request):
     # Get all students in the school
-    students = Student.objects.select_related("classroom").all()
+    # students = Student.objects.select_related("classroom").all()
+    from django.db.models.functions import Lower
+
+    students = (
+    Student.objects
+    .select_related("classroom")
+    .order_by("id")
+)
+    
+# students = (
+#     Student.objects
+#     .select_related("classroom")
+#     .order_by(Lower("name"))
+# )
+    
 
     # Total number of students
     student_count = students.count()
