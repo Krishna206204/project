@@ -1,10 +1,20 @@
-{% extends 'base.html' %} {% block title %}Assignments{% endblock %}
-{% block page_label %}Academics{% endblock %} 
-{% block page_title %}Assignments{% endblock %} {% block content %}
+{% extends 'base.html' %}
+
+{% block title %}Assignments{% endblock %}
+
+{% block page_label %}Academics{% endblock %}
+
+{% block page_title %}Assignments{% endblock %}
+
+{% block content %}
+
 <section class="space-y-6">
+
+  <!-- Header -->
   <div
     class="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm md:flex-row md:items-center md:justify-between"
   >
+
     <div>
       <p
         class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500"
@@ -17,31 +27,68 @@
       </h2>
     </div>
 
+
+    <!-- Search + Create -->
     <div class="flex flex-col gap-3 sm:flex-row">
-      <label
+
+      <!-- Search Form -->
+      <form
+        method="GET"
+        action="{% url 'assignment-list' %}"
         class="flex items-center rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600"
       >
+
         <span class="mr-2 text-slate-400">🔎</span>
+
         <input
           type="text"
+          name="search"
+          value="{{ search_query }}"
           placeholder="Search assignment"
           class="w-full bg-transparent outline-none"
         />
-      </label>
 
+        <!-- Search Button -->
+        <button
+          type="submit"
+          class="ml-2 rounded-xl bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-800"
+        >
+          Search
+        </button>
+
+        <!-- Reset Button -->
+        <a
+          href="{% url 'assignment-list' %}"
+          class="ml-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+        >
+          Reset
+        </a>
+
+      </form>
+
+
+      <!-- Create Assignment -->
       <a
         href="{% url 'add-assignment' %}"
         class="rounded-2xl bg-slate-900 px-4 py-2.5 text-center text-sm font-semibold text-white transition hover:bg-slate-800"
       >
         Create Assignment
       </a>
+
     </div>
+
   </div>
 
+
+  <!-- Assignment Table -->
   <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
+
     <div class="overflow-x-auto">
+
       <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+
         <thead class="bg-slate-50 text-slate-600">
+
           <tr>
             <th class="px-5 py-3 font-semibold">Title</th>
             <th class="px-5 py-3 font-semibold">Subject</th>
@@ -49,54 +96,100 @@
             <th class="px-5 py-3 font-semibold">Created Date</th>
             <th class="px-5 py-3 font-semibold">Actions</th>
           </tr>
+
         </thead>
 
+
         <tbody class="divide-y divide-slate-200 bg-white">
+
           {% for assignment in assignments %}
+
           <tr>
+
+            <!-- Title -->
             <td class="px-5 py-3 font-medium text-slate-900">
-              {{ assignment.title | title}}
+              {{ assignment.title|title }}
             </td>
 
-            <td class="px-5 py-3">{{ assignment.subject.name | capfirst}}</td>
 
+            <!-- Subject -->
             <td class="px-5 py-3">
-              {{ assignment.classroom.name }} {% if assignment.classroom.section %} - {{ assignment.classroom.section |title}} {% endif %}
+              {{ assignment.subject.name|capfirst }}
             </td>
 
-            <td class="px-5 py-3">{{ assignment.created_at|date:"M d, Y" }}</td>
 
+            <!-- Class -->
             <td class="px-5 py-3">
+
+              {{ assignment.classroom.name }}
+
+              {% if assignment.classroom.section %}
+                - {{ assignment.classroom.section|title }}
+              {% endif %}
+
+            </td>
+
+
+            <!-- Created Date -->
+            <td class="px-5 py-3">
+              {{ assignment.created_at|date:"M d, Y" }}
+            </td>
+
+
+            <!-- Actions -->
+            <td class="px-5 py-3">
+
               <div class="flex gap-2">
+
+                <!-- Edit -->
                 <a
                   href="{% url 'assignment-edit' assignment.id %}"
                   class="rounded-full border border-slate-200 px-3 py-1 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
                 >
-                Edit
+                  Edit
                   <i class="fa-regular fa-pen-to-square"></i>
                 </a>
 
+
+                <!-- Delete -->
                 <a
                   href="{% url 'delete_assignment' assignment.id %}"
                   class="rounded-full border border-rose-200 px-3 py-1 text-xs font-semibold text-rose-700 transition hover:bg-rose-50"
                 >
-                  {% comment %} Delete {% endcomment %}
-                 <i class="fa-solid fa-delete-left"></i>
+                  <i class="fa-solid fa-delete-left"></i>
                 </a>
+
               </div>
+
             </td>
+
           </tr>
 
+
           {% empty %}
+
+          <!-- No Assignments -->
           <tr>
-            <td colspan="5" class="px-5 py-10 text-center text-slate-500">
+
+            <td
+              colspan="5"
+              class="px-5 py-10 text-center text-slate-500"
+            >
               No assignments found.
             </td>
+
           </tr>
+
           {% endfor %}
+
         </tbody>
+
       </table>
+
     </div>
+
   </div>
+
 </section>
+
 {% endblock %}

@@ -61,7 +61,7 @@
 
             {% for exam in exam_names %}
             <option value="{{ exam |title}}" {% if selected_exam == exam %} selected {% endif %}>
-              {{ exam }}
+              {{ exam|title }}
             </option>
             {% endfor %}
           </select>
@@ -128,12 +128,16 @@
               {% widthratio mark.marks_obtained mark.full_marks 100 as percentage %}
 
               <span class=" rounded-full px-2.5 py-1 text-xs font-semibold
-                                    {% if percentage >= 80 %}
-                                        bg-emerald-100 text-emerald-700
-                                    {% elif percentage >= 50 %}
-                                        bg-amber-100 text-amber-700
+                                    {% if mark.marks_obtained >= 80 %}
+                                        bg-emerald-100 text-green-700
+                                    {% elif mark.marks_obtained >= 60 %}
+                                        bg-amber-100 text-emerald-700
+                                    {% elif mark.marks_obtained >= 40 %}
+                                        bg-amber-100 text-amber-500
+                                    {% elif mark.marks_obtained >= 20 %}
+                                        bg-amber-100 text-red-600
                                     {% else %}
-                                        bg-rose-100 text-rose-700
+                                        bg-rose-100 text-red-900
                                     {% endif %}
                                 ">
                 {{ mark.marks_obtained }}/{{ mark.full_marks }}

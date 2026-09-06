@@ -30,14 +30,21 @@ def add_assignment(request):
 
 @login_required
 def assignment_list(request):
-    assignments = (
-        Assignment.objects.filter(classroom__teacher=request.user)
-        .select_related("subject", "classroom")
-        .order_by("-created_at")
-    )
-    return render(
-        request, "academics/assignment_list.html", {"assignments": assignments}
-    )
+    search_query = request.GET.get("search", "")
+
+    assignments = Assignment.objects.all()
+
+    if search_query:
+        assignments = assignments.filter(
+            title__icontains=search_query
+        )
+
+    context = {
+        "assignments": assignments,
+        "search_query": search_query,
+    }
+
+    return render(request, "academics/assignment_list.html", context)
 
 @login_required
 def delete_assignment(request,id):
