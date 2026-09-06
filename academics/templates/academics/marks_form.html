@@ -75,7 +75,7 @@
             {% for subject in subjects %}
 
               <option value="{{ subject.id }}">
-                {{ subject.name }}
+                {{ subject.name|title }}
               </option>
 
             {% endfor %}
@@ -180,7 +180,7 @@
 
               <!-- Student Name -->
               <td class="px-5 py-3 font-medium text-slate-900">
-                {{ student.name }}
+                {{ student.name |title}}
               </td>
 
 
