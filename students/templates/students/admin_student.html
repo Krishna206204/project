@@ -9,13 +9,17 @@
 
 <div class="space-y-6">
 
-    <!-- Statistics -->
+
+    <!-- ================= Statistics ================= -->
     <section class="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
 
         <!-- Total Students -->
         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+
             <div class="flex items-center justify-between">
+
                 <div>
+
                     <p class="text-sm font-medium text-slate-500">
                         Total Students
                     </p>
@@ -23,19 +27,27 @@
                     <p class="mt-2 text-3xl font-bold text-slate-900">
                         {{ student_count }}
                     </p>
+
                 </div>
 
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-600"
+                >
                     <i class="fa-solid fa-user-graduate text-xl"></i>
                 </div>
+
             </div>
+
         </div>
 
 
         <!-- Total Classrooms -->
         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+
             <div class="flex items-center justify-between">
+
                 <div>
+
                     <p class="text-sm font-medium text-slate-500">
                         Total Classes
                     </p>
@@ -43,19 +55,27 @@
                     <p class="mt-2 text-3xl font-bold text-slate-900">
                         {{ classroom_count }}
                     </p>
+
                 </div>
 
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-purple-600">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-purple-100 text-purple-600"
+                >
                     <i class="fa-solid fa-school text-xl"></i>
                 </div>
+
             </div>
+
         </div>
 
 
         <!-- Total Teachers -->
         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+
             <div class="flex items-center justify-between">
+
                 <div>
+
                     <p class="text-sm font-medium text-slate-500">
                         Total Teachers
                     </p>
@@ -63,19 +83,27 @@
                     <p class="mt-2 text-3xl font-bold text-slate-900">
                         {{ teacher_count }}
                     </p>
+
                 </div>
 
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-600">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-green-100 text-green-600"
+                >
                     <i class="fa-solid fa-chalkboard-user text-xl"></i>
                 </div>
+
             </div>
+
         </div>
 
 
         <!-- Total Subjects -->
         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+
             <div class="flex items-center justify-between">
+
                 <div>
+
                     <p class="text-sm font-medium text-slate-500">
                         Total Subjects
                     </p>
@@ -83,23 +111,32 @@
                     <p class="mt-2 text-3xl font-bold text-slate-900">
                         {{ subject_count }}
                     </p>
+
                 </div>
 
-                <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100 text-orange-600">
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-100 text-orange-600"
+                >
                     <i class="fa-solid fa-book text-xl"></i>
                 </div>
+
             </div>
+
         </div>
 
     </section>
 
 
-    <!-- Student Directory -->
+    <!-- ================= Student Directory ================= -->
     <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
 
-        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div
+            class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between"
+        >
 
+            <!-- Heading -->
             <div>
+
                 <h3 class="text-lg font-semibold text-slate-900">
                     All Students
                 </h3>
@@ -107,35 +144,61 @@
                 <p class="text-sm text-slate-500">
                     View all students registered in the school.
                 </p>
+
             </div>
 
 
-            <!-- Search -->
-            <div class="flex w-full max-w-md items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2">
+            <!-- ================= Search ================= -->
+            <div
+                class="flex w-full max-w-md items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-3 py-2"
+            >
 
                 <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
 
                 <input
                     type="text"
                     id="studentSearch"
-                    placeholder="Search student..."
+                    placeholder="Search by ID, name, phone, class..."
                     class="w-full border-0 bg-transparent outline-none"
                     onkeyup="searchStudents()"
                 >
+
+                <!-- Clear Search Button -->
+                <button
+                    type="button"
+                    onclick="clearStudentSearch()"
+                    class="hidden rounded-lg px-2 py-1 text-slate-400 transition hover:bg-slate-200 hover:text-slate-700"
+                    id="clearSearch"
+                    title="Clear search"
+                >
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
 
             </div>
 
         </div>
 
 
-        <!-- Table -->
+        <!-- Search Information -->
+        <div
+            id="searchResult"
+            class="mt-3 hidden text-sm text-slate-500"
+        >
+            <i class="fa-solid fa-filter mr-1"></i>
+            Showing matching students
+        </div>
+
+
+        <!-- ================= Table ================= -->
         <div class="mt-5 overflow-x-auto rounded-2xl border border-slate-200">
 
             <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
 
+                <!-- Table Header -->
                 <thead class="bg-slate-50 text-slate-600">
 
                     <tr>
+
                         <th class="px-4 py-3 font-semibold">
                             ID
                         </th>
@@ -161,6 +224,7 @@
                 </thead>
 
 
+                <!-- Table Body -->
                 <tbody
                     id="studentTable"
                     class="divide-y divide-slate-200 bg-white"
@@ -170,22 +234,31 @@
 
                     <tr class="student-row hover:bg-slate-50">
 
+                        <!-- ID -->
                         <td class="px-4 py-3">
                             {{ student.id }}
                         </td>
 
+
+                        <!-- Name -->
                         <td class="px-4 py-3 font-medium text-slate-900">
-                            {{ student.name |title }}
+                            {{ student.name|title }}
                         </td>
 
+
+                        <!-- Phone -->
                         <td class="px-4 py-3">
                             {{ student.phone }}
                         </td>
 
+
+                        <!-- Class -->
                         <td class="px-4 py-3">
-                            Grade {{ student.classroom | title }}
+                            Grade {{ student.classroom|title }}
                         </td>
 
+
+                        <!-- Date of Birth -->
                         <td class="px-4 py-3">
                             {{ student.date_of_birth }}
                         </td>
@@ -195,12 +268,14 @@
                     {% empty %}
 
                     <tr>
+
                         <td
                             colspan="5"
                             class="px-4 py-8 text-center text-slate-500"
                         >
                             No students found.
                         </td>
+
                     </tr>
 
                     {% endfor %}
@@ -216,7 +291,7 @@
 </div>
 
 
-<!-- Search Script -->
+<!-- ================= Search Script ================= -->
 <script>
 
 function searchStudents() {
@@ -224,24 +299,82 @@ function searchStudents() {
     const input = document
         .getElementById("studentSearch")
         .value
-        .toLowerCase();
+        .toLowerCase()
+        .trim();
 
     const rows = document.querySelectorAll(".student-row");
 
+    const clearButton = document.getElementById("clearSearch");
+    const searchResult = document.getElementById("searchResult");
+
+    let visibleRows = 0;
+
+
     rows.forEach(function(row) {
 
+        /*
+         * The complete row text contains:
+         * ID
+         * Name
+         * Phone
+         * Class
+         * Date of Birth
+         *
+         * Therefore searching any of these
+         * fields will work.
+         */
         const text = row.textContent.toLowerCase();
 
         if (text.includes(input)) {
+
             row.style.display = "";
+            visibleRows++;
+
         } else {
+
             row.style.display = "none";
+
         }
 
     });
 
+
+    /* Show/hide clear button */
+    if (input !== "") {
+
+        clearButton.classList.remove("hidden");
+        searchResult.classList.remove("hidden");
+
+        searchResult.innerHTML =
+            '<i class="fa-solid fa-filter mr-1"></i> ' +
+            visibleRows +
+            ' student(s) found';
+
+    } else {
+
+        clearButton.classList.add("hidden");
+        searchResult.classList.add("hidden");
+
+    }
+
+}
+
+
+/* ================= Clear Search ================= */
+
+function clearStudentSearch() {
+
+    const input = document.getElementById("studentSearch");
+
+    input.value = "";
+
+    searchStudents();
+
+    input.focus();
+
 }
 
 </script>
+
 
 {% endblock %}
