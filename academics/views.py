@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from .models import Assignment, Marks, Subject,Notice
 from students.models import ClassRoom, Student
-
+from django.core.paginator import Paginator
 @login_required
 def add_assignment(request):
     classroom = ClassRoom.objects.filter(teacher=request.user).first()
@@ -325,7 +325,7 @@ def add_marks(request):
         context
     )
     
-    
+
 @login_required
 def view_marks(request):
 
@@ -337,61 +337,124 @@ def view_marks(request):
     subjects = Subject.objects.none()
     exam_names = []
 
-    # Get search/filter values
-    student_name = request.GET.get("student", "").strip()
-    subject_id = request.GET.get("subject", "").strip()
-    selected_exam = request.GET.get("exam", "").strip()
+    student_name = request.GET.get(
+        "student",
+        ""
+    ).strip()
+
+    subject_id = request.GET.get(
+        "subject",
+        ""
+    ).strip()
+
+    selected_exam = request.GET.get(
+        "exam",
+        ""
+    ).strip()
 
     if classroom:
 
-        # Subjects belonging to teacher's classroom
         subjects = Subject.objects.filter(
             classroom=classroom
         )
 
-        # Marks belonging to teacher's classroom
         marks = (
             Marks.objects
-            .filter(student__classroom=classroom)
+            .filter(
+                student__classroom=classroom
+            )
             .select_related(
                 "student",
-                "subject",
+                "subject"
             )
-            .order_by("student__name")
+            .order_by(
+                "student__name"
+            )
         )
 
         if student_name:
+
             marks = marks.filter(
                 student__name__icontains=student_name
             )
 
-
         if subject_id:
+
             marks = marks.filter(
                 subject_id=subject_id
             )
 
-
         if selected_exam:
+
             marks = marks.filter(
                 exam_name=selected_exam
             )
 
-
         exam_names = (
             Marks.objects
-            .filter(student__classroom=classroom)
-            .values_list("exam_name", flat=True)
+            .filter(
+                student__classroom=classroom
+            )
+            .values_list(
+                "exam_name",
+                flat=True
+            )
             .distinct()
         )
 
+    paginator = Paginator(
+        marks,
+        8
+    )
+
+    page_number = request.GET.get(
+        "page"
+    )
+
+    page_obj = paginator.get_page(
+        page_number
+    )
+
+    current_page = page_obj.number
+    total_pages = paginator.num_pages
+
+    page_range = []
+
+    for num in range(
+        1,
+        total_pages + 1
+    ):
+
+        if (
+            num == 1
+            or num == total_pages
+            or current_page - 2 <= num <= current_page + 2
+        ):
+
+            page_range.append(num)
+
+        elif page_range and page_range[-1] != "...":
+
+            page_range.append("...")
+
     context = {
-        "marks": marks,
+
+        "marks": page_obj,
+
+        "page_obj": page_obj,
+
+        "paginator": paginator,
+
+        "page_range": page_range,
+
         "subjects": subjects,
+
         "exam_names": exam_names,
 
         "selected_student": student_name,
+
         "selected_subject": subject_id,
+
         "selected_exam": selected_exam,
     }
 

@@ -16,15 +16,12 @@
 
 <section class="space-y-6">
 
-
     <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
 
         <div class="flex flex-col gap-5">
 
-
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
-                <!-- Left -->
                 <div>
 
                     <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
@@ -41,36 +38,24 @@
 
                 </div>
 
-
-                <!-- Right - Add Marks Button -->
                 <div class="shrink-0">
 
                     <a
                         href="{% url 'add-marks' %}"
                         class="inline-flex w-fit items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                     >
-
                         <i class="fa-solid fa-plus"></i>
-
                         Add Marks
-
                     </a>
 
                 </div>
 
             </div>
 
-
-
-
-
             <form
                 method="GET"
                 class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4"
             >
-
-
-
 
                 <div>
 
@@ -85,16 +70,13 @@
                         type="text"
                         id="student"
                         name="student"
-                        value="{{ request.GET.student|default:'' }}"
+                        value="{{ selected_student }}"
                         placeholder="Search student name..."
                         autocomplete="off"
                         class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                     >
 
                 </div>
-
-
-
 
                 <div>
 
@@ -132,8 +114,6 @@
 
                 </div>
 
-
-
                 <div>
 
                     <label
@@ -170,34 +150,22 @@
 
                 </div>
 
-
-
-
                 <div class="flex items-end gap-2">
 
-
-                    <!-- Search -->
                     <button
                         type="submit"
                         class="inline-flex flex-1 items-center justify-center rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
                     >
-
                         <i class="fa-solid fa-magnifying-glass mr-2"></i>
-
                         Search
-
                     </button>
 
-
-                    <!-- Reset -->
                     <a
                         href="{% url 'view-marks' %}"
                         class="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
                         title="Reset Filters"
                     >
-
                         <i class="fa-solid fa-rotate-left"></i>
-
                     </a>
 
                 </div>
@@ -209,52 +177,37 @@
     </div>
 
 
-
-
     <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
         <div class="overflow-x-auto">
 
             <table class="min-w-full divide-y divide-slate-200">
 
-
                 <thead class="bg-slate-50">
 
                     <tr>
 
-                        <th
-                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
-                        >
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
                             Student Name
                         </th>
 
-                        <th
-                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
-                        >
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
                             Subject
                         </th>
 
-                        <th
-                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
-                        >
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
                             Exam
                         </th>
 
-                        <th
-                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
-                        >
+                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
                             Marks
                         </th>
 
-                        <th
-                            class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600"
-                        >
+                        <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600">
                             Percentage
                         </th>
 
-                        <th
-                            class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600"
-                        >
+                        <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600">
                             Action
                         </th>
 
@@ -263,28 +216,20 @@
                 </thead>
 
 
-
                 <tbody class="divide-y divide-slate-200">
-
 
                     {% for mark in marks %}
 
                     <tr class="transition hover:bg-slate-50">
 
-
-
                         <td class="whitespace-nowrap px-5 py-4">
 
                             <div class="flex items-center gap-3">
 
-                                <!-- Avatar -->
-                                <div
-                                    class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600"
-                                >
+                                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
                                     {{ mark.student.name|first|upper }}
                                 </div>
 
-                                <!-- Name -->
                                 <div>
 
                                     <p class="font-semibold text-slate-900">
@@ -298,23 +243,14 @@
                         </td>
 
 
-
-
-
                         <td class="whitespace-nowrap px-5 py-4 text-sm text-slate-700">
-
                             {{ mark.subject.name|title }}
-
                         </td>
-
 
 
                         <td class="whitespace-nowrap px-5 py-4 text-sm text-slate-700">
-
                             {{ mark.exam_name|title }}
-
                         </td>
-
 
 
                         <td class="whitespace-nowrap px-5 py-4">
@@ -334,24 +270,19 @@
                         </td>
 
 
-
                         <td class="whitespace-nowrap px-5 py-4 text-center">
 
                             {% widthratio mark.marks_obtained mark.full_marks 100 as percentage %}
 
                             {% if percentage >= "40" %}
 
-                                <span
-                                    class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700"
-                                >
+                                <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
                                     {{ percentage }}%
                                 </span>
 
                             {% else %}
 
-                                <span
-                                    class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
-                                >
+                                <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
                                     {{ percentage }}%
                                 </span>
 
@@ -360,29 +291,20 @@
                         </td>
 
 
-
-
                         <td class="px-5 py-4">
 
                             <div class="flex items-center justify-center gap-2">
 
-
-                                <!-- Edit -->
                                 <a
                                     href="{% url 'marks-edit' mark.id %}"
                                     class="inline-flex items-center gap-1 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-100"
                                     title="Edit Marks"
                                 >
-
                                     <i class="fa-solid fa-pen-to-square"></i>
-
                                     Edit
-
                                 </a>
 
 
-
-                                <!-- Delete -->
                                 <form
                                     method="POST"
                                     action="{% url 'marks-delete' mark.id %}"
@@ -403,11 +325,8 @@
                                         class="inline-flex items-center gap-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100"
                                         title="Delete Marks"
                                     >
-
                                         <i class="fa-solid fa-trash"></i>
-
                                         Delete
-
                                     </button>
 
                                 </form>
@@ -418,10 +337,7 @@
 
                     </tr>
 
-
                     {% empty %}
-
-
 
                     <tr>
 
@@ -432,12 +348,8 @@
 
                             <div class="flex flex-col items-center justify-center">
 
-                                <div
-                                    class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400"
-                                >
-
+                                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
                                     <i class="fa-solid fa-file-circle-xmark text-xl"></i>
-
                                 </div>
 
                                 <h3 class="font-semibold text-slate-800">
@@ -463,6 +375,101 @@
         </div>
 
     </div>
+
+
+    {% if page_obj.has_other_pages %}
+
+    <div class="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+
+        <div class="text-sm text-slate-600">
+
+            Showing page
+
+            <span class="font-semibold text-slate-900">
+                {{ page_obj.number }}
+            </span>
+
+            of
+
+            <span class="font-semibold text-slate-900">
+                {{ page_obj.paginator.num_pages }}
+            </span>
+
+        </div>
+
+
+        <div class="flex items-center gap-2">
+
+            {% if page_obj.has_previous %}
+
+                <a
+                    href="?page={{ page_obj.previous_page_number }}{% if selected_student %}&student={{ selected_student|urlencode }}{% endif %}{% if selected_subject %}&subject={{ selected_subject|urlencode }}{% endif %}{% if selected_exam %}&exam={{ selected_exam|urlencode }}{% endif %}"
+                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                    <i class="fa-solid fa-chevron-left text-xs"></i>
+
+                    <span class="hidden sm:inline">
+                        Previous
+                    </span>
+                </a>
+
+            {% endif %}
+
+
+            <div class="flex items-center gap-1">
+
+                {% for num in page_range %}
+
+                    {% if num == "..." %}
+
+                        <span class="inline-flex h-9 min-w-9 items-center justify-center px-2 text-sm font-semibold text-slate-400">
+                            ...
+                        </span>
+
+                    {% elif num == page_obj.number %}
+
+                        <span
+                            class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl bg-slate-900 px-3 text-sm font-semibold text-white"
+                        >
+                            {{ num }}
+                        </span>
+
+                    {% else %}
+
+                        <a
+                            href="?page={{ num }}{% if selected_student %}&student={{ selected_student|urlencode }}{% endif %}{% if selected_subject %}&subject={{ selected_subject|urlencode }}{% endif %}{% if selected_exam %}&exam={{ selected_exam|urlencode }}{% endif %}"
+                            class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                        >
+                            {{ num }}
+                        </a>
+
+                    {% endif %}
+
+                {% endfor %}
+
+            </div>
+
+
+            {% if page_obj.has_next %}
+
+                <a
+                    href="?page={{ page_obj.next_page_number }}{% if selected_student %}&student={{ selected_student|urlencode }}{% endif %}{% if selected_subject %}&subject={{ selected_subject|urlencode }}{% endif %}{% if selected_exam %}&exam={{ selected_exam|urlencode }}{% endif %}"
+                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                    <span class="hidden sm:inline">
+                        Next
+                    </span>
+
+                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+    {% endif %}
 
 </section>
 
