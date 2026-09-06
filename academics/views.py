@@ -324,46 +324,233 @@ def add_marks(request):
         "academics/marks_form.html",
         context
     )
+    
+    
 @login_required
 def view_marks(request):
-    classroom = ClassRoom.objects.filter(teacher=request.user).first()
+
+    classroom = ClassRoom.objects.filter(
+        teacher=request.user
+    ).first()
+
     marks = Marks.objects.none()
     subjects = Subject.objects.none()
-    exam_name = []
+    exam_names = []
+
+    # Get search/filter values
+    student_name = request.GET.get("student", "").strip()
+    subject_id = request.GET.get("subject", "").strip()
+    selected_exam = request.GET.get("exam", "").strip()
+
     if classroom:
-        subjects = Subject.objects.filter(classroom=classroom)
+
+        # Subjects belonging to teacher's classroom
+        subjects = Subject.objects.filter(
+            classroom=classroom
+        )
+
+        # Marks belonging to teacher's classroom
         marks = (
-            Marks.objects.filter(student__classroom=classroom)
+            Marks.objects
+            .filter(student__classroom=classroom)
             .select_related(
                 "student",
                 "subject",
             )
             .order_by("student__name")
         )
-        subject_id = request.GET.get("subject")
-        exam_name = request.GET.get("exam")
+
+        if student_name:
+            marks = marks.filter(
+                student__name__icontains=student_name
+            )
+
 
         if subject_id:
-            marks = marks.filter(subject_id=subject_id)
+            marks = marks.filter(
+                subject_id=subject_id
+            )
 
-        if exam_name:
-            marks = marks.filter(exam_name=exam_name)
 
-        exam_name = (
-            Marks.objects.filter(student__classroom=classroom)
+        if selected_exam:
+            marks = marks.filter(
+                exam_name=selected_exam
+            )
+
+
+        exam_names = (
+            Marks.objects
+            .filter(student__classroom=classroom)
             .values_list("exam_name", flat=True)
             .distinct()
         )
+
     context = {
         "marks": marks,
         "subjects": subjects,
-        "exam_names": exam_name,
-        "selected_subject": request.GET.get("subject", ""),
-        "selected_exam": request.GET.get("exam", ""),
+        "exam_names": exam_names,
+
+        "selected_student": student_name,
+        "selected_subject": subject_id,
+        "selected_exam": selected_exam,
     }
-    return render(request, "academics/marks_list.html", context)
 
+    return render(
+        request,
+        "academics/marks_list.html",
+        context
+    )
 
+@login_required
+def edit_marks(request, mark_id):
+
+    # Get the existing marks record
+    mark = get_object_or_404(
+        Marks,
+        id=mark_id
+    )
+
+    # Only show subjects from the teacher's classroom
+    classroom = ClassRoom.objects.filter(
+        teacher=request.user
+    ).first()
+
+    if not classroom:
+        messages.error(
+            request,
+            "You are not assigned to any classroom."
+        )
+        return redirect("view-marks")
+
+    # Security check:
+    # Make sure this mark belongs to the teacher's classroom
+    if mark.student.classroom_id != classroom.id:
+        messages.error(
+            request,
+            "You are not allowed to edit these marks."
+        )
+        return redirect("view-marks")
+
+    subjects = Subject.objects.filter(
+        classroom=classroom
+    )
+
+    if request.method == "POST":
+
+        exam_name = request.POST.get(
+            "exam_name",
+            ""
+        ).strip()
+
+        subject_id = request.POST.get(
+            "subject"
+        )
+
+        marks_obtained = request.POST.get(
+            "marks_obtained"
+        )
+
+        full_marks = request.POST.get(
+            "full_marks"
+        )
+
+        if not exam_name:
+            messages.error(
+                request,
+                "Exam name is required."
+            )
+
+        elif not subject_id:
+            messages.error(
+                request,
+                "Please select a subject."
+            )
+
+        elif not marks_obtained:
+            messages.error(
+                request,
+                "Marks obtained is required."
+            )
+
+        elif not full_marks:
+            messages.error(
+                request,
+                "Full marks is required."
+            )
+
+        else:
+
+            try:
+                marks_obtained_value = float(
+                    marks_obtained
+                )
+
+                full_marks_value = float(
+                    full_marks
+                )
+
+                if full_marks_value <= 0:
+                    messages.error(
+                        request,
+                        "Full marks must be greater than 0."
+                    )
+
+                elif marks_obtained_value < 0:
+                    messages.error(
+                        request,
+                        "Marks cannot be negative."
+                    )
+
+                elif marks_obtained_value > full_marks_value:
+                    messages.error(
+                        request,
+                        "Marks obtained cannot be greater than full marks."
+                    )
+
+                else:
+
+                    subject = get_object_or_404(
+                        Subject,
+                        id=subject_id,
+                        classroom=classroom
+                    )
+
+                    # Update existing record
+                    mark.subject = subject
+                    mark.exam_name = exam_name
+                    mark.marks_obtained = marks_obtained_value
+                    mark.full_marks = full_marks_value
+
+                    mark.save()
+
+                    messages.success(
+                        request,
+                        "Student marks updated successfully."
+                    )
+
+                    return redirect("view-marks")
+
+            except ValueError:
+
+                messages.error(
+                    request,
+                    "Please enter valid numbers for marks."
+                )
+
+    context = {
+        "mark": mark,
+        "subjects": subjects,
+    }
+
+    return render(
+        request,
+        "academics/edit_mark.html",
+        context
+    )
+    
+    
+    
+    
 # added
 def report_card(request, student_id, exam_name):
 
@@ -460,6 +647,25 @@ def report_card(request, student_id, exam_name):
     }
 
     return render(request, "academics/report_card.html", context)
+
+
+def marks_delete(request, mark_id):
+    mark = get_object_or_404(Marks, id=mark_id)
+
+    if request.method == "POST":
+        mark.delete()
+
+        messages.success(
+            request,
+            "Student marks deleted successfully."
+        )
+
+        return redirect("view-marks")
+
+    return redirect("view-marks")
+
+
+
 
 
 def student_results(request):

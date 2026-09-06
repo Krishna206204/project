@@ -6,6 +6,19 @@ urlpatterns = [
     path("assignments/add/", views.add_assignment, name="add-assignment"),
     path("marks/add/", views.add_marks, name="add-marks"),
     path("marks/view/", views.view_marks, name="view-marks"),
+    
+     path(
+        "marks/edit/<int:mark_id>/",
+        views.edit_marks,
+        name="marks-edit"
+    ),
+
+     path(
+        "marks/delete/<int:mark_id>/",
+        views.marks_delete,
+        name="marks-delete",
+    ),
+    
     path("results/", views.student_results, name="student-results"),
     path('assignment/delete/<int:id>/',views.delete_assignment,name="delete_assignment"),
     

@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Edit Marks
+{% endblock %}
+
+{% block page_label %}
+    Academics
+{% endblock %}
+
+{% block page_title %}
+    Edit Marks
+{% endblock %}
+
+{% block content %}
+
+<section class="mx-auto max-w-3xl">
+
+
+    <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+
+
+
+
+        <div class="border-b border-slate-200 bg-slate-50 px-6 py-5">
+
+            <div class="flex items-center justify-between gap-4">
+
+                <div>
+
+                    <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
+                        Academic Records
+                    </p>
+
+                    <h2 class="mt-1 text-xl font-semibold text-slate-900">
+                        Edit Student Marks
+                    </h2>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Update the student's examination marks.
+                    </p>
+
+                </div>
+
+
+                <!-- Back Button -->
+                <a
+                    href="{% url 'view-marks' %}"
+                    class="inline-flex shrink-0 items-center gap-2 rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                >
+                    <i class="fa-solid fa-arrow-left"></i>
+                    Back
+                </a>
+
+            </div>
+
+        </div>
+
+
+
+        <form
+            method="POST"
+            class="space-y-6 p-6"
+        >
+
+            {% csrf_token %}
+
+
+
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+
+                <p class="mb-1 text-xs font-semibold uppercase tracking-wider text-slate-500">
+                    Student
+                </p>
+
+                <p class="text-lg font-semibold text-slate-900">
+                    {{ mark.student.name|title }}
+                </p>
+
+                <p class="mt-1 text-sm text-slate-500">
+                    Class: {{ mark.student.classroom }}
+                </p>
+
+            </div>
+
+
+
+
+            <div>
+
+                <label
+                    for="subject"
+                    class="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                    Subject
+                </label>
+
+                <select
+                    id="subject"
+                    name="subject"
+                    required
+                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                >
+
+                    <option value="">
+                        Select Subject
+                    </option>
+
+                    {% for subject in subjects %}
+
+                        <option
+                            value="{{ subject.id }}"
+                            {% if mark.subject_id == subject.id %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ subject.name|title }}
+                        </option>
+
+                    {% endfor %}
+
+                </select>
+
+            </div>
+
+
+
+            <div>
+
+                <label
+                    for="exam_name"
+                    class="mb-2 block text-sm font-semibold text-slate-700"
+                >
+                    Exam Name
+                </label>
+
+                <input
+                    type="text"
+                    id="exam_name"
+                    name="exam_name"
+                    value="{{ mark.exam_name }}"
+                    required
+                    placeholder="Enter exam name"
+                    class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                >
+
+            </div>
+
+
+
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+
+                <!-- Marks Obtained -->
+                <div>
+
+                    <label
+                        for="marks_obtained"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Marks Obtained
+                    </label>
+
+                    <input
+                        type="number"
+                        id="marks_obtained"
+                        name="marks_obtained"
+                        value="{{ mark.marks_obtained }}"
+                        min="0"
+                        step="0.01"
+                        required
+                        placeholder="Enter marks"
+                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    >
+
+                </div>
+
+
+
+                <!-- Full Marks -->
+                <div>
+
+                    <label
+                        for="full_marks"
+                        class="mb-2 block text-sm font-semibold text-slate-700"
+                    >
+                        Full Marks
+                    </label>
+
+                    <input
+                        type="number"
+                        id="full_marks"
+                        name="full_marks"
+                        value="{{ mark.full_marks }}"
+                        min="1"
+                        step="0.01"
+                        required
+                        placeholder="Enter full marks"
+                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                    >
+
+                </div>
+
+            </div>
+
+{% comment %} 
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+
+                <div class="flex items-center justify-between">
+
+                    <span class="text-sm font-medium text-slate-600">
+                        Current Percentage
+                    </span>
+
+                    {% widthratio mark.marks_obtained mark.full_marks 100 as percentage %}
+
+                    <span class="text-lg font-bold text-slate-900">
+                        {{ percentage }}%
+                    </span>
+
+                </div>
+
+            </div> {% endcomment %}
+
+
+
+
+            <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+
+                <!-- Cancel -->
+                <a
+                    href="{% url 'view-marks' %}"
+                    class="inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
+                >
+
+                    Cancel
+
+                </a>
+
+
+                <!-- Update -->
+                <button
+                    type="submit"
+                    class="inline-flex items-center justify-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
+                >
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Update Marks
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}
