@@ -321,7 +321,7 @@ def student_marks(request, student_id):
 
     return render(
         request,
-        "students\student_marks.html",
+        "students/student_marks.html",
         context
     )
 
