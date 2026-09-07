@@ -1,15 +1,27 @@
 {% extends 'base.html' %} 
+
+
 {% block title %}Attendance{% endblock %} 
-{% block page_label %}Daily Tracking{% endblock %} 
-{% block page_title %}Mark Attendance{% endblock %} 
+
+
+{% block page_label %}Daily Tracking{% endblock %}
+
+
+
+{% block page_title %}MarkAttendance{% endblock %}
 
 {% block content %}
+
 <form method="post">
   {% csrf_token %}
 
   <div class="space-y-6">
+    <!-- =========================
+             DATE & CLASS SECTION
+        ========================== -->
     <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
       <div class="grid gap-4 md:grid-cols-2">
+        <!-- DATE -->
         <div>
           <label
             for="date"
@@ -23,18 +35,23 @@
             name="date"
             type="date"
             value="{{ today|date:'Y-m-d' }}"
-            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3"
+            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-200"
             required
           />
         </div>
-         {% comment %} New button added to back  {% endcomment %}
-      <div class="rounded-2xl border border-slate-200 bg-white p-4">
-       <a href="{% url 'attendance' %}"
-         class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-white hover:bg-slate-800">
-              ← Back
-        </a>
-      </div>
 
+        <!-- BACK BUTTON -->
+        <div class="flex items-end justify-end">
+          <a
+            href="{% url 'attendance' %}"
+            class="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 font-medium text-white transition hover:bg-slate-800"
+          >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+          </a>
+        </div>
+
+        <!-- CLASS / SECTION -->
         <div>
           <label
             for="section"
@@ -46,7 +63,7 @@
           <input
             id="section"
             type="text"
-            value="{{ classroom.name }} - {{ classroom.section |title }}"
+            value="{{ classroom.name }} - {{ classroom.section|title }}"
             readonly
             class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-700"
           />
@@ -56,6 +73,7 @@
 
     <div class="overflow-hidden rounded-2xl border border-slate-200">
       <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+        <!-- TABLE HEADER -->
         <thead class="bg-slate-50 text-slate-600">
           <tr>
             <th class="px-4 py-3 font-semibold">Student</th>
@@ -64,55 +82,103 @@
           </tr>
         </thead>
 
+        <!-- TABLE BODY -->
         <tbody class="divide-y divide-slate-200 bg-white">
           {% for student in students %}
-          <tr>
-            <td class="px-4 py-3 font-medium text-slate-900">
-              {{ student.name |title}}
+
+          <tr class="transition hover:bg-slate-50">
+            <!-- STUDENT NAME -->
+            <td class="px-4 py-4 font-medium text-slate-900">
+              {{ student.name|title }}
             </td>
 
-            <td class="px-4 py-3">
-              <div class="flex gap-6">
-                <label class="flex items-center gap-2 text-sm text-slate-600">
+            <!-- ATTENDANCE STATUS -->
+            <td class="px-4 py-4">
+              <div class="flex items-center gap-8">
+                <!-- PRESENT -->
+                <label class="flex cursor-pointer items-center gap-2">
                   <input
                     type="radio"
-                    name="student_{{ student.id }} "
+                    name="student_{{ student.id }}"
                     value="PRESENT"
                     checked
+                    style="width: 18px; height: 18px"
                   />
-                  Present
+
+                  <span class="text-sm font-medium text-emerald-700">
+                    Present
+                  </span>
                 </label>
 
-                <label class="flex items-center gap-2 text-sm text-slate-600">
+                <!-- ABSENT -->
+                <label class="flex cursor-pointer items-center gap-2">
                   <input
                     type="radio"
                     name="student_{{ student.id }}"
                     value="ABSENT"
+                    style="width: 18px; height: 18px"
                   />
-                  Absent
+
+                  <span class="text-sm font-medium text-red-600"> Absent </span>
                 </label>
               </div>
             </td>
           </tr>
+
           {% empty %}
+
           <tr>
             <td colspan="2" class="px-4 py-8 text-center text-slate-500">
               No students found in your assigned class.
             </td>
           </tr>
+
           {% endfor %}
         </tbody>
       </table>
     </div>
 
-    <div class="flex justify-end">
+    <div class="flex items-center justify-end gap-3">
+      <!-- RESET BUTTON -->
+      <a
+        href="{% url 'mark-attendance' %}"
+        class="inline-flex items-center gap-2 rounded-2xl border border-slate-300 bg-white px-5 py-3 font-semibold text-slate-700 transition hover:bg-slate-100"
+      >
+        <i class="fa-solid fa-rotate-left"></i>
+        Reset
+      </a>
+
+      <!-- SAVE BUTTON -->
       <button
         type="submit"
-        class="rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800"
+        class="inline-flex items-center gap-2 rounded-2xl bg-slate-900 px-5 py-3 font-semibold text-white transition hover:bg-slate-800"
       >
+        <i class="fa-solid fa-check"></i>
+
         Save Attendance
       </button>
     </div>
   </div>
 </form>
+
+<script>
+  document
+    .getElementById("resetAttendance")
+    .addEventListener("click", function () {
+      setTimeout(function () {
+        document
+          .querySelectorAll('input[type="radio"][value="PRESENT"]')
+          .forEach(function (radio) {
+            radio.checked = true;
+          });
+
+        document
+          .querySelectorAll('input[type="radio"][value="ABSENT"]')
+          .forEach(function (radio) {
+            radio.checked = false;
+          });
+      }, 0);
+    });
+</script>
+
 {% endblock %}
