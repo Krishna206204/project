@@ -18,9 +18,10 @@
 
     <div class="mx-auto max-w-6xl space-y-6">
 
-
         <!-- Student Header -->
-        <div class="flex flex-col gap-3 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+        <div
+            class="flex flex-col gap-3 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+        >
 
             <div>
 
@@ -29,7 +30,7 @@
                 </p>
 
                 <h2 class="mt-2 text-2xl font-semibold text-slate-900">
-                    {{ student.name |title }}
+                    {{ student.name|title }}
                 </h2>
 
             </div>
@@ -40,9 +41,10 @@
         <!-- Search and Filter -->
         <div class="rounded-[2rem] border border-slate-200 bg-white p-5 shadow-sm">
 
-            <form method="get"
-                  class="flex flex-col gap-4 md:flex-row md:items-end">
-
+            <form
+                method="get"
+                class="flex flex-col gap-4 md:flex-row md:items-end"
+            >
 
                 <!-- Search Subject -->
                 <div class="flex-1">
@@ -60,7 +62,7 @@
                         name="search"
                         value="{{ search_query }}"
                         placeholder="Search subject..."
-                        class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
                     >
 
                 </div>
@@ -79,7 +81,7 @@
                     <select
                         id="exam"
                         name="exam"
-                        class="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-slate-500"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
                     >
 
                         <!-- All Terms -->
@@ -88,7 +90,7 @@
                         </option>
 
 
-                        <!-- Available Terms -->
+                        <!-- Available Exams -->
                         {% for exam in available_exams %}
 
                             <option
@@ -97,7 +99,7 @@
                                     selected
                                 {% endif %}
                             >
-                                {{ exam |title}}
+                                {{ exam|title }}
                             </option>
 
                         {% endfor %}
@@ -112,7 +114,7 @@
 
                     <button
                         type="submit"
-                        class="w-full rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white transition hover:bg-slate-700 md:w-auto"
+                        class="w-full rounded-xl bg-slate-900 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 md:w-auto"
                     >
                         Search
                     </button>
@@ -125,7 +127,7 @@
 
                     <a
                         href="{% url 'student-marks' student.id %}"
-                        class="block w-full rounded-xl border border-slate-300 px-6 py-3 text-center font-semibold text-slate-700 transition hover:bg-slate-100 md:w-auto"
+                        class="block w-full rounded-xl border border-slate-300 bg-white px-6 py-3 text-center font-semibold text-slate-700 transition hover:bg-slate-100 md:w-auto"
                     >
                         Reset
                     </a>
@@ -137,36 +139,69 @@
         </div>
 
 
+        <!-- Current Exam Information -->
+        {% if selected_exam %}
+
+        <div
+            class="rounded-[2rem] border border-emerald-200 bg-emerald-50 p-5 shadow-sm"
+        >
+
+            <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
+
+                <div>
+
+                    <p class="text-xs font-semibold uppercase tracking-[0.2em] text-emerald-600">
+                        Showing Results
+                    </p>
+
+                    <h3 class="mt-1 text-xl font-semibold text-emerald-900">
+                        {{ selected_exam|title }}
+                    </h3>
+
+                </div>
+
+                <div class="text-xl text-amber-700">
+                     {{student.name|title}} your marks in {{selected_exam|title}} 
+                </div>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
         <!-- Marks Table -->
-        <div class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm">
+        <div
+            class="overflow-hidden rounded-[2rem] border border-slate-200 bg-white shadow-sm"
+        >
 
             <div class="overflow-x-auto">
 
                 <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-
 
                     <!-- Table Header -->
                     <thead class="bg-slate-50 text-slate-600">
 
                         <tr>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="px-5 py-4 font-semibold">
                                 Subject
                             </th>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="px-5 py-4 font-semibold">
                                 Exam Name
                             </th>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="px-5 py-4 font-semibold">
                                 Marks Obtained
                             </th>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="px-5 py-4 font-semibold">
                                 Full Marks
                             </th>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="px-5 py-4 font-semibold">
                                 Percentage
                             </th>
 
@@ -182,16 +217,15 @@
 
                         <tr class="transition hover:bg-slate-50">
 
-
                             <!-- Subject -->
                             <td class="px-5 py-4 font-medium text-slate-900">
-                                {{ row.subject |title}}
+                                {{ row.subject|title }}
                             </td>
 
 
                             <!-- Exam -->
                             <td class="px-5 py-4">
-                                {{ row.exam_name |title }}
+                                {{ row.exam_name|title }}
                             </td>
 
 
@@ -208,23 +242,39 @@
 
 
                             <!-- Percentage -->
-                            <td class="px-5 py-4 font-medium">
+                            <td class="px-5 py-4 font-medium text-slate-900">
                                 {{ row.percentage }}%
                             </td>
 
-
                         </tr>
-
 
                         {% empty %}
 
+                        <!-- No Marks -->
                         <tr>
 
                             <td
                                 colspan="5"
-                                class="px-5 py-10 text-center text-slate-500"
+                                class="px-5 py-12 text-center"
                             >
-                                No marks found matching your search.
+
+                                <div class="flex flex-col items-center justify-center">
+
+                                    <div
+                                        class="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100"
+                                    >
+                                        <i class="fa-solid fa-chart-column text-lg text-slate-400"></i>
+                                    </div>
+
+                                    <p class="font-semibold text-slate-700">
+                                        No marks found
+                                    </p>
+
+                                    <p class="mt-1 text-sm text-slate-500">
+                                        No marks are available for the selected term.
+                                    </p>
+
+                                </div>
 
                             </td>
 

@@ -213,87 +213,117 @@ def student_dashboard(request, student_id):
 @student_login_required
 def student_marks(request, student_id):
 
-    # Get the logged-in student
     student = get_object_or_404(
-        Student.objects.select_related("classroom"),
-        pk=student_id
+        Student,
+        id=student_id
     )
 
-    # Get search values from URL
+    # Search query
     search_query = request.GET.get("search", "").strip()
+
+    # Selected exam
     selected_exam = request.GET.get("exam", "").strip()
 
-    # Get all marks for this student
-    marks = (
-        Marks.objects.filter(student=student)
-        .select_related("subject")
+
+    available_exams = list(
+        Marks.objects.filter(
+            student=student
+        )
+        .values_list(
+            "exam_name",
+            flat=True
+        )
+        .distinct()
     )
 
-    # Search by subject name
-    if search_query:
-        marks = marks.filter(
-            subject__name__icontains=search_query
-        )
 
-    # Filter by exam/term
+    available_exams.sort(reverse=True)
+
+
+    if not selected_exam and available_exams:
+
+        selected_exam = available_exams[0]
+
+
+    marks = Marks.objects.filter(
+        student=student
+    )
+
+
     if selected_exam:
+
         marks = marks.filter(
             exam_name=selected_exam
         )
 
-    # Order results
-    marks = marks.order_by(
-        "exam_name",
-        "subject__name"
-    )
 
-    # Get all available exam terms for dropdown
-    available_exams = list(
-        Marks.objects.filter(student=student)
-        .values_list("exam_name", flat=True)
-        .distinct()
-        .order_by("exam_name")
-    )
 
-    # Prepare mark rows
+    if search_query:
+
+        marks = marks.filter(
+            subject__name__icontains=search_query
+        )
+
+
+    # -----------------------------------------
+    # Prepare rows for template
+    # -----------------------------------------
+
     mark_rows = []
 
     for mark in marks:
 
-        full_marks = mark.full_marks or 0
-        obtained_marks = mark.marks_obtained or 0
+        if mark.full_marks:
 
-        percentage = (
-            round(
-                (obtained_marks / full_marks) * 100,
-                2
-            )
-            if full_marks
-            else 0
-        )
+            percentage = (
+                mark.marks_obtained /
+                mark.full_marks
+            ) * 100
+
+        else:
+
+            percentage = 0
+
 
         mark_rows.append({
+
             "subject": mark.subject.name,
+
             "exam_name": mark.exam_name,
-            "marks_obtained": obtained_marks,
-            "full_marks": full_marks,
-            "percentage": percentage,
+
+            "marks_obtained": mark.marks_obtained,
+
+            "full_marks": mark.full_marks,
+
+            "percentage": round(
+                percentage,
+                2
+            ),
+
         })
 
+
+
     context = {
+
         "student": student,
+
         "mark_rows": mark_rows,
+
         "available_exams": available_exams,
+
         "selected_exam": selected_exam,
+
         "search_query": search_query,
+
     }
+
 
     return render(
         request,
-        "students/student_marks.html",
+        "students\student_marks.html",
         context
     )
-
 
 # login requird
 
