@@ -8,30 +8,34 @@
 
 {% block content %}
 
-<div class="space-y-6">
+<div class="w-full space-y-5 sm:space-y-6">
 
-  <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+  <!-- =========================================================
+       FILTER CARD
+  ========================================================== -->
+  <div class="rounded-2xl sm:rounded-3xl border border-slate-200 bg-slate-50 p-4 sm:p-5 lg:p-6">
 
-    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+    <div class="flex flex-col gap-5">
 
       <!-- Heading -->
       <div>
-        <h2 class="text-lg font-semibold text-slate-900">
+        <h2 class="text-base sm:text-lg font-semibold text-slate-900">
           Filter Attendance
         </h2>
 
-        <p class="text-sm text-slate-500">
+        <p class="mt-1 text-xs sm:text-sm text-slate-500">
           Choose a date range to view past records.
         </p>
       </div>
 
       <!-- Filter Form -->
-      <form method="get" id="attendanceFilterForm">
+      <form method="get" id="attendanceFilterForm" class="w-full">
 
-        <div class="grid gap-4 md:grid-cols-3 md:items-end">
+        <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 
           <!-- From Date -->
-          <div>
+          <div class="w-full">
+
             <label
               for="from"
               class="mb-2 block text-sm font-medium text-slate-700"
@@ -46,12 +50,15 @@
               value="{{ from_date }}"
               min="0001-01-01"
               max="9999-12-31"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3"
+              class="h-12 w-full rounded-xl sm:rounded-2xl border border-slate-200 bg-white px-3 sm:px-4 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
+
           </div>
 
+
           <!-- To Date -->
-          <div>
+          <div class="w-full">
+
             <label
               for="to"
               class="mb-2 block text-sm font-medium text-slate-700"
@@ -66,17 +73,19 @@
               value="{{ to_date }}"
               min="0001-01-01"
               max="9999-12-31"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3"
+              class="h-12 w-full rounded-xl sm:rounded-2xl border border-slate-200 bg-white px-3 sm:px-4 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
             />
+
           </div>
 
-          <!-- Filter and Reset Buttons -->
-          <div class="flex gap-3">
+
+          <!-- Buttons -->
+          <div class="flex w-full gap-3 sm:col-span-2 lg:col-span-1">
 
             <!-- Filter -->
             <button
               type="submit"
-              class="h-[50px] flex-1 rounded-2xl border border-blue-700 bg-blue-600 px-6 font-bold text-white shadow-sm transition hover:border-blue-800 hover:bg-blue-700"
+              class="h-12 min-w-0 flex-1 rounded-xl sm:rounded-2xl border border-blue-700 bg-blue-600 px-4 sm:px-6 text-sm font-bold text-white shadow-sm transition hover:border-blue-800 hover:bg-blue-700 active:scale-[0.98]"
             >
               Filter
             </button>
@@ -84,7 +93,7 @@
             <!-- Reset -->
             <a
               href="?"
-              class="flex h-[50px] flex-1 items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 font-bold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100"
+              class="flex h-12 min-w-0 flex-1 items-center justify-center rounded-xl sm:rounded-2xl border border-slate-300 bg-white px-4 sm:px-6 text-sm font-bold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 active:scale-[0.98]"
             >
               Reset
             </a>
@@ -100,118 +109,208 @@
   </div>
 
 
-  <!-- Attendance Table -->
-  <div class="overflow-hidden rounded-2xl border border-slate-200">
+  <!-- =========================================================
+       ATTENDANCE TABLE
+  ========================================================== -->
+  <div class="w-full overflow-hidden rounded-2xl border border-slate-200 bg-white">
 
-    <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+    <!-- Mobile scroll container -->
+    <div class="w-full overflow-x-auto">
 
-      <thead class="bg-slate-50 text-slate-600">
-        <tr>
-          <th class="px-4 py-3 font-semibold">Date</th>
-          <th class="px-4 py-3 font-semibold">Class</th>
-          <th class="px-4 py-3 font-semibold">Present</th>
-          <th class="px-4 py-3 font-semibold">Absent</th>
-          <th class="px-4 py-3 font-semibold">Attendance in %</th>
-        </tr>
-      </thead>
+      <table
+        class="min-w-[700px] w-full divide-y divide-slate-200 text-left text-sm"
+      >
 
-      <tbody class="divide-y divide-slate-200 bg-white">
+        <!-- Table Header -->
+        <thead class="bg-slate-50 text-slate-600">
 
-        {% for attendance in attendance_records %}
+          <tr>
 
-        <tr>
+            <th class="whitespace-nowrap px-4 py-3 text-xs sm:text-sm font-semibold">
+              Date
+            </th>
 
-          <td class="px-4 py-3">
-            {{ attendance.date }}
-          </td>
+            <th class="whitespace-nowrap px-4 py-3 text-xs sm:text-sm font-semibold">
+              Class
+            </th>
 
-          <td class="px-4 py-3">
-            {{ attendance.student__classroom__name|title }} -
-            {{ attendance.student__classroom__section|title }}
-          </td>
+            <th class="whitespace-nowrap px-4 py-3 text-xs sm:text-sm font-semibold">
+              Present
+            </th>
 
-          <td class="px-4 py-3">
-            {{ attendance.present_count }}
-          </td>
+            <th class="whitespace-nowrap px-4 py-3 text-xs sm:text-sm font-semibold">
+              Absent
+            </th>
 
-          <td class="px-4 py-3">
-            {{ attendance.absent_count }}
-          </td>
+            <th class="whitespace-nowrap px-4 py-3 text-xs sm:text-sm font-semibold">
+              Attendance in %
+            </th>
 
-          <td class="px-4 py-3">
-            {{ attendance.attendance_percentage }}%
-          </td>
+          </tr>
 
-        </tr>
+        </thead>
 
-        {% empty %}
 
-        <tr>
-          <td colspan="5" class="px-4 py-6 text-center text-slate-500">
-            No attendance records found.
-          </td>
-        </tr>
+        <!-- Table Body -->
+        <tbody class="divide-y divide-slate-200 bg-white">
 
-        {% endfor %}
+          {% for attendance in attendance_records %}
 
-      </tbody>
+          <tr class="transition hover:bg-slate-50">
 
-    </table>
+            <!-- Date -->
+            <td class="whitespace-nowrap px-4 py-3 text-slate-700">
+              {{ attendance.date }}
+            </td>
+
+
+            <!-- Class -->
+            <td class="whitespace-nowrap px-4 py-3 text-slate-700">
+
+              {{ attendance.student__classroom__name|title }}
+              -
+              {{ attendance.student__classroom__section|title }}
+
+            </td>
+
+
+            <!-- Present -->
+            <td class="whitespace-nowrap px-4 py-3 font-medium text-green-600">
+              {{ attendance.present_count }}
+            </td>
+
+
+            <!-- Absent -->
+            <td class="whitespace-nowrap px-4 py-3 font-medium text-red-600">
+              {{ attendance.absent_count }}
+            </td>
+
+
+            <!-- Percentage -->
+            <td class="whitespace-nowrap px-4 py-3 font-semibold text-slate-800">
+
+              {{ attendance.attendance_percentage }}%
+
+            </td>
+
+          </tr>
+
+          {% empty %}
+
+          <!-- Empty State -->
+          <tr>
+
+            <td
+              colspan="5"
+              class="px-4 py-8 text-center text-sm text-slate-500"
+            >
+              No attendance records found.
+            </td>
+
+          </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   </div>
 
 </div>
 
 
+<!-- =========================================================
+     DATE VALIDATION
+========================================================== -->
 <script>
+
   document.addEventListener("DOMContentLoaded", function () {
 
     const form = document.getElementById("attendanceFilterForm");
     const fromInput = document.getElementById("from");
     const toInput = document.getElementById("to");
 
+
     form.addEventListener("submit", function (event) {
 
       const fromDate = fromInput.value;
       const toDate = toInput.value;
 
-      // Check browser validation
+
+      /* -------------------------------------------------------
+         Browser validation
+      ------------------------------------------------------- */
+
       if (!form.checkValidity()) {
+
         event.preventDefault();
+
         form.reportValidity();
+
         return;
       }
 
-      // Check year is maximum 4 digits
+
+      /* -------------------------------------------------------
+         Check From year
+      ------------------------------------------------------- */
+
       if (fromDate) {
+
         const fromYear = fromDate.split("-")[0];
 
         if (fromYear.length !== 4 || Number(fromYear) > 9999) {
+
           event.preventDefault();
+
           alert("From date year must contain exactly 4 digits.");
+
           return;
         }
+
       }
 
+
+      /* -------------------------------------------------------
+         Check To year
+      ------------------------------------------------------- */
+
       if (toDate) {
+
         const toYear = toDate.split("-")[0];
 
         if (toYear.length !== 4 || Number(toYear) > 9999) {
+
           event.preventDefault();
+
           alert("To date year must contain exactly 4 digits.");
+
           return;
         }
+
       }
 
-      // From date cannot be later than To date
+
+      /* -------------------------------------------------------
+         From date cannot be later than To date
+      ------------------------------------------------------- */
+
       if (fromDate && toDate && fromDate > toDate) {
+
         event.preventDefault();
+
         alert("From date cannot be later than To date.");
+
+        return;
       }
 
     });
 
   });
+
 </script>
 
 {% endblock %}

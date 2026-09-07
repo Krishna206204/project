@@ -9,31 +9,41 @@
 
 {% block content %}
 
-<div class="space-y-6">
+<div class="w-full space-y-5 sm:space-y-6">
 
-  <!-- Filter Section -->
-  <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
+  <div
+    class="rounded-2xl sm:rounded-3xl
+           border border-slate-200
+           bg-slate-50
+           p-4 sm:p-5 lg:p-6"
+  >
 
-    <div class="flex flex-col gap-4">
+    <div class="flex flex-col gap-5">
 
+      <!-- Heading -->
       <div>
-        <h2 class="text-lg font-semibold text-slate-900">
+
+        <h2 class="text-base sm:text-lg font-semibold text-slate-900">
           Filter Attendance
         </h2>
 
-        <p class="text-sm text-slate-500">
+        <p class="mt-1 text-xs sm:text-sm text-slate-500">
           Search attendance records by class and date.
         </p>
+
       </div>
 
 
-      <form method="get" id="attendanceFilterForm">
+      <form method="get" id="attendanceFilterForm" class="w-full">
 
-        <div class="grid gap-4 md:grid-cols-4 md:items-end">
+        <div
+          class="grid grid-cols-1 gap-4
+                 sm:grid-cols-2
+                 lg:grid-cols-4
+                 lg:items-end"
+        >
 
-
-          <!-- Class Search -->
-          <div>
+          <div class="w-full">
 
             <label
               for="classroom"
@@ -45,7 +55,15 @@
             <select
               id="classroom"
               name="classroom"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3"
+              class="h-12 w-full rounded-xl sm:rounded-2xl
+                     border border-slate-200
+                     bg-white
+                     px-3 sm:px-4
+                     text-sm text-slate-700
+                     outline-none
+                     transition
+                     focus:border-blue-500
+                     focus:ring-2 focus:ring-blue-100"
             >
 
               <option value="">
@@ -60,7 +78,7 @@
                   selected
                 {% endif %}
               >
-                {{ classroom.name }} - {{ classroom.section | title }}
+                {{ classroom.name }} - {{ classroom.section|title }}
               </option>
 
               {% endfor %}
@@ -70,8 +88,7 @@
           </div>
 
 
-          <!-- From Date -->
-          <div>
+          <div class="w-full">
 
             <label
               for="from"
@@ -85,14 +102,22 @@
               type="date"
               name="from"
               value="{{ from_date }}"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3"
+              min="0001-01-01"
+              max="9999-12-31"
+              class="h-12 w-full rounded-xl sm:rounded-2xl
+                     border border-slate-200
+                     bg-white
+                     px-3 sm:px-4
+                     text-sm text-slate-700
+                     outline-none
+                     transition
+                     focus:border-blue-500
+                     focus:ring-2 focus:ring-blue-100"
             />
 
           </div>
 
-
-          <!-- To Date -->
-          <div>
+          <div class="w-full">
 
             <label
               for="to"
@@ -106,26 +131,59 @@
               type="date"
               name="to"
               value="{{ to_date }}"
-              class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3"
+              min="0001-01-01"
+              max="9999-12-31"
+              class="h-12 w-full rounded-xl sm:rounded-2xl
+                     border border-slate-200
+                     bg-white
+                     px-3 sm:px-4
+                     text-sm text-slate-700
+                     outline-none
+                     transition
+                     focus:border-blue-500
+                     focus:ring-2 focus:ring-blue-100"
             />
 
           </div>
 
+          <div class="flex w-full gap-3">
 
-          <!-- Buttons -->
-          <div class="flex gap-3">
-
+            <!-- SEARCH -->
             <button
               type="submit"
-              class="h-[50px] flex-1 rounded-2xl border border-blue-700 bg-blue-600 px-6 font-bold text-white shadow-sm transition hover:border-blue-800 hover:bg-blue-700"
+              class="h-12 min-w-0 flex-1
+                     rounded-xl sm:rounded-2xl
+                     border border-blue-700
+                     bg-blue-600
+                     px-4 sm:px-6
+                     text-sm font-bold
+                     text-white
+                     shadow-sm
+                     transition
+                     hover:border-blue-800
+                     hover:bg-blue-700
+                     active:scale-[0.98]"
             >
               Search
             </button>
 
 
+            <!-- RESET -->
             <a
               href="{% url 'admin-attendance-history' %}"
-              class="flex h-[50px] flex-1 items-center justify-center rounded-2xl border border-slate-300 bg-white px-6 font-bold text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-100"
+              class="flex h-12 min-w-0 flex-1
+                     items-center justify-center
+                     rounded-xl sm:rounded-2xl
+                     border border-slate-300
+                     bg-white
+                     px-4 sm:px-6
+                     text-sm font-bold
+                     text-slate-700
+                     shadow-sm
+                     transition
+                     hover:border-slate-400
+                     hover:bg-slate-100
+                     active:scale-[0.98]"
             >
               Reset
             </a>
@@ -141,76 +199,191 @@
   </div>
 
 
-  <!-- Attendance Table -->
-  <div class="overflow-hidden rounded-2xl border border-slate-200">
+  <div
+    class="w-full overflow-hidden
+           rounded-xl sm:rounded-2xl
+           border border-slate-200
+           bg-white"
+  >
 
-    <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+    <!--
+      Horizontal scrolling on mobile/tablet.
+      This prevents the five columns from becoming
+      too narrow on small screens.
+    -->
+    <div class="w-full overflow-x-auto">
 
-      <thead class="bg-slate-50 text-slate-600">
+      <table
+        class="min-w-[700px] w-full
+               divide-y divide-slate-200
+               text-left text-sm"
+      >
 
-        <tr>
-          <th class="px-4 py-3 font-semibold">Date</th>
-          <th class="px-4 py-3 font-semibold">Class</th>
-          <th class="px-4 py-3 font-semibold">Present</th>
-          <th class="px-4 py-3 font-semibold">Absent</th>
-          <th class="px-4 py-3 font-semibold">Attendance %</th>
-        </tr>
+        <thead class="bg-slate-50 text-slate-600">
 
-      </thead>
+          <tr>
 
-
-      <tbody class="divide-y divide-slate-200 bg-white">
-
-        {% for attendance in attendance_records %}
-
-        <tr>
-
-          <td class="px-4 py-3">
-            {{ attendance.date }}
-          </td>
-
-          <td class="px-4 py-3">
-
-            {{ attendance.student__classroom__name }}
-            -
-            {{ attendance.student__classroom__section |title }}
-
-          </td>
-
-          <td class="px-4 py-3 font-medium text-green-600">
-            {{ attendance.present_count }}
-          </td>
-
-          <td class="px-4 py-3 font-medium text-red-600">
-            {{ attendance.absent_count }}
-          </td>
-
-          <td class="px-4 py-3">
-            {{ attendance.attendance_percentage }}%
-          </td>
-
-        </tr>
+            <th
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     text-xs sm:text-sm
+                     font-semibold"
+            >
+              Date
+            </th>
 
 
-        {% empty %}
+            <th
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     text-xs sm:text-sm
+                     font-semibold"
+            >
+              Class
+            </th>
 
-        <tr>
 
-          <td
-            colspan="5"
-            class="px-4 py-8 text-center text-slate-500"
-          >
-            No attendance records found.
+            <th
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     text-xs sm:text-sm
+                     font-semibold"
+            >
+              Present
+            </th>
 
-          </td>
 
-        </tr>
+            <th
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     text-xs sm:text-sm
+                     font-semibold"
+            >
+              Absent
+            </th>
 
-        {% endfor %}
 
-      </tbody>
+            <th
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     text-xs sm:text-sm
+                     font-semibold"
+            >
+              Attendance %
+            </th>
 
-    </table>
+          </tr>
+
+        </thead>
+
+
+        <tbody class="divide-y divide-slate-200 bg-white">
+
+          {% for attendance in attendance_records %}
+
+          <tr class="transition hover:bg-slate-50">
+
+            <!-- DATE -->
+            <td
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     text-slate-700"
+            >
+              {{ attendance.date }}
+            </td>
+
+
+            <!-- CLASS -->
+            <td
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     text-slate-700"
+            >
+
+              {{ attendance.student__classroom__name }}
+              -
+              {{ attendance.student__classroom__section|title }}
+
+            </td>
+
+
+            <!-- PRESENT -->
+            <td
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     font-medium text-green-600"
+            >
+              {{ attendance.present_count }}
+            </td>
+
+
+            <!-- ABSENT -->
+            <td
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     font-medium text-red-600"
+            >
+              {{ attendance.absent_count }}
+            </td>
+
+
+            <!-- ATTENDANCE PERCENTAGE -->
+            <td
+              class="whitespace-nowrap
+                     px-3 sm:px-4
+                     py-3
+                     font-semibold text-slate-800"
+            >
+              {{ attendance.attendance_percentage }}%
+            </td>
+
+          </tr>
+
+
+          {% empty %}
+
+
+          <tr>
+
+            <td
+              colspan="5"
+              class="px-4 py-8 sm:py-10
+                     text-center
+                     text-xs sm:text-sm
+                     text-slate-500"
+            >
+
+              <i
+                class="fa-solid fa-calendar-xmark
+                       mb-2
+                       text-2xl sm:text-3xl
+                       text-slate-300"
+              ></i>
+
+              <p class="font-medium text-slate-600">
+                No attendance records found.
+              </p>
+
+            </td>
+
+          </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+    </div>
 
   </div>
 
