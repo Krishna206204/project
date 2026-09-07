@@ -18,7 +18,7 @@
 
     <!-- ================= Academic Overview / Exam Filter ================= -->
     <div
-        class="mb-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-5 shadow-sm sm:p-6 print:hidden"
+        class="mb-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 shadow-sm sm:p-6 print:hidden"
     >
 
         <div class="flex flex-col gap-5">
@@ -30,7 +30,7 @@
                     Academic Overview
                 </p>
 
-                <h2 class="mt-2 text-2xl font-bold text-slate-900 sm:text-3xl">
+                <h2 class="mt-2 text-xl font-bold text-slate-900 sm:text-3xl">
                     Monitor Classroom Performance
                 </h2>
 
@@ -43,13 +43,13 @@
 
             <!-- Filter Controls -->
             <div
-                class="mx-auto flex w-full max-w-4xl flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-end sm:justify-center"
+                class="mx-auto flex w-full max-w-4xl flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4"
             >
 
                 <!-- Exam Filter Form -->
                 <form
                     method="get"
-                    class="flex w-full flex-col gap-3 sm:w-auto sm:flex-1 sm:flex-row sm:items-end"
+                    class="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:justify-center"
                 >
 
                     <!-- Exam Filter -->
@@ -70,7 +70,7 @@
                         <select
                             id="exam"
                             name="exam"
-                            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-base font-medium text-slate-700 outline-none transition duration-200 hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100"
+                            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-700 outline-none transition duration-200 hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 sm:px-4 sm:text-base"
                         >
 
                             <option value="">
@@ -113,7 +113,7 @@
                 <button
                     type="button"
                     onclick="downloadReportCard()"
-                    class="inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 text-sm font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-lg active:translate-y-0 sm:w-auto"
+                    class="inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 text-sm font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-lg active:translate-y-0 sm:w-auto sm:self-center"
                 >
 
                     <i class="fa-solid fa-file-pdf"></i>
@@ -132,28 +132,28 @@
     <!-- ================= Report Card ================= -->
     <div
         id="report-card"
-        class="mx-auto w-full max-w-5xl border-2 border-slate-900 bg-white text-slate-900"
+        class="mx-auto w-full max-w-5xl overflow-hidden border-2 border-slate-900 bg-white text-slate-900 shadow-sm sm:rounded-xl"
     >
 
 
         <!-- ================= School Header ================= -->
-        <div class="border-b-2 border-slate-900 px-4 py-6 text-center sm:px-8">
+        <div class="border-b-2 border-slate-900 px-3 py-5 text-center sm:px-8 sm:py-6">
 
             <h1
-                class="text-2xl font-bold uppercase tracking-wide sm:text-3xl"
+                class="break-words text-xl font-bold uppercase tracking-wide sm:text-3xl"
             >
                 {{ school_name|upper }}
             </h1>
 
-            <h4 class="mt-1 text-sm text-slate-700">
+            <h4 class="mt-1 break-words text-xs text-slate-700 sm:text-sm">
                 {{ school_address|upper }}
             </h4>
 
-            <h2 class="mt-4 text-xl font-bold uppercase sm:text-2xl">
+            <h2 class="mt-4 text-lg font-bold uppercase sm:text-2xl">
                 {{ report_title }}
             </h2>
 
-            <h3 class="mt-1 text-sm font-semibold sm:text-base">
+            <h3 class="mt-1 text-xs font-semibold sm:text-base">
                 {{ exam_name }}
             </h3>
 
@@ -167,14 +167,14 @@
 
             <!-- Student Name -->
             <div
-                class="border-b border-slate-900 px-4 py-3 sm:border-r"
+                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:border-r sm:px-4 sm:py-3 sm:text-base"
             >
 
                 <span class="font-bold">
                     Student Name:
                 </span>
 
-                <span>
+                <span class="break-words">
                     {{ student.name|title }}
                 </span>
 
@@ -182,7 +182,9 @@
 
 
             <!-- Student ID -->
-            <div class="border-b border-slate-900 px-4 py-3">
+            <div
+                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base"
+            >
 
                 <span class="font-bold">
                     Student ID:
@@ -197,7 +199,7 @@
 
             <!-- Class -->
             <div
-                class="border-b border-slate-900 px-4 py-3 sm:border-r"
+                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:border-r sm:px-4 sm:py-3 sm:text-base"
             >
 
                 <span class="font-bold">
@@ -212,7 +214,9 @@
 
 
             <!-- Section -->
-            <div class="border-b border-slate-900 px-4 py-3">
+            <div
+                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base"
+            >
 
                 <span class="font-bold">
                     Section:
@@ -226,7 +230,9 @@
 
 
             <!-- Academic Session -->
-            <div class="px-4 py-3 sm:border-r">
+            <div
+                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:border-b-0 sm:border-r sm:px-4 sm:py-3 sm:text-base"
+            >
 
                 <span class="font-bold">
                     Academic Session:
@@ -240,7 +246,9 @@
 
 
             <!-- Exam -->
-            <div class="px-4 py-3">
+            <div
+                class="px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base"
+            >
 
                 <span class="font-bold">
                     Exam:
@@ -259,7 +267,7 @@
         <div class="w-full overflow-x-auto">
 
             <table
-                class="w-full min-w-[650px] border-collapse text-sm"
+                class="w-full min-w-[600px] border-collapse text-xs sm:min-w-[650px] sm:text-sm"
             >
 
                 <!-- Table Header -->
@@ -268,28 +276,28 @@
                     <tr class="bg-slate-100">
 
                         <th
-                            class="w-[40%] border-b border-r border-slate-900 px-4 py-3 text-left font-bold"
+                            class="w-[40%] border-b border-r border-slate-900 px-2 py-2 text-left font-bold sm:px-4 sm:py-3"
                         >
                             Subject
                         </th>
 
 
                         <th
-                            class="w-[20%] border-b border-r border-slate-900 px-4 py-3 text-center font-bold"
+                            class="w-[20%] border-b border-r border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3"
                         >
                             Full Marks
                         </th>
 
 
                         <th
-                            class="w-[20%] border-b border-r border-slate-900 px-4 py-3 text-center font-bold"
+                            class="w-[20%] border-b border-r border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3"
                         >
                             Obtained Marks
                         </th>
 
 
                         <th
-                            class="w-[20%] border-b border-slate-900 px-4 py-3 text-center font-bold"
+                            class="w-[20%] border-b border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3"
                         >
                             Percentage
                         </th>
@@ -308,7 +316,7 @@
 
                         <!-- Subject -->
                         <td
-                            class="border-b border-r border-slate-900 px-4 py-2.5 font-medium"
+                            class="border-b border-r border-slate-900 px-2 py-2 font-medium sm:px-4 sm:py-2.5"
                         >
                             {{ row.subject|title }}
                         </td>
@@ -316,7 +324,7 @@
 
                         <!-- Full Marks -->
                         <td
-                            class="border-b border-r border-slate-900 px-4 py-2.5 text-center"
+                            class="border-b border-r border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5"
                         >
                             {{ row.full_marks }}
                         </td>
@@ -324,7 +332,7 @@
 
                         <!-- Obtained Marks -->
                         <td
-                            class="border-b border-r border-slate-900 px-4 py-2.5 text-center"
+                            class="border-b border-r border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5"
                         >
                             {{ row.obtained_marks }}
                         </td>
@@ -332,7 +340,7 @@
 
                         <!-- Percentage -->
                         <td
-                            class="border-b border-slate-900 px-4 py-2.5 text-center"
+                            class="border-b border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5"
                         >
                             {{ row.percentage }}%
                         </td>
@@ -369,7 +377,7 @@
 
             <!-- Total Marks -->
             <div
-                class="border-b border-r border-slate-900 px-3 py-3 text-center sm:border-b-0"
+                class="border-b border-r border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:px-3 sm:text-sm"
             >
 
                 <p class="font-bold">
@@ -385,7 +393,7 @@
 
             <!-- Obtained Marks -->
             <div
-                class="border-b border-slate-900 px-3 py-3 text-center sm:border-b-0 sm:border-r"
+                class="border-b border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:border-r sm:px-3 sm:text-sm"
             >
 
                 <p class="font-bold">
@@ -401,7 +409,7 @@
 
             <!-- Overall Percentage -->
             <div
-                class="border-r border-slate-900 px-3 py-3 text-center"
+                class="border-b border-r border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:px-3 sm:text-sm"
             >
 
                 <p class="font-bold">
@@ -417,7 +425,7 @@
 
             <!-- Grade -->
             <div
-                class="border-r border-slate-900 px-3 py-3 text-center"
+                class="border-b border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:border-r sm:px-3 sm:text-sm"
             >
 
                 <p class="font-bold">
@@ -432,7 +440,9 @@
 
 
             <!-- Result -->
-            <div class="px-3 py-3 text-center">
+            <div
+                class="col-span-2 px-2 py-3 text-center text-xs sm:col-span-1 sm:px-3 sm:text-sm"
+            >
 
                 <p class="font-bold">
                     Result
@@ -449,7 +459,7 @@
 
         <!-- ================= Teacher Remarks ================= -->
         <div
-            class="min-h-[110px] border-b-2 border-slate-900 px-4 py-4 sm:px-6"
+            class="min-h-[110px] border-b-2 border-slate-900 px-3 py-4 text-sm sm:px-6 sm:text-base"
         >
 
             <p class="font-bold">
@@ -457,7 +467,7 @@
             </p>
 
 
-            <div class="mt-4 min-h-[45px] leading-7">
+            <div class="mt-4 min-h-[45px] leading-7 break-words">
                 {{ remarks|title }}
             </div>
 
@@ -466,11 +476,11 @@
 
         <!-- ================= Signature Section ================= -->
         <div
-            class="grid grid-cols-2 gap-8 px-6 pb-5 pt-14 sm:px-12"
+            class="grid grid-cols-2 gap-4 px-4 pb-5 pt-10 sm:gap-8 sm:px-12 sm:pt-14"
         >
 
             <!-- Class Teacher -->
-            <div class="text-center">
+            <div class="text-center text-xs sm:text-sm">
 
                 <div class="mb-2 border-t border-slate-900"></div>
 
@@ -482,7 +492,7 @@
 
 
             <!-- Principal -->
-            <div class="text-center">
+            <div class="text-center text-xs sm:text-sm">
 
                 <div class="mb-2 border-t border-slate-900"></div>
 
@@ -511,6 +521,47 @@
 
 <!-- ================= Print / PDF Styling ================= -->
 <style>
+
+    /* ================= Responsive Screen Layout ================= */
+
+    @media screen and (max-width: 640px) {
+
+        /* Report card */
+        #report-card {
+            width: 100%;
+            max-width: 100%;
+            border-width: 2px;
+        }
+
+        /* Prevent long text from overflowing */
+        #report-card span {
+            overflow-wrap: anywhere;
+        }
+
+        /* Marks table */
+        #report-card table {
+            font-size: 12px;
+        }
+
+        #report-card th,
+        #report-card td {
+            white-space: nowrap;
+        }
+
+        /* Student information */
+        #report-card .grid > div {
+            min-width: 0;
+        }
+
+        /* Result summary */
+        #report-card .grid-cols-2 > div {
+            min-width: 0;
+        }
+
+    }
+
+
+    /* ================= Print / PDF Styling ================= */
 
     @media print {
 
@@ -561,6 +612,7 @@
             max-width: none;
             margin: 0;
             border-width: 2px !important;
+            border-radius: 0 !important;
             box-shadow: none !important;
             font-size: 11px;
         }
@@ -585,6 +637,7 @@
 
 
         /* Horizontal padding */
+        #report-card .px-3,
         #report-card .px-4 {
             padding-left: 8px !important;
             padding-right: 8px !important;
@@ -592,6 +645,7 @@
 
 
         /* Header padding */
+        #report-card .py-5,
         #report-card .py-6 {
             padding-top: 10px !important;
             padding-bottom: 10px !important;
@@ -606,6 +660,7 @@
 
 
         /* Student information / summary padding */
+        #report-card .py-2\.5,
         #report-card .py-3 {
             padding-top: 5px !important;
             padding-bottom: 5px !important;
@@ -613,13 +668,14 @@
 
 
         /* Table padding */
-        #report-card .py-2\.5 {
+        #report-card .py-2 {
             padding-top: 4px !important;
             padding-bottom: 4px !important;
         }
 
 
         /* Signature spacing */
+        #report-card .pt-10,
         #report-card .pt-14 {
             padding-top: 30px !important;
         }
