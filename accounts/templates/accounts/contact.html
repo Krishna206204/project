@@ -8,7 +8,7 @@ Contact Us | Jhime Malika Secondary School
 
 <!-- Hero Section -->
 <section class="w-full bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 text-white">
-    <div class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 md:px-12 lg:px-20 xl:px-28">
+    <div class="mx-auto w-full max-w-7xl px-3 py-16 sm:px-8 md:px-12 lg:px-20 xl:px-28">
 
         <div class="max-w-3xl">
             <p class="mb-4 text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">
@@ -30,7 +30,7 @@ Contact Us | Jhime Malika Secondary School
 
 
 <!-- Contact Information Section -->
-<section class="w-full bg-slate-50">
+{% comment %} <section class="w-full bg-slate-50">
     <div class="mx-auto w-full max-w-7xl px-5 py-16 sm:px-8 md:px-12 lg:px-20 xl:px-28">
 
         <div class="mx-auto max-w-3xl text-center">
@@ -134,16 +134,186 @@ Contact Us | Jhime Malika Secondary School
         </div>
 
     </div>
+</section> {% endcomment %}
+
+
+<!-- Contact Form Section -->
+<section class="w-full bg-white-400">
+    <div class="mx-auto w-full max-w-7xl px-5 py-12 sm:px-8 md:px-8 lg:px-20 xl:px-28">
+
+        <div class="grid gap-10 lg:grid-cols-2 lg:items-start">
+
+            <!-- Form Introduction -->
+            <div>
+                <p class="text-sm font-bold uppercase tracking-widest text-blue-700">
+                    Send Us a Message
+                </p>
+
+                <h2 class="mt-3 text-3xl font-extrabold leading-tight text-slate-900 sm:text-4xl">
+                    Have Any Questions?
+                </h2>
+
+                <p class="mt-5 leading-8 text-slate-600">
+                    Fill out the form and our school office will get back
+                    to you as soon as possible.
+                </p>
+
+                <div class="mt-8 space-y-4">
+
+                    <div class="flex items-center gap-4">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                            <i class="fa-solid fa-reply"></i>
+                        </div>
+
+                        <p class="font-medium text-slate-800">
+                            We will respond to your inquiry
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+
+                        <p class="font-medium text-slate-900">
+                            Ask about admission, programs or school services
+                        </p>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-100 text-blue-700">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+
+                        <p class="font-medium text-slate-800">
+                            Your information will be handled responsibly
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+
+            <!-- Contact Form -->
+            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-6 shadow-sm sm:p-8">
+
+                <!-- Django Contact Form -->
+                <form method="post" action="{% url 'contact' %}" class="space-y-5">
+
+                    <!-- CSRF TOKEN -->
+                    {% csrf_token %}
+
+                    <!-- Name -->
+                    <div>
+                        <label for="name" class="mb-2 block text-sm font-bold text-slate-700">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your full name"
+                            required
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-800 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                        >
+                    </div>
+
+
+                    <!-- Email -->
+                    <div>
+                        <label for="email" class="mb-2 block text-sm font-bold text-slate-700">
+                            Email Address
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email address"
+                            required
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-800 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                        >
+                    </div>
+
+
+                    <!-- Phone -->
+                    <div>
+                        <label for="phone" class="mb-2 block text-sm font-bold text-slate-700">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="tel"
+                            id="phone"
+                            name="phone"
+                            maxlength="10"
+                            placeholder="Enter your phone number"
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-800 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                        >
+                    </div>
+
+
+                    <!-- Subject -->
+                    <div>
+                        <label for="subject" class="mb-2 block text-sm font-bold text-slate-700">
+                            Subject
+                        </label>
+
+                        <input
+                            type="text"
+                            id="subject"
+                            name="subject"
+                            maxlength="80"
+                            placeholder="What is your message about?"
+                            required
+                            class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-800 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                        >
+                    </div>
+
+
+                    <!-- Message -->
+                    <div>
+                        <label for="message" class="mb-2 block text-sm font-bold text-slate-700">
+                            Message
+                        </label>
+
+                        <textarea
+                            id="message"
+                            name="message"
+                            rows="5"
+                            placeholder="Write your message here..."
+                            class="w-full resize-none rounded-xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-800 focus:border-blue-600 focus:ring-2 focus:ring-blue-100"
+                        ></textarea>
+                    </div>
+
+
+                    <!-- Submit Button -->
+                    <button
+                        type="submit"
+                        class="inline-flex  items-center justify-center gap-2 rounded-xl bg-blue-600 px-3 py-2 font-bold text-white shadow-sm transition hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    >
+                        Send Message
+                        <i class="fa-solid fa-paper-plane"></i>
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
 </section>
 
 
 <!-- Visit Us Section -->
-<section class="w-full bg-white">
-    <div class="mx-auto grid w-full max-w-7xl gap-10 px-5 py-16 sm:px-8 md:px-12 lg:grid-cols-2 lg:items-center lg:px-20 xl:px-28">
+<section class="w-full bg-blue-500">
+    <div class="mx-auto grid w-full max-w-7xl gap-5 px-3 py-10 sm:px-8 md:px-12 lg:grid-cols-2 lg:items-center lg:px-20 xl:px-28">
 
         <!-- Text Content -->
         <div>
-            <p class="text-sm font-bold uppercase tracking-widest text-blue-700">
+            <p class="text-md font-bold uppercase tracking-widest text-white-700">
                 Visit Our School
             </p>
 
@@ -151,7 +321,7 @@ Contact Us | Jhime Malika Secondary School
                 We Look Forward to Welcoming You
             </h2>
 
-            <p class="mt-5 leading-8 text-slate-600">
+            <p class="mt-5 leading-8  font-semibold text-white-600">
                 Our school office is open during working hours.
                 Parents, students and visitors are welcome to
                 contact or visit us for more information.
@@ -164,7 +334,7 @@ Contact Us | Jhime Malika Secondary School
                         <i class="fa-solid fa-check"></i>
                     </div>
 
-                    <p class="font-medium text-slate-700">
+                    <p class="font-medium text-white-700">
                         Friendly and supportive environment
                     </p>
                 </div>
@@ -174,7 +344,7 @@ Contact Us | Jhime Malika Secondary School
                         <i class="fa-solid fa-check"></i>
                     </div>
 
-                    <p class="font-medium text-slate-700">
+                    <p class="font-medium text-white-700">
                         Information about admission and programs
                     </p>
                 </div>
@@ -184,7 +354,7 @@ Contact Us | Jhime Malika Secondary School
                         <i class="fa-solid fa-check"></i>
                     </div>
 
-                    <p class="font-medium text-slate-700">
+                    <p class="font-medium text-white-700">
                         Assistance for students and parents
                     </p>
                 </div>
@@ -194,18 +364,19 @@ Contact Us | Jhime Malika Secondary School
 
 
         <!-- Location Card -->
-        <div class="rounded-3xl bg-slate-100 p-8 text-center sm:p-12">
+        <div class="rounded-3xl bg-white p-8 text-center shadow-sm sm:p-12">
 
-           
+            <div class="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-100 text-blue-700">
+                <i class="fa-solid fa-school text-3xl"></i>
+            </div>
+
             <h3 class="mt-6 text-2xl font-extrabold text-slate-900">
                 Jhime Malika Secondary School
             </h3>
 
-            <p class="mt-3 leading-7 text-slate-600">
+            <p class="mt-3 leading-7 text-semibold text-slate-600">
                 K.I Singh, 04 Wayal Doti, Nepal
             </p>
-
-           
 
         </div>
 

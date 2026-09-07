@@ -159,7 +159,19 @@
             </a>
 
             
-            <a href="{% url "activity-log" %}"
+            <a href="{% url "admin-contact-messages" %}"
+               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+                <span class="text-base">
+                    <i class="fa-solid fa-file-signature"></i>
+                </span>
+
+                <span>
+                    Messages
+                </span>
+
+            </a>
+            {% comment %} <a href="{% url "activity-log" %}"
                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
@@ -170,7 +182,7 @@
                     Activity Log
                 </span>
 
-            </a>
+            </a> {% endcomment %}
 
         </nav>
 

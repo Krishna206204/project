@@ -11,6 +11,7 @@ urlpatterns = [
     path("dashboard/", views.dashboard, name="dashboard"),
     
     
+    
     path(
         "admin-login/",
         views.admin_login,
@@ -28,6 +29,12 @@ urlpatterns = [
         "logout/",
         views.admin_logout,
         name="admin-logout"
+    ),
+    
+    path(
+        "contact-messages/",
+        views.admin_contact_messages,
+        name="admin-contact-messages",
     ),
    
 ]

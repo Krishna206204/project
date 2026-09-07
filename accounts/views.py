@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from students.models import ClassRoom,Student
 from django.contrib import messages
 from academics.models import Subject
-from .models import User
+from .models import User,ContactMessage
 
 
 def login_selection(request):
@@ -13,10 +13,23 @@ def login_selection(request):
 def home(request):
     return render(request,"accounts/home.html")
 
+# def contact(request):
+#     return render(request,"accounts/contact.html")
+
 def contact(request):
-    return render(request,"accounts/contact.html")
+    if request.method == "POST":
+        ContactMessage.objects.create(
+            name=request.POST.get("name"),
+            email=request.POST.get("email"),
+            phone=request.POST.get("phone"),
+            subject=request.POST.get("subject"),
+            message=request.POST.get("message"),
+        )
 
-
+        return redirect("contact")
+    
+    return render(request, "accounts/contact.html")
+    
 def about(request):
     return render(request,"accounts/about.html")
 
@@ -178,4 +191,14 @@ def admin_dashboard(request):
     
     
     
-  
+@login_required
+def admin_contact_messages(request):
+    messages_contact = ContactMessage.objects.all().order_by("-created_at")
+    
+    return render(
+        request,
+        "accounts/contact_messages.html",
+        {
+            "messages_contact": messages_contact,
+        },
+    )
