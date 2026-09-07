@@ -16,10 +16,12 @@
 
 <section class="space-y-6">
 
+
     <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
 
         <div class="flex flex-col gap-5">
 
+            <!-- PAGE HEADER -->
             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
                 <div>
@@ -38,19 +40,25 @@
 
                 </div>
 
+
+                <!-- ADD MARKS -->
                 <div class="shrink-0">
 
                     <a
                         href="{% url 'add-marks' %}"
                         class="inline-flex w-fit items-center gap-2 rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-800"
                     >
+
                         <i class="fa-solid fa-plus"></i>
+
                         Add Marks
+
                     </a>
 
                 </div>
 
             </div>
+
 
             <form
                 method="GET"
@@ -97,6 +105,7 @@
                             All Subjects
                         </option>
 
+
                         {% for subject in subjects %}
 
                             <option
@@ -105,7 +114,9 @@
                                     selected
                                 {% endif %}
                             >
+
                                 {{ subject.name|title }}
+
                             </option>
 
                         {% endfor %}
@@ -129,9 +140,20 @@
                         class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                     >
 
+                        <!--
+                            When the page first loads, the view automatically
+                            selects the latest exam.
+
+                            The empty option is still available as
+                            "All Exams" if selected manually.
+                        -->
+
                         <option value="">
+
                             All Exams
+
                         </option>
+
 
                         {% for exam in exam_names %}
 
@@ -141,7 +163,9 @@
                                     selected
                                 {% endif %}
                             >
+
                                 {{ exam|title }}
+
                             </option>
 
                         {% endfor %}
@@ -150,22 +174,31 @@
 
                 </div>
 
+
                 <div class="flex items-end gap-2">
 
+                    <!-- SEARCH BUTTON -->
                     <button
                         type="submit"
                         class="inline-flex flex-1 items-center justify-center rounded-2xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
                     >
+
                         <i class="fa-solid fa-magnifying-glass mr-2"></i>
+
                         Search
+
                     </button>
 
+
+                    <!-- RESET BUTTON -->
                     <a
                         href="{% url 'view-marks' %}"
                         class="inline-flex items-center justify-center rounded-2xl border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
                         title="Reset Filters"
                     >
+
                         <i class="fa-solid fa-rotate-left"></i>
+
                     </a>
 
                 </div>
@@ -177,37 +210,62 @@
     </div>
 
 
+
     <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
 
         <div class="overflow-x-auto">
 
             <table class="min-w-full divide-y divide-slate-200">
 
+
                 <thead class="bg-slate-50">
 
                     <tr>
 
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
+                        <!-- STUDENT -->
+                        <th
+                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
+                        >
                             Student Name
                         </th>
 
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
+
+                        <!-- SUBJECT -->
+                        <th
+                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
+                        >
                             Subject
                         </th>
 
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
+
+                        <!-- EXAM -->
+                        <th
+                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
+                        >
                             Exam
                         </th>
 
-                        <th class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600">
+
+                        <!-- MARKS -->
+                        <th
+                            class="px-5 py-4 text-left text-xs font-semibold uppercase tracking-wider text-slate-600"
+                        >
                             Marks
                         </th>
 
-                        <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600">
+
+                        <!-- PERCENTAGE -->
+                        <th
+                            class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600"
+                        >
                             Percentage
                         </th>
 
-                        <th class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600">
+
+                        <!-- ACTION -->
+                        <th
+                            class="px-5 py-4 text-center text-xs font-semibold uppercase tracking-wider text-slate-600"
+                        >
                             Action
                         </th>
 
@@ -216,24 +274,41 @@
                 </thead>
 
 
+                <!-- ================================================= -->
+                <!-- TABLE BODY -->
+                <!-- ================================================= -->
+
                 <tbody class="divide-y divide-slate-200">
 
                     {% for mark in marks %}
 
                     <tr class="transition hover:bg-slate-50">
 
+                        <!-- ========================================= -->
+                        <!-- STUDENT NAME -->
+                        <!-- ========================================= -->
+
                         <td class="whitespace-nowrap px-5 py-4">
 
                             <div class="flex items-center gap-3">
 
-                                <div class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600">
+                                <!-- STUDENT INITIAL -->
+                                <div
+                                    class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-sm font-semibold text-slate-600"
+                                >
+
                                     {{ mark.student.name|first|upper }}
+
                                 </div>
 
+
+                                <!-- STUDENT NAME -->
                                 <div>
 
                                     <p class="font-semibold text-slate-900">
+
                                         {{ mark.student.name|title }}
+
                                     </p>
 
                                 </div>
@@ -244,27 +319,36 @@
 
 
                         <td class="whitespace-nowrap px-5 py-4 text-sm text-slate-700">
+
                             {{ mark.subject.name|title }}
+
                         </td>
 
-
                         <td class="whitespace-nowrap px-5 py-4 text-sm text-slate-700">
+
                             {{ mark.exam_name|title }}
+
                         </td>
 
 
                         <td class="whitespace-nowrap px-5 py-4">
 
                             <span class="font-semibold text-slate-900">
+
                                 {{ mark.marks_obtained }}
+
                             </span>
 
                             <span class="text-slate-400">
+
                                 /
+
                             </span>
 
                             <span class="text-slate-500">
+
                                 {{ mark.full_marks }}
+
                             </span>
 
                         </td>
@@ -274,37 +358,50 @@
 
                             {% widthratio mark.marks_obtained mark.full_marks 100 as percentage %}
 
+
                             {% if percentage >= "40" %}
 
-                                <span class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700">
+                                <span
+                                    class="inline-flex rounded-full bg-emerald-100 px-3 py-1 text-xs font-semibold text-emerald-700"
+                                >
+
                                     {{ percentage }}%
+
                                 </span>
 
                             {% else %}
 
-                                <span class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700">
+                                <span
+                                    class="inline-flex rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-700"
+                                >
+
                                     {{ percentage }}%
+
                                 </span>
 
                             {% endif %}
 
                         </td>
 
-
                         <td class="px-5 py-4">
 
                             <div class="flex items-center justify-center gap-2">
 
+                                <!-- EDIT -->
                                 <a
                                     href="{% url 'marks-edit' mark.id %}"
                                     class="inline-flex items-center gap-1 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-xs font-semibold text-blue-700 transition hover:bg-blue-100"
                                     title="Edit Marks"
                                 >
+
                                     <i class="fa-solid fa-pen-to-square"></i>
+
                                     Edit
+
                                 </a>
 
 
+                                <!-- DELETE -->
                                 <form
                                     method="POST"
                                     action="{% url 'marks-delete' mark.id %}"
@@ -325,8 +422,11 @@
                                         class="inline-flex items-center gap-1 rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs font-semibold text-red-700 transition hover:bg-red-100"
                                         title="Delete Marks"
                                     >
+
                                         <i class="fa-solid fa-trash"></i>
+
                                         Delete
+
                                     </button>
 
                                 </form>
@@ -348,16 +448,29 @@
 
                             <div class="flex flex-col items-center justify-center">
 
-                                <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400">
+                                <!-- ICON -->
+                                <div
+                                    class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-slate-400"
+                                >
+
                                     <i class="fa-solid fa-file-circle-xmark text-xl"></i>
+
                                 </div>
 
+
+                                <!-- TITLE -->
                                 <h3 class="font-semibold text-slate-800">
+
                                     No marks found
+
                                 </h3>
 
+
+                                <!-- DESCRIPTION -->
                                 <p class="mt-1 text-sm text-slate-500">
+
                                     Try changing your search or filter.
+
                                 </p>
 
                             </div>
@@ -379,26 +492,39 @@
 
     {% if page_obj.has_other_pages %}
 
-    <div class="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between">
+    <div
+        class="flex flex-col gap-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between"
+    >
 
         <div class="text-sm text-slate-600">
 
-            Showing page
+    <div>
+        Showing page
 
-            <span class="font-semibold text-slate-900">
-                {{ page_obj.number }}
-            </span>
+        <span class="font-semibold text-slate-900">
+            {{ page_obj.number }}
+        </span>
 
-            of
+        of
 
-            <span class="font-semibold text-slate-900">
-                {{ page_obj.paginator.num_pages }}
-            </span>
+        <span class="font-semibold text-slate-900">
+            {{ page_obj.paginator.num_pages }}
+        </span>
+    </div>
 
-        </div>
+    <div class="mt-1">
+        Total Records:
+
+        <span class="font-semibold text-slate-900">
+            {{ page_obj.paginator.count }}
+        </span>
+    </div>
+
+</div>
 
 
         <div class="flex items-center gap-2">
+
 
             {% if page_obj.has_previous %}
 
@@ -406,41 +532,60 @@
                     href="?page={{ page_obj.previous_page_number }}{% if selected_student %}&student={{ selected_student|urlencode }}{% endif %}{% if selected_subject %}&subject={{ selected_subject|urlencode }}{% endif %}{% if selected_exam %}&exam={{ selected_exam|urlencode }}{% endif %}"
                     class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                 >
+
                     <i class="fa-solid fa-chevron-left text-xs"></i>
 
                     <span class="hidden sm:inline">
+
                         Previous
+
                     </span>
+
                 </a>
 
             {% endif %}
+
 
 
             <div class="flex items-center gap-1">
 
                 {% for num in page_range %}
 
+
+                    <!-- ELLIPSIS -->
                     {% if num == "..." %}
 
-                        <span class="inline-flex h-9 min-w-9 items-center justify-center px-2 text-sm font-semibold text-slate-400">
+                        <span
+                            class="inline-flex h-9 min-w-9 items-center justify-center px-2 text-sm font-semibold text-slate-400"
+                        >
+
                             ...
+
                         </span>
 
+
+                    <!-- CURRENT PAGE -->
                     {% elif num == page_obj.number %}
 
                         <span
                             class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl bg-slate-900 px-3 text-sm font-semibold text-white"
                         >
+
                             {{ num }}
+
                         </span>
 
+
+                    <!-- OTHER PAGE -->
                     {% else %}
 
                         <a
                             href="?page={{ num }}{% if selected_student %}&student={{ selected_student|urlencode }}{% endif %}{% if selected_subject %}&subject={{ selected_subject|urlencode }}{% endif %}{% if selected_exam %}&exam={{ selected_exam|urlencode }}{% endif %}"
                             class="inline-flex h-9 min-w-9 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                         >
+
                             {{ num }}
+
                         </a>
 
                     {% endif %}
@@ -456,11 +601,15 @@
                     href="?page={{ page_obj.next_page_number }}{% if selected_student %}&student={{ selected_student|urlencode }}{% endif %}{% if selected_subject %}&subject={{ selected_subject|urlencode }}{% endif %}{% if selected_exam %}&exam={{ selected_exam|urlencode }}{% endif %}"
                     class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
                 >
+
                     <span class="hidden sm:inline">
+
                         Next
+
                     </span>
 
                     <i class="fa-solid fa-chevron-right text-xs"></i>
+
                 </a>
 
             {% endif %}

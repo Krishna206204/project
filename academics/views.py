@@ -325,7 +325,6 @@ def add_marks(request):
         context
     )
     
-
 @login_required
 def view_marks(request):
 
@@ -354,10 +353,53 @@ def view_marks(request):
 
     if classroom:
 
+        # -----------------------------------------
+        # Subjects
+        # -----------------------------------------
         subjects = Subject.objects.filter(
             classroom=classroom
         )
 
+        # -----------------------------------------
+        # All exam names
+        # -----------------------------------------
+        exam_names = list(
+            Marks.objects
+            .filter(
+                student__classroom=classroom
+            )
+            .values_list(
+                "exam_name",
+                flat=True
+            )
+            .distinct()
+        )
+
+        # -----------------------------------------
+        # Find latest exam
+        # -----------------------------------------
+        latest_exam = (
+            Marks.objects
+            .filter(
+                student__classroom=classroom
+            )
+            .order_by("-id")
+            .values_list(
+                "exam_name",
+                flat=True
+            )
+            .first()
+        )
+
+        # -----------------------------------------
+        # Default exam = latest exam
+        # -----------------------------------------
+        if not selected_exam:
+            selected_exam = latest_exam
+
+        # -----------------------------------------
+        # Get marks
+        # -----------------------------------------
         marks = (
             Marks.objects
             .filter(
@@ -372,35 +414,36 @@ def view_marks(request):
             )
         )
 
+        # -----------------------------------------
+        # Student filter
+        # -----------------------------------------
         if student_name:
 
             marks = marks.filter(
                 student__name__icontains=student_name
             )
 
+        # -----------------------------------------
+        # Subject filter
+        # -----------------------------------------
         if subject_id:
 
             marks = marks.filter(
                 subject_id=subject_id
             )
 
+        # -----------------------------------------
+        # Exam filter
+        # -----------------------------------------
         if selected_exam:
 
             marks = marks.filter(
                 exam_name=selected_exam
             )
 
-        exam_names = (
-            Marks.objects
-            .filter(
-                student__classroom=classroom
-            )
-            .values_list(
-                "exam_name",
-                flat=True
-            )
-            .distinct()
-        )
+    # ==================================================
+    # PAGINATION
+    # ==================================================
 
     paginator = Paginator(
         marks,
@@ -414,6 +457,10 @@ def view_marks(request):
     page_obj = paginator.get_page(
         page_number
     )
+
+    # ==================================================
+    # PAGINATION RANGE
+    # ==================================================
 
     current_page = page_obj.number
     total_pages = paginator.num_pages
@@ -433,9 +480,16 @@ def view_marks(request):
 
             page_range.append(num)
 
-        elif page_range and page_range[-1] != "...":
+        elif (
+            page_range
+            and page_range[-1] != "..."
+        ):
 
             page_range.append("...")
+
+    # ==================================================
+    # CONTEXT
+    # ==================================================
 
     context = {
 
