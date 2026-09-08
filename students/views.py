@@ -564,10 +564,19 @@ def student_logout(request):
 
 
 
-
 # admin
 @login_required
 def admin_students(request):
+
+    # Only Admin / Superuser
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
 
     students = (
         Student.objects
@@ -607,15 +616,23 @@ def admin_students(request):
     )
 
 
-
-
 @login_required
 def admin_report_cards(request):
+
+    # Only Admin / Superuser
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
+
     search = request.GET.get("search", "").strip()
     classroom_id = request.GET.get("classroom", "").strip()
     exam_name = request.GET.get("exam_name", "").strip()
 
-  
     exam_names = list(
         Marks.objects
         .values_list("exam_name", flat=True)
@@ -626,7 +643,6 @@ def admin_report_cards(request):
     # Remove duplicate exam names while preserving order
     exam_names = list(dict.fromkeys(exam_names))
 
- 
     if not exam_name and exam_names:
         exam_name = exam_names[0]
 
@@ -660,13 +676,11 @@ def admin_report_cards(request):
             marks__exam_name__iexact=exam_name
         ).distinct()
 
-
     students = students.order_by(
         "classroom__name",
         "classroom__section",
         "name"
     )
-
 
     classrooms = ClassRoom.objects.all().order_by(
         "name",
@@ -710,10 +724,18 @@ def admin_report_cards(request):
     )
 
 
-
-
 @login_required
 def admin_student_report_card(request, student_id):
+
+    # Only Admin / Superuser
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
 
     student = get_object_or_404(
         Student.objects.select_related("classroom"),
@@ -730,9 +752,10 @@ def admin_student_report_card(request, student_id):
         .order_by("exam_name")
     )
 
-
-    selected_exam = request.GET.get("exam_name", "").strip()
-
+    selected_exam = request.GET.get(
+        "exam_name",
+        ""
+    ).strip()
 
     if not selected_exam:
 
@@ -751,7 +774,6 @@ def admin_student_report_card(request, student_id):
         .order_by("subject__name")
     )
 
- 
     subject_rows = []
 
     total_full_marks = 0
@@ -809,13 +831,11 @@ def admin_student_report_card(request, student_id):
     else:
         grade = "F"
 
- 
     result = (
         "PASS"
         if overall_percentage >= 40
         else "FAIL"
     )
-
 
     if overall_percentage >= 90:
         remarks = "Outstanding Performance"
@@ -834,7 +854,6 @@ def admin_student_report_card(request, student_id):
 
     else:
         remarks = "Needs Improvement"
-
 
     context = {
 
@@ -872,5 +891,4 @@ def admin_student_report_card(request, student_id):
         "students/admin_student_report_card.html",
         context
     )
-
 

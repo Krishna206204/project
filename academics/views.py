@@ -128,7 +128,6 @@ def edit_assignment(request, id):
 
 @login_required
 def notice_list(request):
-
     notices = (
         Notice.objects
         .all()
@@ -163,7 +162,15 @@ def notice(request):
 
 @login_required
 def admin_notice_list(request):
+    
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
 
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
     notices = (
         Notice.objects
         .all()
@@ -916,6 +923,16 @@ def student_results(request):
 
 @login_required
 def admin_view_marks(request):
+    
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
+    
     marks = (
         Marks.objects
         .select_related(
@@ -1017,6 +1034,15 @@ def admin_view_marks(request):
 
 @login_required
 def admin_add_marks(request):
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+    
+            messages.error(
+                request,
+                "You are not authorized to access this page."
+            )
+    
+            return redirect("dashboard")
+    
     classrooms = ClassRoom.objects.all().order_by("name", "section")
 
     selected_classroom = request.GET.get("classroom", "").strip()

@@ -190,8 +190,15 @@ def admin_dashboard(request):
     
 @login_required
 def admin_contact_messages(request):
-    messages_contact = ContactMessage.objects.all().order_by("-created_at")
-    
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+        return redirect("dashboard")
+    messages_contact = ContactMessage.objects.all().order_by(
+        "-created_at"
+    )
     return render(
         request,
         "accounts/contact_messages.html",

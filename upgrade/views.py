@@ -2,15 +2,24 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-from students.models import Student,ClassRoom
+
+from students.models import Student, ClassRoom
 from .models import StudentUpgrade
-from .forms import StudentUpgradeForm,ClassRoomForm,StudentForm
-
-
+from .forms import StudentUpgradeForm, ClassRoomForm, StudentForm
 
 
 @login_required
 def student_upgrade(request):
+
+    # Only Admin / Superuser
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
 
     form = StudentUpgradeForm()
     students = []
@@ -114,14 +123,27 @@ def student_upgrade(request):
             "students": students,
         }
     )
-    
+
+
 @login_required
 def create_classroom(request):
 
+    # Only Admin / Superuser
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
+
     if request.method == "POST":
+
         form = ClassRoomForm(request.POST)
 
         if form.is_valid():
+
             form.save()
 
             messages.success(
@@ -132,6 +154,7 @@ def create_classroom(request):
             return redirect("create-classroom")
 
     else:
+
         form = ClassRoomForm()
 
     classes = ClassRoom.objects.select_related(
@@ -147,8 +170,19 @@ def create_classroom(request):
         }
     )
 
+
 @login_required
 def add_student(request):
+
+    # Only Admin / Superuser
+    if request.user.role != "ADMIN" and not request.user.is_superuser:
+
+        messages.error(
+            request,
+            "You are not authorized to access this page."
+        )
+
+        return redirect("dashboard")
 
     if request.method == "POST":
 
@@ -166,6 +200,7 @@ def add_student(request):
             return redirect("add-student")
 
     else:
+
         form = StudentForm()
 
     student_list = Student.objects.select_related(
