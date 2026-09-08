@@ -8,7 +8,7 @@ class ClassRoom(models.Model):
     name = models.CharField(max_length=50)
     section = models.CharField(max_length=10)
     teacher = models.ForeignKey(
-        User, on_delete=models.SET_NULL, null=True, limit_choices_to={"role": "TEACHER"}
+        User, on_delete=models.SET_NULL, blank=True,null=True, limit_choices_to={"role": "TEACHER"}
     )
     
     def __str__(self):

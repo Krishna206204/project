@@ -7,10 +7,13 @@ from django.db.models import Count, Q
 from attendance.models import Attendance
 from students.models import ClassRoom
 from datetime import date
-# new added to check the login
-# from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
+from datetime import timedelta
+
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from django.utils import timezone
 
 
 def today_attendance(request):
@@ -168,37 +171,44 @@ def admin_mark_attendance(request):
     )
 
 
-
-
-
-
+@login_required
 def admin_attendance_history(request):
 
     from_date = request.GET.get("from")
     to_date = request.GET.get("to")
     classroom_id = request.GET.get("classroom")
 
-    # All classrooms for admin dropdown
-    classrooms = ClassRoom.objects.all().order_by("name", "section")
+    classrooms = (
+        ClassRoom.objects
+        .all()
+        .order_by("name", "section")
+    )
 
-    # Admin can see all attendance records
     queryset = Attendance.objects.all()
 
-    # Filter by class
+    # Default = last 2 months attendance
+    if not from_date and not to_date and not classroom_id:
+        two_months_ago = timezone.now().date() - timedelta(days=60)
+        queryset = queryset.filter(date__gte=two_months_ago)
+
+    # Filter classroom
     if classroom_id:
         queryset = queryset.filter(
             student__classroom_id=classroom_id
         )
 
-    # Filter by from date
+    # Filter from date
     if from_date:
-        queryset = queryset.filter(date__gte=from_date)
+        queryset = queryset.filter(
+            date__gte=from_date
+        )
 
-    # Filter by to date
+    # Filter to date
     if to_date:
-        queryset = queryset.filter(date__lte=to_date)
+        queryset = queryset.filter(
+            date__lte=to_date
+        )
 
-    # Group attendance by date and classroom
     attendance_records = (
         queryset.values(
             "date",
@@ -218,7 +228,8 @@ def admin_attendance_history(request):
         .order_by("-date")
     )
 
-    # Calculate attendance percentage
+    attendance_records = list(attendance_records)
+
     for record in attendance_records:
 
         total = (
@@ -226,13 +237,25 @@ def admin_attendance_history(request):
             + record["absent_count"]
         )
 
-        if total > 0:
+        if total:
             record["attendance_percentage"] = round(
                 (record["present_count"] / total) * 100,
-                2,
+                2
             )
         else:
             record["attendance_percentage"] = 0
+
+    # Pagination
+    paginator = Paginator(
+        attendance_records,
+        10
+    )
+
+    page_number = request.GET.get("page")
+
+    attendance_records = paginator.get_page(
+        page_number
+    )
 
     context = {
         "attendance_records": attendance_records,
@@ -247,6 +270,75 @@ def admin_attendance_history(request):
         "attendance/admin_attendance_history.html",
         context,
     )
+
+
+def admin_today_attendance(request):
+
+    today = date.today()
+
+    # Get filters
+    classroom_id = request.GET.get("classroom")
+    status = request.GET.get("status")
+
+    # Get all classrooms
+    classrooms = ClassRoom.objects.all().order_by(
+        "name",
+        "section"
+    )
+
+    # Get today's attendance
+    attendance_records = Attendance.objects.filter(
+        date=today
+    ).select_related(
+        "student",
+        "student__classroom"
+    )
+
+    # Filter by classroom
+    if classroom_id:
+        attendance_records = attendance_records.filter(
+            student__classroom_id=classroom_id
+        )
+
+    # Filter by attendance status
+    if status in ["PRESENT", "ABSENT"]:
+        attendance_records = attendance_records.filter(
+            status=status
+        )
+
+    # Order records
+    attendance_records = attendance_records.order_by(
+        "student__classroom__name",
+        "student__classroom__section",
+        "student__name"
+    )
+
+    # Count present
+    present = attendance_records.filter(
+        status="PRESENT"
+    ).count()
+
+    # Count absent
+    absent = attendance_records.filter(
+        status="ABSENT"
+    ).count()
+
+    context = {
+        "attendance_records": attendance_records,
+        "today": today,
+        "present": present,
+        "absent": absent,
+        "classrooms": classrooms,
+        "selected_classroom": classroom_id,
+        "selected_status": status,
+    }
+
+    return render(
+        request,
+        "attendance/admin_today_attendance.html",
+        context
+    )
+
 
 
 

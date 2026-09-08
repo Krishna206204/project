@@ -184,37 +184,14 @@
                 </div>
 
                 <h3 class="mt-4 text-lg font-bold text-slate-900">
-                    Student Management
+                    Student List
                 </h3>
 
                 <p class="mt-2 text-sm leading-6 text-slate-500">
-                    Manage students, classrooms, and student information.
+                    Show student list with their information.
                 </p>
 
             </a>
-
-
-            {% comment %} <!-- Teacher Management -->
-            <a
-                href="#"
-                class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
-
-                <div
-                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-green-100 text-green-600 transition group-hover:bg-green-600 group-hover:text-white">
-
-                    <i class="fa-solid fa-chalkboard-user"></i>
-
-                </div>
-
-                <h3 class="mt-4 text-lg font-bold text-slate-900">
-                    Teacher Management
-                </h3>
-
-                <p class="mt-2 text-sm leading-6 text-slate-500">
-                    Manage teacher accounts and assignments.
-                </p>
-
-            </a> {% endcomment %}
 
 
             <!-- Attendance -->
@@ -258,6 +235,48 @@
 
                 <p class="mt-2 text-sm leading-6 text-slate-500">
                     Manage users, permissions, and registered Django models.
+                </p>
+
+            </a>
+
+
+            <a
+                href="{% url 'student-upgrade' %}"
+                class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition group-hover:bg-slate-800 group-hover:text-white">
+
+                    <i class="fa-solid fa-arrow-up-right-dots"></i>
+
+                </div>
+
+                <h3 class="mt-4 text-lg font-bold text-slate-900">
+                    Student  Management
+                </h3>
+
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Promote Student to new class
+                </p>
+
+            </a>
+            <a
+                href="{% url 'add-student' %}"
+                class="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-lg">
+
+                <div
+                    class="flex h-12 w-12 items-center justify-center rounded-xl bg-slate-100 text-slate-700 transition group-hover:bg-slate-800 group-hover:text-white">
+
+                    <i class="fa-solid fa-user-plus"></i>
+
+                </div>
+
+                <h3 class="mt-4 text-lg font-bold text-slate-900">
+                    Add Student
+                </h3>
+
+                <p class="mt-2 text-sm leading-6 text-slate-500">
+                    Add new student in the classroom
                 </p>
 
             </a>

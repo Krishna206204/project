@@ -6,386 +6,341 @@
 
 {% block page_title %}Attendance History{% endblock %}
 
-
 {% block content %}
 
-<div class="w-full space-y-5 sm:space-y-6">
+<div class="space-y-6">
 
-  <div
-    class="rounded-2xl sm:rounded-3xl
-           border border-slate-200
-           bg-slate-50
-           p-4 sm:p-5 lg:p-6"
-  >
+    <!-- Statistics -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
 
-    <div class="flex flex-col gap-5">
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500">
+                        Total Records
+                    </p>
+                    <h3 class="text-3xl font-bold text-slate-900">
+                        {{ attendance_records.paginator.count }}
+                    </h3>
+                </div>
 
-      <!-- Heading -->
-      <div>
+                <div class="w-12 h-12 rounded-2xl bg-blue-100 flex items-center justify-center">
+                    <i class="fa-solid fa-calendar-check text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
 
-        <h2 class="text-base sm:text-lg font-semibold text-slate-900">
-          Filter Attendance
-        </h2>
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500">
+                        Current Page
+                    </p>
 
-        <p class="mt-1 text-xs sm:text-sm text-slate-500">
-          Search attendance records by class and date.
-        </p>
+                    <h3 class="text-3xl font-bold text-slate-900">
+                        {{ attendance_records.number }}
+                    </h3>
+                </div>
 
-      </div>
+                <div class="w-12 h-12 rounded-2xl bg-green-100 flex items-center justify-center">
+                    <i class="fa-solid fa-file-lines text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
 
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500">
+                        Total Pages
+                    </p>
 
-      <form method="get" id="attendanceFilterForm" class="w-full">
+                    <h3 class="text-3xl font-bold text-slate-900">
+                        {{ attendance_records.paginator.num_pages }}
+                    </h3>
+                </div>
 
-        <div
-          class="grid grid-cols-1 gap-4
-                 sm:grid-cols-2
-                 lg:grid-cols-4
-                 lg:items-end"
-        >
+                <div class="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center">
+                    <i class="fa-solid fa-book-open text-purple-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
 
-          <div class="w-full">
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-sm text-slate-500">
+                        Records Per Page
+                    </p>
 
-            <label
-              for="classroom"
-              class="mb-2 block text-sm font-medium text-slate-700"
-            >
-              Class / Section
-            </label>
+                    <h3 class="text-3xl font-bold text-slate-900">
+                        10
+                    </h3>
+                </div>
 
-            <select
-              id="classroom"
-              name="classroom"
-              class="h-12 w-full rounded-xl sm:rounded-2xl
-                     border border-slate-200
-                     bg-white
-                     px-3 sm:px-4
-                     text-sm text-slate-700
-                     outline-none
-                     transition
-                     focus:border-blue-500
-                     focus:ring-2 focus:ring-blue-100"
-            >
+                <div class="w-12 h-12 rounded-2xl bg-orange-100 flex items-center justify-center">
+                    <i class="fa-solid fa-table-list text-orange-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
 
-              <option value="">
-                All Classes
-              </option>
-
-              {% for classroom in classrooms %}
-
-              <option
-                value="{{ classroom.id }}"
-                {% if selected_classroom == classroom.id|stringformat:"s" %}
-                  selected
-                {% endif %}
-              >
-                {{ classroom.name }} - {{ classroom.section|title }}
-              </option>
-
-              {% endfor %}
-
-            </select>
-
-          </div>
-
-
-          <div class="w-full">
-
-            <label
-              for="from"
-              class="mb-2 block text-sm font-medium text-slate-700"
-            >
-              From
-            </label>
-
-            <input
-              id="from"
-              type="date"
-              name="from"
-              value="{{ from_date }}"
-              min="0001-01-01"
-              max="9999-12-31"
-              class="h-12 w-full rounded-xl sm:rounded-2xl
-                     border border-slate-200
-                     bg-white
-                     px-3 sm:px-4
-                     text-sm text-slate-700
-                     outline-none
-                     transition
-                     focus:border-blue-500
-                     focus:ring-2 focus:ring-blue-100"
-            />
-
-          </div>
-
-          <div class="w-full">
-
-            <label
-              for="to"
-              class="mb-2 block text-sm font-medium text-slate-700"
-            >
-              To
-            </label>
-
-            <input
-              id="to"
-              type="date"
-              name="to"
-              value="{{ to_date }}"
-              min="0001-01-01"
-              max="9999-12-31"
-              class="h-12 w-full rounded-xl sm:rounded-2xl
-                     border border-slate-200
-                     bg-white
-                     px-3 sm:px-4
-                     text-sm text-slate-700
-                     outline-none
-                     transition
-                     focus:border-blue-500
-                     focus:ring-2 focus:ring-blue-100"
-            />
-
-          </div>
-
-          <div class="flex w-full gap-3">
-
-            <!-- SEARCH -->
-            <button
-              type="submit"
-              class="h-12 min-w-0 flex-1
-                     rounded-xl sm:rounded-2xl
-                     border border-blue-700
-                     bg-blue-600
-                     px-4 sm:px-6
-                     text-sm font-bold
-                     text-white
-                     shadow-sm
-                     transition
-                     hover:border-blue-800
-                     hover:bg-blue-700
-                     active:scale-[0.98]"
-            >
-              Search
-            </button>
+    </div>
 
 
-            <!-- RESET -->
-            <a
-              href="{% url 'admin-attendance-history' %}"
-              class="flex h-12 min-w-0 flex-1
-                     items-center justify-center
-                     rounded-xl sm:rounded-2xl
-                     border border-slate-300
-                     bg-white
-                     px-4 sm:px-6
-                     text-sm font-bold
-                     text-slate-700
-                     shadow-sm
-                     transition
-                     hover:border-slate-400
-                     hover:bg-slate-100
-                     active:scale-[0.98]"
-            >
-              Reset
-            </a>
+    <!-- Filter Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6">
 
-          </div>
+        <div class="mb-5">
+            <h2 class="text-lg font-semibold text-slate-900">
+                Filter Attendance
+            </h2>
+
+            <p class="text-sm text-slate-500 mt-1">
+                Search attendance by classroom and date range.
+            </p>
+        </div>
+
+        <form method="get">
+
+            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">
+                        Classroom
+                    </label>
+
+                    <select
+                        name="classroom"
+                        class="w-full h-12 rounded-2xl border border-slate-300 px-4">
+
+                        <option value="">
+                            All Classes
+                        </option>
+
+                        {% for classroom in classrooms %}
+                        <option
+                            value="{{ classroom.id }}"
+                            {% if selected_classroom == classroom.id|stringformat:"s" %}
+                            selected
+                            {% endif %}
+                        >
+                            {{ classroom.name }} - {{ classroom.section|title }}
+                        </option>
+                        {% endfor %}
+
+                    </select>
+                </div>
+
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">
+                        From Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="from"
+                        value="{{ from_date }}"
+                        class="w-full h-12 rounded-2xl border border-slate-300 px-4">
+                </div>
+
+
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">
+                        To Date
+                    </label>
+
+                    <input
+                        type="date"
+                        name="to"
+                        value="{{ to_date }}"
+                        class="w-full h-12 rounded-2xl border border-slate-300 px-4">
+                </div>
+
+
+                <div class="flex gap-3 items-end">
+
+                    <button
+                        type="submit"
+                        class="flex-1 h-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold">
+                        Search
+                    </button>
+
+                    <a
+                        href="{% url 'admin-attendance-history' %}"
+                        class="flex-1 h-12 rounded-2xl border border-slate-300 flex items-center justify-center font-semibold">
+                        Reset
+                    </a>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- Table Card -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+
+        <div class="p-5 border-b border-slate-200 flex flex-col md:flex-row md:justify-between gap-3">
+
+            <div>
+                <h3 class="font-semibold text-slate-900">
+                    Attendance Records
+                </h3>
+
+                <p class="text-sm text-slate-500">
+                    Showing
+                    {{ attendance_records.start_index }}
+                    -
+                    {{ attendance_records.end_index }}
+                    of
+                    {{ attendance_records.paginator.count }}
+                    records
+                </p>
+            </div>
 
         </div>
 
-      </form>
+
+        <div class="overflow-x-auto">
+
+            <table class="w-full min-w-[750px]">
+
+                <thead class="bg-slate-50 border-b">
+
+                    <tr>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            Date
+                        </th>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            Class
+                        </th>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            Present
+                        </th>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            Absent
+                        </th>
+
+                        <th class="px-5 py-4 text-left text-sm font-semibold">
+                            Attendance %
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for attendance in attendance_records %}
+
+                    <tr class="border-b hover:bg-slate-50">
+
+                        <td class="px-5 py-4">
+                            {{ attendance.date }}
+                        </td>
+
+                        <td class="px-5 py-4">
+                            {{ attendance.student__classroom__name }}
+                            -
+                            {{ attendance.student__classroom__section|title }}
+                        </td>
+
+                        <td class="px-5 py-4 text-green-600 font-semibold">
+                            {{ attendance.present_count }}
+                        </td>
+
+                        <td class="px-5 py-4 text-red-600 font-semibold">
+                            {{ attendance.absent_count }}
+                        </td>
+
+                        <td class="px-5 py-4 font-semibold">
+                            {{ attendance.attendance_percentage }}%
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+
+                        <td colspan="5" class="text-center py-10">
+
+                            <i class="fa-solid fa-calendar-xmark text-5xl text-slate-300"></i>
+
+                            <p class="mt-3 text-slate-500">
+                                No attendance records found.
+                            </p>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Pagination -->
+{% if attendance_records.has_other_pages %}
+
+<div class="border-t border-slate-200 p-5">
+
+    <div class="flex flex-wrap justify-center gap-2">
+
+        {% if attendance_records.has_previous %}
+
+        <a
+            href="?page={{ attendance_records.previous_page_number }}{% if selected_classroom %}&classroom={{ selected_classroom }}{% endif %}{% if from_date %}&from={{ from_date }}{% endif %}{% if to_date %}&to={{ to_date }}{% endif %}"
+            class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50"
+        >
+            Previous
+        </a>
+
+        {% endif %}
+
+
+        <span class="px-5 py-2 rounded-xl bg-blue-600 text-white">
+            Page {{ attendance_records.number }}
+            of
+            {{ attendance_records.paginator.num_pages }}
+        </span>
+
+
+        {% if attendance_records.has_next %}
+
+        <a
+            href="?page={{ attendance_records.next_page_number }}{% if selected_classroom %}&classroom={{ selected_classroom }}{% endif %}{% if from_date %}&from={{ from_date }}{% endif %}{% if to_date %}&to={{ to_date }}{% endif %}"
+            class="px-4 py-2 rounded-xl border border-slate-300 hover:bg-slate-50"
+        >
+            Next
+        </a>
+
+        {% endif %}
 
     </div>
 
-  </div>
+</div>
 
 
-  <div
-    class="w-full overflow-hidden
-           rounded-xl sm:rounded-2xl
-           border border-slate-200
-           bg-white"
-  >
+            </div>
 
-    <!--
-      Horizontal scrolling on mobile/tablet.
-      This prevents the five columns from becoming
-      too narrow on small screens.
-    -->
-    <div class="w-full overflow-x-auto">
+        </div>
 
-      <table
-        class="min-w-[700px] w-full
-               divide-y divide-slate-200
-               text-left text-sm"
-      >
-
-        <thead class="bg-slate-50 text-slate-600">
-
-          <tr>
-
-            <th
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     text-xs sm:text-sm
-                     font-semibold"
-            >
-              Date
-            </th>
-
-
-            <th
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     text-xs sm:text-sm
-                     font-semibold"
-            >
-              Class
-            </th>
-
-
-            <th
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     text-xs sm:text-sm
-                     font-semibold"
-            >
-              Present
-            </th>
-
-
-            <th
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     text-xs sm:text-sm
-                     font-semibold"
-            >
-              Absent
-            </th>
-
-
-            <th
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     text-xs sm:text-sm
-                     font-semibold"
-            >
-              Attendance %
-            </th>
-
-          </tr>
-
-        </thead>
-
-
-        <tbody class="divide-y divide-slate-200 bg-white">
-
-          {% for attendance in attendance_records %}
-
-          <tr class="transition hover:bg-slate-50">
-
-            <!-- DATE -->
-            <td
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     text-slate-700"
-            >
-              {{ attendance.date }}
-            </td>
-
-
-            <!-- CLASS -->
-            <td
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     text-slate-700"
-            >
-
-              {{ attendance.student__classroom__name }}
-              -
-              {{ attendance.student__classroom__section|title }}
-
-            </td>
-
-
-            <!-- PRESENT -->
-            <td
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     font-medium text-green-600"
-            >
-              {{ attendance.present_count }}
-            </td>
-
-
-            <!-- ABSENT -->
-            <td
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     font-medium text-red-600"
-            >
-              {{ attendance.absent_count }}
-            </td>
-
-
-            <!-- ATTENDANCE PERCENTAGE -->
-            <td
-              class="whitespace-nowrap
-                     px-3 sm:px-4
-                     py-3
-                     font-semibold text-slate-800"
-            >
-              {{ attendance.attendance_percentage }}%
-            </td>
-
-          </tr>
-
-
-          {% empty %}
-
-
-          <tr>
-
-            <td
-              colspan="5"
-              class="px-4 py-8 sm:py-10
-                     text-center
-                     text-xs sm:text-sm
-                     text-slate-500"
-            >
-
-              <i
-                class="fa-solid fa-calendar-xmark
-                       mb-2
-                       text-2xl sm:text-3xl
-                       text-slate-300"
-              ></i>
-
-              <p class="font-medium text-slate-600">
-                No attendance records found.
-              </p>
-
-            </td>
-
-          </tr>
-
-          {% endfor %}
-
-        </tbody>
-
-      </table>
+        {% endif %}
 
     </div>
-
-  </div>
 
 </div>
 

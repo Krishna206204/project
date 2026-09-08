@@ -1,0 +1,320 @@
+
+{% extends "adminbase.html" %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+    <!-- Header -->
+    <div class="bg-white shadow-lg rounded-xl p-6 mb-6">
+
+        <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
+
+            <div>
+                <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
+                    Student Management
+                </h2>
+
+                <p class="text-gray-500 mt-2">
+                    Add new students and manage student records.
+                </p>
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-3">
+
+                <button
+                    type="button"
+                    id="showFormBtn"
+                    class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-lg transition">
+                    Add Student
+                </button>
+
+                <a href="{% url 'admin-students' %}"
+                   class="w-full sm:w-auto text-center bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition">
+                    Student List
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+   
+
+    <!-- Add Student Form -->
+    <div
+        id="studentForm"
+        class="hidden bg-white shadow-lg rounded-xl p-6 mb-6">
+
+        <div class="flex justify-between items-center mb-6">
+
+            <h3 class="text-xl font-semibold text-gray-800">
+                Add New Student
+            </h3>
+
+            <button
+                type="button"
+                id="hideFormBtn"
+                class="text-red-600 hover:text-red-800 font-semibold">
+                Close
+            </button>
+
+        </div>
+
+        <form method="post">
+
+            {% csrf_token %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                <div>
+                    <label class="block mb-2 font-medium">
+                        Student Name
+                    </label>
+                    {{ form.name }}
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-medium">
+                        Class
+                    </label>
+                    {{ form.classroom }}
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-medium">
+                        Phone Number
+                    </label>
+                    {{ form.phone }}
+                </div>
+
+                <div>
+                    <label class="block mb-2 font-medium">
+                        Date Of Birth
+                    </label>
+                    {{ form.date_of_birth }}
+                </div>
+
+                <div class="md:col-span-2">
+                    <label class="block mb-2 font-medium">
+                        Address
+                    </label>
+                    {{ form.address }}
+                </div>
+
+            </div>
+
+            <button
+                type="submit"
+                class="mt-6 w-full md:w-auto bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition">
+                Save Student
+            </button>
+
+        </form>
+
+    </div>
+
+    <!-- Students Table -->
+    <div class="bg-white shadow-lg rounded-xl overflow-hidden">
+
+        <div class="p-5 border-b flex flex-col md:flex-row justify-between md:items-center gap-3">
+
+            <h3 class="text-xl font-semibold text-gray-800">
+                Existing Students
+            </h3>
+
+            <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm w-fit">
+                Total: {{ students.paginator.count }}
+            </span>
+
+        </div>
+
+        <div class="overflow-x-auto">
+
+            <table class="min-w-full whitespace-nowrap">
+
+                <thead class="bg-gray-100">
+
+                    <tr>
+
+                        <th class="p-3 text-left">
+                            SN
+                        </th>
+                        
+                        <th class="p-3 text-left">
+                            Name
+                        </th>
+                        
+                        <th class="p-3 text-left">
+                            Class
+                        </th>
+
+                        <th class="p-3 text-left">
+                            Id
+                        </th>
+
+                        <th class="p-3 text-left">
+                            Phone
+                        </th>
+
+                        <th class="p-3 text-left">
+                            Date Of Birth
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    {% for student in students %}
+
+                    <tr class="border-b hover:bg-gray-50">
+
+                        <td class="p-3">
+                            {{ forloop.counter }}
+                        </td>
+                        
+                        <td class="p-3">
+                            {{ student.name|title }}
+                        </td>
+                        
+                        <td class="p-3">
+                            {{ student.classroom|title }}
+                        </td>
+
+                        <td class="p-3">
+                            {{ student.id }}
+                        </td>
+
+                        <td class="p-3">
+                            {{ student.phone }}
+                        </td>
+
+                        <td class="p-3">
+                            {{ student.date_of_birth }}
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+
+                    <tr>
+                        <td colspan="5" class="text-center p-6 text-gray-500">
+                            No students found.
+                        </td>
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Pagination -->
+        <div class="p-4 border-t bg-gray-50">
+
+            <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+
+                <div class="text-sm text-gray-600 text-center md:text-left">
+                    Showing
+                    {{ students.start_index }}
+                    -
+                    {{ students.end_index }}
+                    of
+                    {{ students.paginator.count }}
+                    students
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-2">
+
+                    {% if students.has_previous %}
+
+                        <a href="?page=1"
+                           class="px-3 py-2 bg-white border rounded hover:bg-gray-100">
+                            First
+                        </a>
+
+                        <a href="?page={{ students.previous_page_number }}"
+                           class="px-3 py-2 bg-white border rounded hover:bg-gray-100">
+                            Previous
+                        </a>
+
+                    {% endif %}
+
+                    {% for num in students.paginator.page_range %}
+
+                        {% if students.number == num %}
+
+                            <span class="px-4 py-2 bg-blue-600 text-white rounded">
+                                {{ num }}
+                            </span>
+
+                        {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+
+                            <a href="?page={{ num }}"
+                               class="px-4 py-2 bg-white border rounded hover:bg-gray-100">
+                                {{ num }}
+                            </a>
+
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {% if students.has_next %}
+
+                        <a href="?page={{ students.next_page_number }}"
+                           class="px-3 py-2 bg-white border rounded hover:bg-gray-100">
+                            Next
+                        </a>
+
+                        <a href="?page={{ students.paginator.num_pages }}"
+                           class="px-3 py-2 bg-white border rounded hover:bg-gray-100">
+                            Last
+                        </a>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const showBtn = document.getElementById("showFormBtn");
+    const hideBtn = document.getElementById("hideFormBtn");
+    const formBox = document.getElementById("studentForm");
+
+    showBtn.addEventListener("click", function () {
+
+        formBox.classList.remove("hidden");
+
+        formBox.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    });
+
+    hideBtn.addEventListener("click", function () {
+
+        formBox.classList.add("hidden");
+
+    });
+
+});
+
+</script>
+
+{% endblock %}
+

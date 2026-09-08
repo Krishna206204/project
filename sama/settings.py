@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'attendance',
     'students',
     'log_account',
+    'upgrade',
 ]
 
 MIDDLEWARE = [

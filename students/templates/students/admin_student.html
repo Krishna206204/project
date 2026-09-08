@@ -283,7 +283,76 @@
                 </tbody>
 
             </table>
+            <!-- Pagination -->
+{% if students.has_other_pages %}
+<div class="mt-6 flex flex-col md:flex-row items-center justify-between gap-4">
 
+    <div class="text-sm text-slate-700">
+        Showing page {{ students.number }} of {{ students.paginator.num_pages }}
+        
+    </div>
+
+
+    <div>
+        Showing
+        <span class="font-semibold text-slate-700">
+            {{ students.start_index }}
+        </span>
+
+        to
+
+        <span class="font-semibold text-slate-700">
+            {{ students.end_index }}
+        </span>
+
+        {% comment %} of
+
+        <span class="font-semibold text-slate-700">
+            {{ students.paginator.count }}
+        </span>
+
+        records {% endcomment %}
+    </div>
+
+
+
+    <div class="flex flex-wrap items-center gap-2">
+
+        {% if students.has_previous %}
+            
+
+            <a href="?page={{ students.previous_page_number }}"
+               class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100">
+                Previous
+            </a>
+        {% endif %}
+
+        {% for num in students.paginator.page_range %}
+            {% if students.number == num %}
+                <span class="px-4 py-2 rounded-lg bg-blue-600 text-white">
+                    {{ num }}
+                </span>
+            {% elif num > students.number|add:'-3' and num < students.number|add:'3' %}
+                <a href="?page={{ num }}"
+                   class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100">
+                    {{ num }}
+                </a>
+            {% endif %}
+        {% endfor %}
+
+        {% if students.has_next %}
+            <a href="?page={{ students.next_page_number }}"
+               class="px-4 py-2 rounded-lg border border-slate-300 bg-white hover:bg-slate-100">
+                Next
+            </a>
+
+            
+        {% endif %}
+
+    </div>
+
+</div>
+{% endif %}
         </div>
 
     </section>

@@ -119,7 +119,7 @@
                 class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
-                    <i class="fa-solid fa-clipboard-list"></i>
+                    <i class="fa-solid fa-calendar-check"></i>
                 </span>
 
                 <span>
@@ -136,7 +136,7 @@
                 class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
-                    <i class="fa-solid fa-file-signature"></i>
+                    <i class="fa-solid fa-clipboard-list"></i>
                 </span>
 
                 <span>
@@ -153,7 +153,7 @@
                 class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
-                    <i class="fa-solid fa-file-signature"></i>
+                    <i class="fa-solid fa-file-pdf"></i>
                 </span>
 
                 <span>
@@ -171,7 +171,7 @@
                 class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
-                    <i class="fa-solid fa-file-signature"></i>
+                    <i class="fa-solid fa-bullhorn"></i>
                 </span>
 
                 <span>
@@ -180,11 +180,50 @@
 
             </a>
             <a
+                href="{% url 'create-classroom' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+                <span class="text-base">
+                    <i class="fa-solid fa-school"></i>
+                </span>
+
+                <span>
+                    Add Class
+                </span>
+
+            </a>
+            <a
+                href="{% url 'add-student' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+                <span class="text-base">
+                    <i class="fa-solid fa-user-plus"></i>
+                </span>
+
+                <span>
+                    Add Student
+                </span>
+
+            </a>
+            <a
+                href="{% url 'student-upgrade' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+                <span class="text-base">
+                    <i class="fa-solid fa-arrow-up-right-dots"></i>
+                </span>
+
+                <span>
+                    Upgrade Student
+                </span>
+
+            </a>
+            <a
                 href="{% url 'admin-contact-messages' %}"
                 class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
-                    <i class="fa-solid fa-file-signature"></i>
+                   <i class="fa-solid fa-envelope"></i>
                 </span>
 
                 <span>

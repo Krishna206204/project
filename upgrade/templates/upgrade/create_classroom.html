@@ -1,0 +1,279 @@
+{% extends "adminbase.html" %}
+
+{% block content %}
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+
+<!-- Header -->
+<div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+
+    <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+
+        <div>
+            <h2 class="text-2xl md:text-3xl font-bold text-gray-800">
+                Class Management
+            </h2>
+
+            <p class="text-gray-500 mt-2">
+                View existing classes and create new classes.
+            </p>
+        </div>
+
+        <a href="{% url 'admin-dashboard' %}"
+           class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg transition text-center">
+            Back
+        </a>
+
+    </div>
+
+</div>
+
+<!-- Existing Classes -->
+<div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+
+    <div class="px-6 py-4 border-b flex flex-col md:flex-row md:justify-between md:items-center gap-3">
+
+        <h3 class="text-xl font-semibold">
+            Existing Classes
+        </h3>
+
+        <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+            Total Classes: {{ classes.count }}
+        </span>
+
+    </div>
+
+    <div class="overflow-x-auto">
+
+        <table class="min-w-full whitespace-nowrap">
+
+            <thead class="bg-gray-100">
+
+                <tr>
+
+                    <th class="px-6 py-3 text-left font-semibold">
+                        Class
+                    </th>
+
+                    <th class="px-6 py-3 text-left font-semibold">
+                        Section
+                    </th>
+
+                    <th class="px-6 py-3 text-left font-semibold">
+                        Students
+                    </th>
+
+                    <th class="px-6 py-3 text-left font-semibold">
+                        Teacher
+                    </th>
+
+                </tr>
+
+            </thead>
+
+            <tbody class="divide-y divide-gray-200">
+
+                {% for cls in classes %}
+
+                <tr class="hover:bg-gray-50">
+
+                    <td class="px-6 py-4">
+                        {{ cls.name }}
+                    </td>
+
+                    <td class="px-6 py-4">
+                        {{ cls.section|title }}
+                    </td>
+
+                    <td class="px-6 py-4">
+                        {{ cls.students.count }}
+                    </td>
+
+                    <td class="px-6 py-4">
+
+                        {% if cls.teacher %}
+                            {{ cls.teacher|title }}
+                        {% else %}
+                            <span class="text-amber-500">
+                                Teacher not Assigned
+                            </span>
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% empty %}
+
+                <tr>
+
+                    <td colspan="4"
+                        class="px-6 py-6 text-center text-gray-500">
+
+                        No classes available.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<!-- Add Class Button -->
+<div class="mb-8">
+
+    <button
+        type="button"
+        id="showClassFormBtn"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition">
+
+        Add Class
+
+    </button>
+
+</div>
+
+<!-- Hidden Form -->
+<div
+    id="classForm"
+    class="bg-white rounded-xl shadow-lg p-6 hidden">
+
+    <div class="flex justify-between items-center mb-6">
+
+        <div>
+
+            <h3 class="text-xl md:text-2xl font-semibold">
+                Create New Class
+            </h3>
+
+            <p class="text-gray-500 mt-1">
+                Add a new classroom to the school.
+            </p>
+
+        </div>
+
+        <button
+            type="button"
+            id="hideClassFormBtn"
+            class="text-red-600 hover:text-red-800 font-semibold">
+
+            Close
+
+        </button>
+
+    </div>
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <div>
+
+                <label class="block mb-2 font-medium">
+                    Class Name
+                </label>
+
+                {{ form.name }}
+
+            </div>
+
+            <div>
+
+                <label class="block mb-2 font-medium">
+                    Section
+                </label>
+
+                {{ form.section }}
+
+            </div>
+
+            <div class="md:col-span-2">
+
+                <label class="block mb-2 font-medium">
+                    Class Teacher
+                </label>
+
+                {{ form.teacher }}
+
+                <p class="text-sm text-gray-500 mt-2">
+                    Optional. Leave empty if no teacher is assigned.
+                </p>
+
+            </div>
+
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-3 mt-8">
+
+            <button
+                type="submit"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg">
+
+                Save Class
+
+            </button>
+
+            <button
+                type="button"
+                id="cancelClassBtn"
+                class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+</div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const showBtn = document.getElementById("showClassFormBtn");
+    const hideBtn = document.getElementById("hideClassFormBtn");
+    const cancelBtn = document.getElementById("cancelClassBtn");
+    const formBox = document.getElementById("classForm");
+
+    showBtn.addEventListener("click", function() {
+
+        formBox.classList.remove("hidden");
+
+        formBox.scrollIntoView({
+            behavior: "smooth"
+        });
+
+    });
+
+    hideBtn.addEventListener("click", function() {
+
+        formBox.classList.add("hidden");
+
+    });
+
+    cancelBtn.addEventListener("click", function() {
+
+        formBox.classList.add("hidden");
+
+    });
+
+});
+
+</script>
+
+{% endblock %}

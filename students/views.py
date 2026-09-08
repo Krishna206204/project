@@ -7,6 +7,7 @@ from attendance.models import Attendance
 from students.models import ClassRoom, Student
 from accounts.models import User
 from django.contrib import messages
+from django.core.paginator import Paginator
 
 
 # recommend by chatgpt
@@ -567,36 +568,33 @@ def student_logout(request):
 
 
 # admin
+
+
 @login_required
 def admin_students(request):
-    # Get all students in the school
-    # students = Student.objects.select_related("classroom").all()
-    from django.db.models.functions import Lower
 
     students = (
-    Student.objects
-    .select_related("classroom")
-    .order_by("id")
-)
-    
-# students = (
-#     Student.objects
-#     .select_related("classroom")
-#     .order_by(Lower("name"))
-# )
-    
+        Student.objects
+        .select_related("classroom")
+        .order_by("id")
+    )
 
-    # Total number of students
+    # Statistics
     student_count = students.count()
-
-    # Total number of classrooms
     classroom_count = ClassRoom.objects.count()
-
-    # Total number of subjects
     subject_count = Subject.objects.count()
+    teacher_count = User.objects.filter(
+        role="TEACHER"
+    ).count()
 
-    # Total number of teachers
-    teacher_count = User.objects.filter(role="TEACHER").count()
+    # Pagination (10 students per page)
+    paginator = Paginator(students, 11)
+
+    page_number = request.GET.get("page")
+
+    students = paginator.get_page(
+        page_number
+    )
 
     context = {
         "students": students,
@@ -606,11 +604,13 @@ def admin_students(request):
         "teacher_count": teacher_count,
     }
 
-    return render(request, "students/admin_student.html", context)
+    return render(
+        request,
+        "students/admin_student.html",
+        context
+    )
 
 
-
-from django.core.paginator import Paginator
 
 
 
