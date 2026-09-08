@@ -2,7 +2,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.core.paginator import Paginator
-
 from students.models import Student, ClassRoom
 from .models import StudentUpgrade
 from .forms import StudentUpgradeForm, ClassRoomForm, StudentForm
@@ -17,7 +16,7 @@ def student_upgrade(request):
         #     request,
         #     "You are not authorized to access this page."
         # )
-        return redirect("dashboard")
+        return redirect("home")
 
     form = StudentUpgradeForm()
     students = []
@@ -129,7 +128,7 @@ def create_classroom(request):
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        return redirect("dashboard")
+        return redirect("home")
 
     if request.method == "POST":
 
@@ -167,10 +166,9 @@ def create_classroom(request):
 @login_required
 def add_student(request):
 
-    # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        return redirect("dashboard")
+        return redirect("home")
 
     if request.method == "POST":
 

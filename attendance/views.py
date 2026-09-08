@@ -152,7 +152,7 @@ def admin_mark_attendance(request):
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
        
-        return redirect("dashboard")
+        return redirect("home")
 
     classrooms = ClassRoom.objects.all().order_by(
         "name",
@@ -246,7 +246,7 @@ def admin_attendance_history(request):
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        return redirect("dashboard")
+        return redirect("home")
 
     from_date = request.GET.get("from")
     to_date = request.GET.get("to")
@@ -364,7 +364,7 @@ def admin_today_attendance(request):
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        return redirect("dashboard")
+        return redirect("home")
 
     today = date.today()
 

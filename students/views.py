@@ -570,7 +570,7 @@ def admin_students(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-        return redirect("dashboard")
+        return redirect("home")
 
     students = (
         Student.objects
@@ -615,7 +615,7 @@ def admin_report_cards(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-        return redirect("dashboard")
+        return redirect("home")
 
     search = request.GET.get("search", "").strip()
     classroom_id = request.GET.get("classroom", "").strip()
@@ -715,17 +715,14 @@ def admin_report_cards(request):
 @login_required
 def admin_student_report_card(request, student_id):
 
-    # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        return redirect("dashboard")
+        return redirect("home")
 
     student = get_object_or_404(
         Student.objects.select_related("classroom"),
         pk=student_id
     )
-
-    # Get all exams for this student
 
     exam_names = (
         Marks.objects

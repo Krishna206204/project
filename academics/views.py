@@ -921,7 +921,7 @@ def student_results(request):
 def admin_view_marks(request):
     
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-        return redirect("dashboard")
+        return redirect("home")
     
     marks = (
         Marks.objects
@@ -1026,7 +1026,7 @@ def admin_view_marks(request):
 def admin_add_marks(request):
     if request.user.role != "ADMIN" and not request.user.is_superuser:
     
-            return redirect("dashboard")
+            return redirect("home")
     
     classrooms = ClassRoom.objects.all().order_by("name", "section")
 
