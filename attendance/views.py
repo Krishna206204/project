@@ -66,18 +66,6 @@ def mark_attendance(request):
     )
 
 
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.core.paginator import Paginator
-from django.db.models import Count, Q
-from django.utils import timezone
-from datetime import date, timedelta
-
-from students.models import Student, ClassRoom
-from .models import Attendance
-
-
 @login_required
 def attendance_history(request):
 
@@ -163,11 +151,7 @@ def admin_mark_attendance(request):
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
+       
         return redirect("dashboard")
 
     classrooms = ClassRoom.objects.all().order_by(
@@ -261,11 +245,6 @@ def admin_attendance_history(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
 
         return redirect("dashboard")
 
@@ -384,11 +363,6 @@ def admin_today_attendance(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
 
         return redirect("dashboard")
 

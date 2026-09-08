@@ -570,12 +570,6 @@ def admin_students(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
         return redirect("dashboard")
 
     students = (
@@ -621,12 +615,6 @@ def admin_report_cards(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
         return redirect("dashboard")
 
     search = request.GET.get("search", "").strip()
@@ -729,11 +717,6 @@ def admin_student_report_card(request, student_id):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
 
         return redirect("dashboard")
 

@@ -165,11 +165,7 @@ def admin_notice_list(request):
     
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
+        
         return redirect("dashboard")
     notices = (
         Notice.objects
@@ -925,12 +921,6 @@ def student_results(request):
 def admin_view_marks(request):
     
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
         return redirect("dashboard")
     
     marks = (
@@ -1035,11 +1025,6 @@ def admin_view_marks(request):
 @login_required
 def admin_add_marks(request):
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-    
-            messages.error(
-                request,
-                "You are not authorized to access this page."
-            )
     
             return redirect("dashboard")
     

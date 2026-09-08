@@ -13,12 +13,10 @@ def student_upgrade(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
+        # messages.error(
+        #     request,
+        #     "You are not authorized to access this page."
+        # )
         return redirect("dashboard")
 
     form = StudentUpgradeForm()
@@ -131,11 +129,6 @@ def create_classroom(request):
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
 
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
         return redirect("dashboard")
 
     if request.method == "POST":
@@ -176,11 +169,6 @@ def add_student(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
 
         return redirect("dashboard")
 

@@ -154,12 +154,10 @@ def admin_dashboard(request):
 
     # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access the Admin Dashboard."
-        )
-
+        # messages.error(
+        #     request,
+        #     "You are not authorized to access the Admin Dashboard."
+        # )
         return redirect("dashboard")
 
     # Count complete system data
