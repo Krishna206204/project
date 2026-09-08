@@ -1,17 +1,11 @@
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Student Portal</title>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css"
-      integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
+    <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.0/css/all.min.css" integrity="sha512-ApSLB1Pd3/bZN8fWB/RG9YhN/7bd9Hkf3AGaE2mPfebjrxagjuBtx2GcgdqIlJkUzwylBo61r9Xa9NmgBI0swA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   </head>
 
   <body class="min-h-screen bg-slate-50 text-slate-800">
@@ -25,7 +19,7 @@
           href="{% url 'login-selection' %}"
           class="absolute -top-0 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 rounded-xl bg-blue-500 px-4 py-1 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-600"
         >
-        <i class="fa-solid fa-arrow-left"></i>
+          <i class="fa-solid fa-arrow-left"></i>
           <p>Back</p>
         </a>
 
@@ -88,13 +82,13 @@
             />
           </div>
 
-          {% if error_message %}
+          {% comment %} {% if error_message %}
           <div
             class="rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm text-red-700"
           >
             {{ error_message }}
           </div>
-          {% endif %}
+          {% endif %} {% endcomment %}
 
           <!-- Login Button -->
           <button
@@ -105,7 +99,7 @@
           </button>
         </form>
 
-        <div class="mt-5 text-center">
+        {% comment %} <div class="mt-5 text-center">
           <p class="text-sm text-slate-600">Are you a teacher?</p>
 
           <a
@@ -117,6 +111,22 @@
           </a>
         </div>
       </div>
-    </div>
+    </div> {% endcomment %}
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            Swal.fire({
+                toast: true,
+                position: "top-end",
+                title: "{{ message.tags|title }}",
+                text: "{{ message|escapejs }}",
+                icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+                timer: 2500,
+                timerProgressBar: true,
+                showConfirmButton: false
+            });
+        </script>
+    {% endfor %}
+{% endif %}
   </body>
 </html>

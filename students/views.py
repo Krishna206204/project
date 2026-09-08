@@ -80,19 +80,23 @@ def student(request):
     return render(request, "students/student_list.html", context)
 
 
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
 def student_lookup(request):
     if request.method == "POST":
 
         student_id = request.POST.get("student_id")
-        # phone = request.POST.get("phone")
-        date_of_birth=request.POST.get("date_of_birth")
+        date_of_birth = request.POST.get("date_of_birth")
 
         try:
             student = Student.objects.get(
                 id=student_id,
                 date_of_birth=date_of_birth,
             )
+
             request.session["student_id"] = student.id
+
             messages.success(request, "Login successful")
 
             return redirect(
@@ -102,15 +106,17 @@ def student_lookup(request):
 
         except Student.DoesNotExist:
 
-            return render(
+            messages.error(
                 request,
-                "students/student_lookup.html",
-                {
-                    "error_message": "Invalid Student ID or Date of birth."
-                }
+                "Invalid Student ID or Date of Birth."
             )
 
-    return render(request, "students/student_lookup.html")
+            return redirect("student-lookup")
+
+    return render(
+        request,
+        "students/student_lookup.html"
+    )
 
 
 
