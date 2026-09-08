@@ -3,7 +3,7 @@ from . import views
 
 urlpatterns = [
     path(
-        "student-upgrade/",
+        "student/upgrade/",
         views.student_upgrade,
         name="student-upgrade"
     ),
@@ -13,7 +13,7 @@ urlpatterns = [
         name="create-classroom"
     ),
     path(
-        "add-student/",
+        "add/student/",
         views.add_student,
         name="add-student"
     ),

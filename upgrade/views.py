@@ -115,7 +115,7 @@ def student_upgrade(request):
         }
     )
     
-
+@login_required
 def create_classroom(request):
 
     if request.method == "POST":
@@ -147,7 +147,7 @@ def create_classroom(request):
         }
     )
 
-
+@login_required
 def add_student(request):
 
     if request.method == "POST":

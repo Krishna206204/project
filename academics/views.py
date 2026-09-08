@@ -5,6 +5,9 @@ from django.contrib.auth.decorators import login_required
 from .models import Assignment, Marks, Subject,Notice
 from students.models import ClassRoom, Student
 from django.core.paginator import Paginator
+from django.db import transaction
+
+
 @login_required
 def add_assignment(request):
     classroom = ClassRoom.objects.filter(teacher=request.user).first()
@@ -158,7 +161,7 @@ def notice(request):
     )
     
 
-
+@login_required
 def admin_notice_list(request):
 
     notices = (
@@ -176,7 +179,7 @@ def admin_notice_list(request):
     )
     
     
-    
+@login_required
 def admin_add_notice(request):
 
     if request.method == "POST":
@@ -325,6 +328,7 @@ def add_marks(request):
         context
     )
     
+    
 @login_required
 def view_marks(request):
 
@@ -353,16 +357,9 @@ def view_marks(request):
 
     if classroom:
 
-        # -----------------------------------------
-        # Subjects
-        # -----------------------------------------
         subjects = Subject.objects.filter(
             classroom=classroom
         )
-
-        # -----------------------------------------
-        # All exam names
-        # -----------------------------------------
         exam_names = list(
             Marks.objects
             .filter(
@@ -375,9 +372,6 @@ def view_marks(request):
             .distinct()
         )
 
-        # -----------------------------------------
-        # Find latest exam
-        # -----------------------------------------
         latest_exam = (
             Marks.objects
             .filter(
@@ -390,16 +384,10 @@ def view_marks(request):
             )
             .first()
         )
-
-        # -----------------------------------------
-        # Default exam = latest exam
-        # -----------------------------------------
+        
         if not selected_exam:
             selected_exam = latest_exam
 
-        # -----------------------------------------
-        # Get marks
-        # -----------------------------------------
         marks = (
             Marks.objects
             .filter(
@@ -414,36 +402,26 @@ def view_marks(request):
             )
         )
 
-        # -----------------------------------------
-        # Student filter
-        # -----------------------------------------
+
         if student_name:
 
             marks = marks.filter(
                 student__name__icontains=student_name
             )
 
-        # -----------------------------------------
-        # Subject filter
-        # -----------------------------------------
         if subject_id:
 
             marks = marks.filter(
                 subject_id=subject_id
             )
 
-        # -----------------------------------------
-        # Exam filter
-        # -----------------------------------------
+
         if selected_exam:
 
             marks = marks.filter(
                 exam_name=selected_exam
             )
 
-    # ==================================================
-    # PAGINATION
-    # ==================================================
 
     paginator = Paginator(
         marks,
@@ -458,9 +436,6 @@ def view_marks(request):
         page_number
     )
 
-    # ==================================================
-    # PAGINATION RANGE
-    # ==================================================
 
     current_page = page_obj.number
     total_pages = paginator.num_pages
@@ -487,9 +462,6 @@ def view_marks(request):
 
             page_range.append("...")
 
-    # ==================================================
-    # CONTEXT
-    # ==================================================
 
     context = {
 
@@ -517,6 +489,8 @@ def view_marks(request):
         "academics/marks_list.html",
         context
     )
+
+
 
 @login_required
 def edit_marks(request, mark_id):
@@ -668,7 +642,7 @@ def edit_marks(request, mark_id):
     
     
     
-# added
+@login_required
 def report_card(request, student_id, exam_name):
 
     student = get_object_or_404(
@@ -766,6 +740,7 @@ def report_card(request, student_id, exam_name):
     return render(request, "academics/report_card.html", context)
 
 
+@login_required
 def marks_delete(request, mark_id):
     mark = get_object_or_404(Marks, id=mark_id)
 
@@ -783,8 +758,7 @@ def marks_delete(request, mark_id):
 
 
 
-from django.urls import reverse
-
+@login_required
 def student_results(request):
 
     classroom = ClassRoom.objects.filter(
@@ -939,9 +913,9 @@ def student_results(request):
         context
     )
 
+
 @login_required
 def admin_view_marks(request):
-
     marks = (
         Marks.objects
         .select_related(
@@ -1040,7 +1014,7 @@ def admin_view_marks(request):
     )
 
 
-from django.db import transaction
+
 @login_required
 def admin_add_marks(request):
     classrooms = ClassRoom.objects.all().order_by("name", "section")
@@ -1195,7 +1169,7 @@ def admin_add_marks(request):
 
         messages.success(
             request,
-            f"Marks saved successfully for {len(marks_data)} student(s)."
+            f"Marks saved successfully for {len(marks_data)} students."
         )
 
         return redirect("admin-view-marks")

@@ -13,8 +13,6 @@ def login_selection(request):
 def home(request):
     return render(request,"accounts/home.html")
 
-# def contact(request):
-#     return render(request,"accounts/contact.html")
 
 def contact(request):
     if request.method == "POST":
@@ -94,8 +92,8 @@ def admin_logout(request):
     return redirect("home")
 
 
+@login_required
 def admin_login(request):
-
     # If already logged in
     if request.user.is_authenticated:
 
@@ -187,7 +185,6 @@ def admin_dashboard(request):
         "accounts/admin_dashboard.html",
         context
     )
-    
     
     
     

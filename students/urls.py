@@ -58,7 +58,3 @@ urlpatterns = [
         ),
     
 ]
-
-# the teacher logout is changed to the teacher_logout to the views.py 
-# urls.py and sidebar  and same thing is done for the student 
-# to make more effective and smooth access of the login and logout

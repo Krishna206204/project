@@ -33,9 +33,8 @@ def student_login_required(view_func):
         return view_func(request, *args, **kwargs)
     return wrapper
 
-
+@login_required
 def student(request):
-    # Get the classroom assigned to the logged-in teacher
     classroom = ClassRoom.objects.filter(
         teacher=request.user
     ).first()
@@ -112,6 +111,8 @@ def student_lookup(request):
             )
 
     return render(request, "students/student_lookup.html")
+
+
 
 
 @student_login_required
@@ -265,11 +266,6 @@ def student_marks(request, student_id):
             subject__name__icontains=search_query
         )
 
-
-    # -----------------------------------------
-    # Prepare rows for template
-    # -----------------------------------------
-
     mark_rows = []
 
     for mark in marks:
@@ -325,6 +321,8 @@ def student_marks(request, student_id):
         "students/student_marks.html",
         context
     )
+    
+    
 
 # login requird
 
@@ -541,8 +539,6 @@ def student_notice(request, student_id):
         Student.objects.select_related("classroom"),
         pk=student_id
     )
-
-    # Get all notices, newest first
     notice_list = Notice.objects.all().order_by("-created_at")
 
     context = {
@@ -556,6 +552,7 @@ def student_notice(request, student_id):
         context
     )
     
+    
 # added Logout
 def student_logout(request):
     request.session.flush()   
@@ -567,9 +564,8 @@ def student_logout(request):
 
 
 
+
 # admin
-
-
 @login_required
 def admin_students(request):
 
@@ -613,7 +609,7 @@ def admin_students(request):
 
 
 
-
+@login_required
 def admin_report_cards(request):
     search = request.GET.get("search", "").strip()
     classroom_id = request.GET.get("classroom", "").strip()

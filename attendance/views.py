@@ -15,7 +15,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.utils import timezone
 
-
+@login_required
 def today_attendance(request):
     today = date.today()
 
@@ -34,6 +34,8 @@ def today_attendance(request):
     return render(request, "attendance/today_attendance.html", context)
 
 
+
+@login_required
 def mark_attendance(request):
     classroom = ClassRoom.objects.filter(teacher=request.user).first()
     if not classroom:
@@ -64,6 +66,8 @@ def mark_attendance(request):
     )
 
 
+
+@login_required
 def attendance_history(request):
     from_date = request.GET.get("from")
     to_date = request.GET.get("to")
@@ -111,6 +115,7 @@ def attendance_history(request):
 
 
 
+@login_required
 def admin_mark_attendance(request):
 
     classrooms = ClassRoom.objects.all().order_by("name", "section")
@@ -272,6 +277,8 @@ def admin_attendance_history(request):
     )
 
 
+
+@login_required
 def admin_today_attendance(request):
 
     today = date.today()
@@ -341,7 +348,7 @@ def admin_today_attendance(request):
 
 
 
-
+@login_required
 def admin_today_attendance(request):
 
     today = date.today()

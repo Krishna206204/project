@@ -2,6 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.views.generic import ListView
 from django.db.models import Q
 from .models import ActivityLog
+from django.contrib.auth.decorators import login_required
 
 class LogActivityListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
     model = ActivityLog
