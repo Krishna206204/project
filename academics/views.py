@@ -783,10 +783,14 @@ def marks_delete(request, mark_id):
 
 
 
-
+from django.urls import reverse
 
 def student_results(request):
-    classroom = ClassRoom.objects.filter(teacher=request.user).first()
+
+    classroom = ClassRoom.objects.filter(
+        teacher=request.user
+    ).first()
+
     if not classroom:
         messages.error(request, "No classroom assigned to you.")
         return redirect("dashboard")
@@ -794,38 +798,66 @@ def student_results(request):
     search_query = request.GET.get("search", "").strip()
     selected_exam = request.GET.get("exam", "").strip()
 
-    students = Student.objects.filter(classroom=classroom).select_related("classroom")
+    # Students belonging to teacher's classroom
+    students = Student.objects.filter(
+        classroom=classroom
+    ).select_related("classroom")
 
     if search_query:
-        students = students.filter(name__icontains=search_query)
+        students = students.filter(
+            name__icontains=search_query
+        )
 
-    available_exams = list(
-        Marks.objects.filter(student__classroom=classroom)
-        .values_list("exam_name", flat=True)
-        .distinct()
-        .order_by("exam_name")
-    )
+    # Get marks of students in this classroom
+    classroom_marks = Marks.objects.filter(
+        student__in=students
+    ).order_by("-id")
 
-    student_results = []
+    # Get exam names in latest-first order
+    available_exams = []
+
+    for mark in classroom_marks:
+        if mark.exam_name and mark.exam_name not in available_exams:
+            available_exams.append(mark.exam_name)
+
+    # Latest exam selected automatically
+    if not selected_exam and available_exams:
+        selected_exam = available_exams[0]
+
+    # If invalid exam was supplied, use latest exam
+    if selected_exam not in available_exams:
+        if available_exams:
+            selected_exam = available_exams[0]
+        else:
+            selected_exam = ""
+
+    students_results = []
     percentages = []
 
     for student in students:
-        marks_qs = Marks.objects.filter(student=student)
+
+        marks_qs = Marks.objects.filter(
+            student=student
+        ).select_related("subject")
 
         if selected_exam:
-            marks_qs = marks_qs.filter(exam_name=selected_exam)
-
-        marks_qs = marks_qs.select_related("subject")
+            marks_qs = marks_qs.filter(
+                exam_name=selected_exam
+            )
 
         total_full_marks = 0
         total_obtained_marks = 0
 
         for mark in marks_qs:
+
             total_full_marks += mark.full_marks or 0
             total_obtained_marks += mark.marks_obtained or 0
 
-        if total_full_marks:
-            percentage = round((total_obtained_marks / total_full_marks) * 100, 2)
+        if total_full_marks > 0:
+            percentage = round(
+                (total_obtained_marks / total_full_marks) * 100,
+                2
+            )
         else:
             percentage = 0
 
@@ -843,48 +875,69 @@ def student_results(request):
             grade = "F"
 
         percentages.append(percentage)
-        student_results.append(
-            {
-                "student": student,
-                "total_marks": total_full_marks,
-                "obtained_marks": total_obtained_marks,
-                "percentage": percentage,
-                "grade": grade,
-                "report_url": (
-                    reverse(
-                        "report-card",
-                        kwargs={
-                            "student_id": student.id,
-                            "exam_name": selected_exam or "",
-                        },
-                    )
-                    if selected_exam
-                    else reverse(
-                        "report-card",
-                        kwargs={"student_id": student.id, "exam_name": "Mid-Term"},
-                    )
-                ),
-            }
-        )
 
-    total_students = len(student_results)
-    class_average = round(sum(percentages) / total_students, 2) if total_students else 0
-    highest_percentage = max(percentages) if percentages else 0
-    lowest_percentage = min(percentages) if percentages else 0
+        if selected_exam:
+            report_url = reverse(
+                "report-card",
+                kwargs={
+                    "student_id": student.id,
+                    "exam_name": selected_exam,
+                }
+            )
+        else:
+            report_url = "#"
+
+        students_results.append({
+            "student": student,
+            "total_marks": total_full_marks,
+            "obtained_marks": total_obtained_marks,
+            "percentage": percentage,
+            "grade": grade,
+            "report_url": report_url,
+        })
+
+    total_students = len(students_results)
+
+    class_average = (
+        round(
+            sum(percentages) / total_students,
+            2
+        )
+        if total_students
+        else 0
+    )
+
+    highest_percentage = (
+        max(percentages)
+        if percentages
+        else 0
+    )
+
+    lowest_percentage = (
+        min(percentages)
+        if percentages
+        else 0
+    )
 
     context = {
-        "students_results": student_results,
+        "students_results": students_results,
+
         "total_students": total_students,
         "class_average": class_average,
         "highest_percentage": highest_percentage,
         "lowest_percentage": lowest_percentage,
+
         "available_exams": available_exams,
         "selected_exam": selected_exam,
+
         "search_query": search_query,
     }
-    return render(request, "academics/student_results.html", context)
 
-
+    return render(
+        request,
+        "academics/student_results.html",
+        context
+    )
 
 @login_required
 def admin_view_marks(request):
