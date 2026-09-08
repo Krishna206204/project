@@ -1,227 +1,126 @@
 {% extends 'adminbase.html' %}
 
-
 {% block title %}
     Student Report Card
 {% endblock %}
-
 
 {% block page_label %}
     Academic Records
 {% endblock %}
 
-
 {% block page_title %}
     Student Report Card
 {% endblock %}
 
-
 {% block content %}
 
+<section class="space-y-6">
 
-<!-- Top Actions -->
+    <div class="flex justify-end print:hidden">
 
-<div class="mb-6 flex items-center justify-between print:hidden">
+        <div class="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
 
-    <!-- Back Button -->
+            <a
+                href="{% url 'admin-report-cards' %}"
+                class="inline-flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 sm:w-auto"
+            >
+                <i class="fa-solid fa-arrow-left mr-2"></i>
+                Back to Students
+            </a>
 
-    <a
-        href="{% url 'admin-report-cards' %}"
-        class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
-    >
-
-        <i class="fa-solid fa-arrow-left"></i>
-
-        Back to Students
-
-    </a>
-
-
-    <!-- Download -->
-
-    <button
-        type="button"
-        onclick="downloadReportCard()"
-        class="inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white shadow-md transition duration-200 hover:bg-red-700 hover:shadow-lg active:scale-95"
-    >
-
-        <i class="fa-solid fa-file-pdf"></i>
-
-        Download PDF
-
-    </button>
-
-</div>
-
-
-
-<!-- Report Card -->
-
-<div id="report-card" class="space-y-6">
-
-
-    <!-- School / Report Header -->
-
-    <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5">
-
-        <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-
-
-            <!-- School Information -->
-
-            <div>
-
-                <h2 class="text-2xl font-semibold text-slate-900 sm:text-3xl">
-                    {{ school_name |title}}
-                </h2>
-
-                <p class="mt-1 text-sm text-slate-600">
-                    {{ school_address |title }}
-                </p>
-
-            </div>
-
-
-            <!-- Exam Information -->
-
-            <div class="rounded-2xl border border-slate-200 bg-white px-5 py-4 shadow-sm">
-
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    {{ report_title |title}}
-                </p>
-
-                <h3 class="mt-2 text-xl font-semibold text-slate-900">
-                    {{ exam_name |title}}
-                </h3>
-
-                <p class="mt-1 text-sm text-slate-600">
-                    Academic Session: {{ academic_session }}
-                </p>
-
-            </div>
+            <button
+                type="button"
+                onclick="downloadReportCard()"
+                class="inline-flex w-full items-center justify-center rounded-lg bg-emerald-700 px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:bg-emerald-800 sm:w-auto"
+            >
+                <i class="fa-solid fa-download mr-2"></i>
+                Download PDF
+            </button>
 
         </div>
 
     </div>
 
+    <div
+        id="report-card"
+        class="mx-auto w-full max-w-5xl overflow-hidden border-2 border-slate-900 bg-white text-slate-900 shadow-sm sm:rounded-xl"
+    >
 
+        <div class="border-b-2 border-slate-900 px-3 py-5 text-center sm:px-8 sm:py-6">
 
-    <!-- Student Information -->
+            <h1 class="break-words text-xl font-bold uppercase tracking-wide sm:text-3xl">
+                {{ school_name|upper }}
+            </h1>
 
-    <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <h4 class="mt-1 break-words text-xs text-slate-700 sm:text-sm">
+                {{ school_address|upper }}
+            </h4>
 
-        <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-5">
+            <h2 class="mt-4 text-lg font-bold uppercase sm:text-2xl">
+                {{ report_title }}
+            </h2>
 
-
-            <!-- Student Name -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    Student Name
-                </p>
-
-                <p class="mt-2 text-base font-semibold text-slate-900">
-                    {{ student.name |title}}
-                </p>
-
-            </div>
-
-
-            <!-- Student ID -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    Student ID
-                </p>
-
-                <p class="mt-2 text-base font-semibold text-slate-900">
-                    STD-00{{ student.id }}
-                </p>
-
-            </div>
-
-
-            <!-- Class -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    Class
-                </p>
-
-                <p class="mt-2 text-base font-semibold text-slate-900">
-                    {{ student.classroom.name |title}}
-                </p>
-
-            </div>
-
-
-            <!-- Section -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    Section
-                </p>
-
-                <p class="mt-2 text-base font-semibold text-slate-900">
-                    {{ student.classroom.section|default:"-" }}
-                </p>
-
-            </div>
-
-
-            <!-- Exam Name -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-
-                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    Exam Name
-                </p>
-
-                <p class="mt-2 text-base font-semibold text-slate-900">
-                    {{ exam_name |title }}
-                </p>
-
-            </div>
-
+            <h3 class="mt-1 text-xs font-semibold sm:text-base">
+                {{ exam_name }}
+            </h3>
 
         </div>
 
-    </div>
+        <div class="grid grid-cols-1 border-b-2 border-slate-900 sm:grid-cols-2">
 
+            <div class="min-w-0 border-b border-slate-900 px-3 py-2.5 text-sm sm:border-r sm:px-4 sm:py-3 sm:text-base">
+                <span class="font-bold">Student Name:</span>
+                <span class="break-words">{{ student.name|title }}</span>
+            </div>
 
+            <div class="min-w-0 border-b border-slate-900 px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base">
+                <span class="font-bold">Student ID:</span>
+                <span>STD-00{{ student.id }}</span>
+            </div>
 
-    <!-- Subject Marks -->
+            <div class="min-w-0 border-b border-slate-900 px-3 py-2.5 text-sm sm:border-r sm:px-4 sm:py-3 sm:text-base">
+                <span class="font-bold">Class:</span>
+                <span>{{ student.classroom.name|title }}</span>
+            </div>
 
-    <div class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+            <div class="min-w-0 border-b border-slate-900 px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base">
+                <span class="font-bold">Section:</span>
+                <span>{{ student.classroom.section|title }}</span>
+            </div>
 
-        <div class="overflow-x-auto">
+            <div class="min-w-0 border-b border-slate-900 px-3 py-2.5 text-sm sm:border-b-0 sm:border-r sm:px-4 sm:py-3 sm:text-base">
+                <span class="font-bold">Academic Session:</span>
+                <span>{{ academic_session }}</span>
+            </div>
 
-            <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+            <div class="min-w-0 px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base">
+                <span class="font-bold">Exam:</span>
+                <span>{{ exam_name|title }}</span>
+            </div>
 
+        </div>
 
-                <!-- Header -->
+        <div class="w-full overflow-x-auto">
 
-                <thead class="bg-slate-50 text-slate-600">
+            <table class="w-full min-w-[600px] border-collapse text-xs sm:min-w-[650px] sm:text-sm">
 
-                    <tr>
+                <thead>
 
-                        <th class="px-5 py-3 font-semibold">
+                    <tr class="bg-slate-100">
+
+                        <th class="w-[40%] border-b border-r border-slate-900 px-2 py-2 text-left font-bold sm:px-4 sm:py-3">
                             Subject
                         </th>
 
-                        <th class="px-5 py-3 font-semibold">
+                        <th class="w-[20%] border-b border-r border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3">
                             Full Marks
                         </th>
 
-                        <th class="px-5 py-3 font-semibold">
+                        <th class="w-[20%] border-b border-r border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3">
                             Obtained Marks
                         </th>
 
-                        <th class="px-5 py-3 font-semibold">
+                        <th class="w-[20%] border-b border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3">
                             Percentage
                         </th>
 
@@ -229,54 +128,29 @@
 
                 </thead>
 
-
-                <!-- Body -->
-
-                <tbody class="divide-y divide-slate-200 bg-white text-slate-700">
+                <tbody>
 
                     {% for row in subject_rows %}
 
-                    <tr class="hover:bg-slate-50">
+                    <tr class="even:bg-slate-50">
 
-
-                        <!-- Subject -->
-
-                        <td class="px-5 py-3 font-medium text-slate-900">
-
-                            {{ row.subject |title }}
-
+                        <td class="border-b border-r border-slate-900 px-2 py-2 font-medium sm:px-4 sm:py-2.5">
+                            {{ row.subject|title }}
                         </td>
 
-
-                        <!-- Full Marks -->
-
-                        <td class="px-5 py-3">
-
+                        <td class="border-b border-r border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5">
                             {{ row.full_marks }}
-
                         </td>
 
-
-                        <!-- Obtained Marks -->
-
-                        <td class="px-5 py-3">
-
+                        <td class="border-b border-r border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5">
                             {{ row.obtained_marks }}
-
                         </td>
 
-
-                        <!-- Percentage -->
-
-                        <td class="px-5 py-3">
-
+                        <td class="border-b border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5">
                             {{ row.percentage }}%
-
                         </td>
-
 
                     </tr>
-
 
                     {% empty %}
 
@@ -284,15 +158,9 @@
 
                         <td
                             colspan="4"
-                            class="px-5 py-8 text-center text-slate-500"
+                            class="border-b border-slate-900 px-4 py-6 text-center text-slate-500"
                         >
-
-                            <i class="fa-solid fa-file-circle-xmark mb-2 text-xl"></i>
-
-                            <p class="font-medium">
-                                No marks found for this student and exam.
-                            </p>
-
+                            No marks found for this student and exam.
                         </td>
 
                     </tr>
@@ -305,95 +173,101 @@
 
         </div>
 
-    </div>
+        <div class="grid grid-cols-2 border-b-2 border-slate-900 sm:grid-cols-5">
 
+            <div class="border-b border-r border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:px-3 sm:text-sm">
 
-
-    <!-- Result Summary -->
-
-    <div class="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]">
-
-
-        <!-- Marks Summary -->
-
-        <div class="grid gap-4 sm:grid-cols-2">
-
-
-            <!-- Total Marks -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
-
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
+                <p class="font-bold">
                     Total Marks
                 </p>
 
-                <p class="mt-3 text-3xl font-semibold text-slate-900">
+                <p class="mt-1">
                     {{ total_full_marks }}
                 </p>
 
             </div>
 
+            <div class="border-b border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:border-r sm:px-3 sm:text-sm">
 
-            <!-- Obtained Marks -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
-
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    Obtained Marks
+                <p class="font-bold">
+                    Obtained
                 </p>
 
-                <p class="mt-3 text-3xl font-semibold text-slate-900">
+                <p class="mt-1">
                     {{ total_obtained_marks }}
                 </p>
 
             </div>
 
+            <div class="border-b border-r border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:px-3 sm:text-sm">
 
-            <!-- Overall Percentage -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
-
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
-                    Overall Percentage
+                <p class="font-bold">
+                    Percentage
                 </p>
 
-                <p class="mt-3 text-3xl font-semibold text-slate-900">
+                <p class="mt-1">
                     {{ overall_percentage }}%
                 </p>
 
             </div>
 
+            <div class="border-b border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:border-r sm:px-3 sm:text-sm">
 
-            <!-- Grade -->
-
-            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
-
-                <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-500">
+                <p class="font-bold">
                     Grade
                 </p>
 
-                <p class="mt-3 text-3xl font-semibold text-emerald-700">
-                    {{ grade | title }}
+                <p class="mt-1">
+                    {{ grade }}
                 </p>
 
             </div>
 
+            <div class="col-span-2 px-2 py-3 text-center text-xs sm:col-span-1 sm:px-3 sm:text-sm">
+
+                <p class="font-bold">
+                    Result
+                </p>
+
+                <p class="mt-1 font-semibold">
+                    {{ result }}
+                </p>
+
+            </div>
 
         </div>
 
+        <div class="min-h-[110px] border-b-2 border-slate-900 px-3 py-4 text-sm sm:px-6 sm:text-base">
 
-
-        <!-- Result -->
-
-        <div class="flex flex-col justify-center rounded-3xl border border-emerald-200 bg-emerald-50 p-8 text-center shadow-sm">
-
-            <p class="text-sm font-semibold uppercase tracking-[0.3em] text-emerald-700">
-                Result
+            <p class="font-bold">
+                Teacher Remarks:
             </p>
 
-            <div class="mt-4 rounded-full border border-emerald-300 bg-white px-8 py-6 text-4xl font-bold tracking-[0.15em] text-emerald-700 shadow-sm sm:text-6xl">
+            <div class="mt-4 min-h-[45px] break-words leading-7">
+                {{ remarks|default:"Excellent performance." }}
+            </div>
 
-                {{ result }}
+        </div>
+
+        <div class="grid grid-cols-2 gap-4 px-4 pb-5 pt-10 sm:gap-8 sm:px-12 sm:pt-14">
+
+            <div class="text-center text-xs sm:text-sm">
+
+                <div class="mb-2 border-t border-slate-900"></div>
+
+                <p class="font-semibold">
+                    Class Teacher
+                </p>
+
+            </div>
+
+            <div class="text-center text-xs sm:text-sm">
+
+                <div class="mb-2 border-t border-slate-900"></div>
+
+                <p class="font-semibold">
+                    Principal
+                </p>
 
             </div>
 
@@ -401,137 +275,152 @@
 
     </div>
 
-
-
-    <!-- Teacher Remarks -->
-
-    <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
-
-        <h3 class="text-lg font-semibold text-slate-900">
-            Teacher Remarks
-        </h3>
-
-        <div class="mt-4 rounded-2xl border border-slate-200 bg-slate-50 p-5 text-sm leading-7 text-slate-700">
-
-            {{ remarks |title}}
-
-        </div>
-
-    </div>
-
-
-</div>
-
-
-
-<!-- Download / Print -->
+</section>
 
 <script>
 
-function downloadReportCard() {
-
-    window.print();
-
-}
+    function downloadReportCard() {
+        window.print();
+    }
 
 </script>
 
-
-
-<!-- Print / PDF Styling -->
-
 <style>
 
-@media print {
+    @media screen and (max-width: 640px) {
 
-    @page {
-        size: A4;
-        margin: 12mm;
-    }
+        #report-card {
+            width: 100%;
+            max-width: 100%;
+            border-width: 2px;
+        }
 
+        #report-card span {
+            overflow-wrap: anywhere;
+        }
 
-    body * {
-        visibility: hidden;
-    }
+        #report-card table {
+            font-size: 12px;
+        }
 
+        #report-card th,
+        #report-card td {
+            white-space: nowrap;
+        }
 
-    #report-card,
-    #report-card * {
-        visibility: visible;
-    }
-
-
-    #report-card {
-
-        position: absolute;
-
-        left: 0;
-
-        top: 0;
-
-        width: 100%;
+        #report-card .grid > div {
+            min-width: 0;
+        }
 
     }
 
+    @media print {
 
-    body {
+        @page {
+            size: A4 portrait;
+            margin: 8mm;
+        }
 
-        background: white !important;
+        body {
+            background: white !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        body * {
+            visibility: hidden;
+        }
+
+        #report-card,
+        #report-card * {
+            visibility: visible;
+        }
+
+        #report-card {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            max-width: none;
+            margin: 0;
+            border-width: 2px !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            font-size: 11px;
+        }
+
+        #report-card h1 {
+            font-size: 20px !important;
+        }
+
+        #report-card h2 {
+            font-size: 16px !important;
+        }
+
+        #report-card h3 {
+            font-size: 11px !important;
+        }
+
+        #report-card .px-3,
+        #report-card .px-4 {
+            padding-left: 8px !important;
+            padding-right: 8px !important;
+        }
+
+        #report-card .py-5,
+        #report-card .py-6 {
+            padding-top: 10px !important;
+            padding-bottom: 10px !important;
+        }
+
+        #report-card .py-4 {
+            padding-top: 8px !important;
+            padding-bottom: 8px !important;
+        }
+
+        #report-card .py-2\.5,
+        #report-card .py-3 {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+
+        #report-card .py-2 {
+            padding-top: 4px !important;
+            padding-bottom: 4px !important;
+        }
+
+        #report-card .pt-10,
+        #report-card .pt-14 {
+            padding-top: 30px !important;
+        }
+
+        #report-card .pb-5 {
+            padding-bottom: 10px !important;
+        }
+
+        #report-card .min-h-\[110px\] {
+            min-height: 70px !important;
+        }
+
+        #report-card .min-h-\[45px\] {
+            min-height: 25px !important;
+        }
+
+        .print\:hidden {
+            display: none !important;
+        }
+
+        table {
+            page-break-inside: auto;
+        }
+
+        tr {
+            page-break-inside: avoid;
+            page-break-after: auto;
+        }
 
     }
-
-
-    .shadow-sm,
-    .shadow,
-    .shadow-md,
-    .shadow-lg {
-
-        box-shadow: none !important;
-
-    }
-
-
-    table {
-
-        width: 100% !important;
-
-        border-collapse: collapse !important;
-
-    }
-
-
-    tr {
-
-        page-break-inside: avoid;
-
-    }
-
-
-    th,
-    td {
-
-        border-color: #cbd5e1 !important;
-
-    }
-
-
-    .rounded-3xl,
-    .rounded-2xl {
-
-        page-break-inside: avoid;
-
-    }
-
-
-    .overflow-x-auto {
-
-        overflow: visible !important;
-
-    }
-
-}
 
 </style>
-
 
 {% endblock %}

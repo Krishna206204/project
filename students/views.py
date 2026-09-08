@@ -609,18 +609,35 @@ def admin_students(request):
     return render(request, "students/admin_student.html", context)
 
 
-@login_required
-def admin_report_cards(request):
 
+from django.core.paginator import Paginator
+
+
+
+def admin_report_cards(request):
     search = request.GET.get("search", "").strip()
     classroom_id = request.GET.get("classroom", "").strip()
     exam_name = request.GET.get("exam_name", "").strip()
+
+  
+    exam_names = list(
+        Marks.objects
+        .values_list("exam_name", flat=True)
+        .distinct()
+        .order_by("-id")
+    )
+
+    # Remove duplicate exam names while preserving order
+    exam_names = list(dict.fromkeys(exam_names))
+
+ 
+    if not exam_name and exam_names:
+        exam_name = exam_names[0]
 
     students = Student.objects.select_related(
         "classroom"
     ).all()
 
-    # Search
     if search:
 
         if search.isdigit():
@@ -635,35 +652,58 @@ def admin_report_cards(request):
                 name__icontains=search
             )
 
-    # Class filter
     if classroom_id:
 
         students = students.filter(
             classroom_id=classroom_id
         )
 
-    # Exam filter
     if exam_name:
 
         students = students.filter(
             marks__exam_name__iexact=exam_name
         ).distinct()
 
-    classrooms = ClassRoom.objects.all().order_by("name")
 
-    exam_names = (
-        Marks.objects
-        .values_list("exam_name", flat=True)
-        .distinct()
-        .order_by("exam_name")
+    students = students.order_by(
+        "classroom__name",
+        "classroom__section",
+        "name"
+    )
+
+
+    classrooms = ClassRoom.objects.all().order_by(
+        "name",
+        "section"
+    )
+
+    paginator = Paginator(
+        students,
+        25
+    )
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(
+        page_number
     )
 
     context = {
-        "students": students,
+
+        "students": page_obj,
+
+        "page_obj": page_obj,
+
+        "paginator": paginator,
+
         "classrooms": classrooms,
+
         "exam_names": exam_names,
+
         "search": search,
+
         "selected_classroom": classroom_id,
+
         "selected_exam": exam_name,
     }
 
