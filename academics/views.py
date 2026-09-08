@@ -886,4 +886,277 @@ def student_results(request):
 
 
 
+@login_required
+def admin_view_marks(request):
 
+    marks = (
+        Marks.objects
+        .select_related(
+            "student",
+            "student__classroom",
+            "subject",
+        )
+        .all()
+        .order_by("-id")
+    )
+
+    classrooms = (
+        ClassRoom.objects
+        .all()
+        .order_by("name", "section")
+    )
+
+    subjects = (
+        Subject.objects
+        .all()
+        .order_by("name")
+    )
+
+    exam_names = (
+        Marks.objects
+        .exclude(exam_name__isnull=True)
+        .exclude(exam_name="")
+        .values_list("exam_name", flat=True)
+        .distinct()
+        .order_by("exam_name")
+    )
+
+    selected_student = request.GET.get("student", "").strip()
+    selected_class = request.GET.get("classroom", "").strip()
+    selected_subject = request.GET.get("subject", "").strip()
+    selected_exam = request.GET.get("exam", "").strip()
+
+    if not selected_exam:
+
+        latest_mark = (
+            Marks.objects
+            .exclude(exam_name__isnull=True)
+            .exclude(exam_name="")
+            .order_by("-id")
+            .first()
+        )
+
+        if latest_mark:
+            selected_exam = latest_mark.exam_name
+
+    if selected_student:
+        marks = marks.filter(
+            student__name__icontains=selected_student
+        )
+
+    if selected_class:
+        marks = marks.filter(
+            student__classroom_id=selected_class
+        )
+
+    if selected_subject:
+        marks = marks.filter(
+            subject_id=selected_subject
+        )
+
+    if selected_exam:
+        marks = marks.filter(
+            exam_name=selected_exam
+        )
+
+    paginator = Paginator(marks, 10)
+
+    page_number = request.GET.get("page")
+
+    page_obj = paginator.get_page(page_number)
+
+    context = {
+        "marks": page_obj,
+        "page_obj": page_obj,
+        "page_range": paginator.get_elided_page_range(
+            number=page_obj.number
+        ),
+        "classrooms": classrooms,
+        "subjects": subjects,
+        "exam_names": exam_names,
+        "selected_student": selected_student,
+        "selected_class": selected_class,
+        "selected_subject": selected_subject,
+        "selected_exam": selected_exam,
+    }
+
+    return render(
+        request,
+        "academics/admin_view_marks.html",
+        context
+    )
+
+
+from django.db import transaction
+@login_required
+def admin_add_marks(request):
+    classrooms = ClassRoom.objects.all().order_by("name", "section")
+
+    selected_classroom = request.GET.get("classroom", "").strip()
+
+    students = Student.objects.none()
+    subjects = Subject.objects.none()
+    classroom = None
+
+    if selected_classroom:
+        classroom = get_object_or_404(
+            ClassRoom,
+            id=selected_classroom
+        )
+
+        students = Student.objects.filter(
+            classroom=classroom
+        ).order_by("name")
+
+        subjects = Subject.objects.filter(
+            classroom=classroom
+        ).order_by("name")
+
+    if request.method == "POST":
+        classroom_id = request.POST.get("classroom", "").strip()
+        subject_id = request.POST.get("subject", "").strip()
+        exam_name = request.POST.get("exam_name", "").strip()
+        full_marks_value = request.POST.get("full_marks", "").strip()
+
+        if not classroom_id:
+            messages.error(request, "Please select a class.")
+            return redirect("admin-add-marks")
+
+        classroom = get_object_or_404(
+            ClassRoom,
+            id=classroom_id
+        )
+
+        students = Student.objects.filter(
+            classroom=classroom
+        ).order_by("name")
+
+        subjects = Subject.objects.filter(
+            classroom=classroom
+        ).order_by("name")
+
+        if not subject_id:
+            messages.error(request, "Please select a subject.")
+            return redirect(
+                f"/academics/admin/add-marks/?classroom={classroom_id}"
+            )
+
+        if not exam_name:
+            messages.error(request, "Please enter exam name.")
+            return redirect(
+                f"/academics/admin/add-marks/?classroom={classroom_id}"
+            )
+
+        try:
+            full_marks = float(full_marks_value)
+        except (ValueError, TypeError):
+            messages.error(
+                request,
+                "Please enter valid full marks."
+            )
+            return redirect(
+                f"/academics/admin/add-marks/?classroom={classroom_id}"
+            )
+
+        if full_marks <= 0:
+            messages.error(
+                request,
+                "Full marks must be greater than 0."
+            )
+            return redirect(
+                f"/academics/admin/add-marks/?classroom={classroom_id}"
+            )
+
+        subject = get_object_or_404(
+            Subject,
+            id=subject_id,
+            classroom=classroom
+        )
+
+        marks_data = {}
+        validation_error = None
+
+        for student in students:
+            marks_value = request.POST.get(
+                f"student_{student.id}",
+                ""
+            ).strip()
+
+            if marks_value == "":
+                continue
+
+            try:
+                marks_obtained = float(marks_value)
+            except (ValueError, TypeError):
+                validation_error = (
+                    f"Invalid marks entered for {student.name}."
+                )
+                break
+
+            if marks_obtained < 0:
+                validation_error = (
+                    f"Marks cannot be negative for {student.name}."
+                )
+                break
+
+            if marks_obtained > full_marks:
+                validation_error = (
+                    f"{student.name} cannot have more than "
+                    f"{full_marks:g} marks."
+                )
+                break
+
+            marks_data[student.id] = marks_obtained
+
+        if validation_error:
+            messages.error(request, validation_error)
+
+            return redirect(
+                f"/academics/admin/add-marks/?classroom={classroom_id}"
+            )
+
+        if not marks_data:
+            messages.warning(
+                request,
+                "Please enter marks for at least one student."
+            )
+
+            return redirect(
+                f"/academics/admin/add-marks/?classroom={classroom_id}"
+            )
+
+        with transaction.atomic():
+            for student in students:
+                if student.id not in marks_data:
+                    continue
+
+                Marks.objects.update_or_create(
+                    student=student,
+                    subject=subject,
+                    exam_name=exam_name,
+                    defaults={
+                        "marks_obtained": marks_data[student.id],
+                        "full_marks": full_marks,
+                    }
+                )
+
+        messages.success(
+            request,
+            f"Marks saved successfully for {len(marks_data)} student(s)."
+        )
+
+        return redirect("admin-view-marks")
+
+    context = {
+        "classrooms": classrooms,
+        "students": students,
+        "subjects": subjects,
+        "classroom": classroom,
+        "selected_classroom": selected_classroom,
+    }
+
+    return render(
+        request,
+        "academics/admin_add_marks.html",
+        context
+    )

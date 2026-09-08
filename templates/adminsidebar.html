@@ -7,64 +7,82 @@
         Jhime Malika Secondary School
     </a>
 
+
+    <!-- Mobile Menu Button -->
     <button
         id="menu-btn"
-        class="rounded-lg bg-[#0e1a3a] px-4 py-3 text-white"
-        type="button">
+        type="button"
+        class="rounded-lg bg-[#0e1a3a] px-4 py-3 text-white">
+
         <i class="fa-solid fa-bars text-xl"></i>
+
     </button>
 
 </div>
 
 
-<!-- Mobile Overlay -->
+
 <div
     id="menu-overlay"
     class="fixed inset-0 z-40 hidden bg-black/40 lg:hidden">
 </div>
 
 
-<!-- Sidebar -->
+
 <aside
     id="sidebar"
-    class="fixed inset-y-0 left-0 z-50 hidden w-72 bg-[#0e1a3a] p-0 text-slate-100 shadow-2xl lg:flex lg:w-72 lg:flex-col lg:justify-between">
+    class="fixed inset-y-0 left-0 z-50 hidden h-screen w-72 bg-[#0e1a3a] text-slate-100 shadow-2xl lg:flex lg:w-72 lg:flex-col">
 
-    <div>
 
-        <div class="border-b border-white/10 px-6 py-6">
+   
+    <div class="shrink-0 border-b border-white/10 px-6 py-6">
 
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
-                School Portal
-            </p>
+        <p
+            class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
+            School Portal
+        </p>
 
-            <div class="mt-4 flex items-center gap-3">
 
-                <div
-                    class="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-lg font-semibold">
-                    A
-                </div>
+        <div class="mt-4 flex items-center gap-3">
 
-                <div>
+            <!-- Admin Icon -->
+            <div
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-lg font-semibold">
 
-                    <p class="font-semibold">
-                       Admin Panel
-                    </p>
+                A
 
-                    <p class="text-sm text-slate-400">
-                        Academic Management
-                    </p>
+            </div>
 
-                </div>
+
+            <!-- Admin Information -->
+            <div>
+
+                <p class="font-semibold">
+                    Admin Panel
+                </p>
+
+                <p class="text-sm text-slate-400">
+                    Academic Management
+                </p>
 
             </div>
 
         </div>
 
+    </div>
 
-        <nav class="mt-6 space-y-2 px-3">
 
-            <a href="{% url "admin-dashboard" %}"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+    
+    <div class="min-h-0 flex-1 overflow-y-auto">
+
+        <nav class="mt-6 space-y-2 px-3 pb-6">
+
+
+            <!-- Dashboard -->
+            <a
+                href="{% url 'admin-dashboard' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
                     <i class="fa-solid fa-gauge-high"></i>
@@ -77,8 +95,11 @@
             </a>
 
 
-            <a href="{% url "admin-students" %}"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+            <!-- Students -->
+            <a
+                href="{% url 'admin-students' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
                     <i class="fa-solid fa-user-graduate"></i>
@@ -91,8 +112,11 @@
             </a>
 
 
-            <a href="{% url "admin-today-attendance" %}"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+            <!-- Attendance -->
+            <a
+                href="{% url 'admin-today-attendance' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
                     <i class="fa-solid fa-clipboard-list"></i>
@@ -105,37 +129,28 @@
             </a>
 
 
-            {% comment %} <a href="#"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
-                <span class="text-base">
-                    <i class="fa-solid fa-square-poll-vertical"></i>
-                </span>
-
-                <span>
-                    Marks
-                </span>
-
-            </a> {% endcomment %}
-
-
-            {% comment %} <a href="#"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+            <!-- Student Marks -->
+            <a
+                href="{% url 'admin-view-marks' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
                     <i class="fa-solid fa-file-signature"></i>
                 </span>
 
                 <span>
-                    Assignments
+                    Student Marks
                 </span>
 
-            </a> {% endcomment %}
+            </a>
 
 
 
-            <a href="{% url "admin-report-cards" %}"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+            <!-- Student Results -->
+            <a
+                href="{% url 'admin-report-cards' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
                     <i class="fa-solid fa-file-signature"></i>
@@ -144,10 +159,15 @@
                 <span>
                     Student Results
                 </span>
+
             </a>
 
-            <a href="{% url "admin-notice-list" %}"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
+
+
+            <!-- Notice -->
+            <a
+                href="{% url 'admin-notice-list' %}"
+                class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
 
                 <span class="text-base">
                     <i class="fa-solid fa-file-signature"></i>
@@ -156,53 +176,36 @@
                 <span>
                     Notice
                 </span>
-            </a>
-
-            
-            <a href="{% url "admin-contact-messages" %}"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
-
-                <span class="text-base">
-                    <i class="fa-solid fa-file-signature"></i>
-                </span>
-
-                <span>
-                    Messages
-                </span>
 
             </a>
-            {% comment %} <a href="{% url "activity-log" %}"
-               class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-white/10 hover:text-white">
-
-                <span class="text-base">
-                    <i class="fa-solid fa-file-signature"></i>
-                </span>
-
-                <span>
-                    Activity Log
-                </span>
-
-            </a> {% endcomment %}
 
         </nav>
 
     </div>
 
+    <div
+        class="shrink-0 border-t border-white/10 bg-[#0e1a3a] p-2">
 
-   
-    <div class="border-t border-white/10 p-3">
+
+        <a
+            href="{% url 'admin-logout' %}"
+            id="logout-btn"
+            class="flex items-center gap-2 rounded-lg px-3 py-2 text-md text-slate-300 transition hover:bg-red-500/20 hover:text-red-500">
 
 
-        <a href="{% url "admin-logout" %}"
-           class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-red-500/20 hover:text-red-300">
+            <!-- Logout Icon -->
+            <span class="text-sm">
 
-            <span class="text-base">
                 <i class="fa-solid fa-right-from-bracket"></i>
+
             </span>
 
+
+            <!-- Logout Text -->
             <span>
                 Logout
             </span>
+
 
         </a>
 
@@ -217,9 +220,10 @@
     const menuBtn = document.getElementById("menu-btn");
     const sidebar = document.getElementById("sidebar");
     const menuOverlay = document.getElementById("menu-overlay");
+    const logoutBtn = document.getElementById("logout-btn");
 
 
-    // Open sidebar
+
     menuBtn.addEventListener("click", function () {
 
         sidebar.classList.remove("hidden");
@@ -229,12 +233,34 @@
     });
 
 
-    // Close sidebar when clicking outside
+
     menuOverlay.addEventListener("click", function () {
 
         sidebar.classList.add("hidden");
 
         menuOverlay.classList.add("hidden");
+
+    });
+
+
+
+    logoutBtn.addEventListener("click", function (event) {
+
+        const confirmLogout = confirm(
+            "Are you sure you want to logout?"
+        );
+
+
+        /*
+         * If user clicks Cancel,
+         * prevent Django logout URL from opening.
+         */
+
+        if (!confirmLogout) {
+
+            event.preventDefault();
+
+        }
 
     });
 

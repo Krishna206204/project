@@ -45,4 +45,17 @@ urlpatterns = [
         views.admin_add_notice,
         name="admin-add-notice"
     ),
+    
+    
+    path(
+        "admin/add-marks/",
+        views.admin_add_marks,
+        name="admin-add-marks"
+    ),
+    
+    path(
+        "/admin/marks/view/",
+        views.admin_view_marks,
+        name="admin-view-marks"
+    ),
 ]

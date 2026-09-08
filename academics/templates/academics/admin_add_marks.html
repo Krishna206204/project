@@ -1,0 +1,381 @@
+{% extends 'adminbase.html' %}
+
+{% block title %}Add Student Marks{% endblock %}
+
+{% block page_label %}Academics{% endblock %}
+
+{% block page_title %}Add Student Marks{% endblock %}
+
+{% block content %}
+
+<div class="space-y-6">
+
+    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+
+        <div>
+            <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
+                Exam Mark Entry
+            </p>
+
+            <h2 class="mt-1 text-xl font-semibold text-slate-900">
+                Record marks for students
+            </h2>
+        </div>
+
+        <a
+            href="{% url 'view-marks' %}"
+            class="inline-flex w-fit items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white transition hover:bg-slate-800"
+        >
+            <i class="fa-solid fa-arrow-left"></i>
+            Back
+        </a>
+
+    </div>
+
+
+    <form method="get">
+
+        <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
+
+            <div class="grid gap-4 md:grid-cols-2">
+
+                <div>
+
+                    <label
+                        for="classroom"
+                        class="mb-2 block text-sm font-medium text-slate-700"
+                    >
+                        Select Class
+                    </label>
+
+                    <select
+                        id="classroom"
+                        name="classroom"
+                        required
+                        onchange="this.form.submit()"
+                        class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    >
+
+                        <option value="">
+                            Select Class
+                        </option>
+
+                        {% for item in classrooms %}
+
+                        <option
+                            value="{{ item.id }}"
+                            {% if selected_classroom == item.id|stringformat:"s" %}
+                                selected
+                            {% endif %}
+                        >
+                            {{ item.name|title }}
+                            {% if item.section %}
+                                - {{ item.section|title }}
+                            {% endif %}
+                        </option>
+
+                        {% endfor %}
+
+                    </select>
+
+                </div>
+
+
+                {% if classroom %}
+
+                <div class="flex items-end">
+
+                    <div class="w-full rounded-2xl border border-blue-200 bg-blue-50 px-4 py-3">
+
+                        <p class="text-xs font-medium uppercase tracking-wide text-blue-600">
+                            Selected Class
+                        </p>
+
+                        <p class="mt-1 text-lg font-semibold text-blue-900">
+                            {{ classroom.name|title }}
+                            {% if classroom.section %}
+                                - {{ classroom.section|title }}
+                            {% endif %}
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+
+    </form>
+
+
+    {% if classroom %}
+
+    <form method="post">
+
+        {% csrf_token %}
+
+        <input
+            type="hidden"
+            name="classroom"
+            value="{{ classroom.id }}"
+        >
+
+        <section class="space-y-6">
+
+            <div class="rounded-3xl border border-slate-200 bg-slate-50 p-5 shadow-sm">
+
+                <div class="grid gap-4 md:grid-cols-3">
+
+                    <div>
+
+                        <label
+                            for="subject"
+                            class="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                            Subject
+                        </label>
+
+                        <select
+                            id="subject"
+                            name="subject"
+                            required
+                            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        >
+
+                            <option value="">
+                                Select Subject
+                            </option>
+
+                            {% for subject in subjects %}
+
+                            <option value="{{ subject.id }}">
+                                {{ subject.name|title }}
+                            </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            for="exam_name"
+                            class="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                            Exam / Term
+                        </label>
+
+                        <input
+                            id="exam_name"
+                            name="exam_name"
+                            type="text"
+                            placeholder="e.g. First Terminal Exam"
+                            required
+                            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        >
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            for="full_marks"
+                            class="mb-2 block text-sm font-medium text-slate-700"
+                        >
+                            Full Marks
+                        </label>
+
+                        <input
+                            id="full_marks"
+                            name="full_marks"
+                            type="number"
+                            min="1"
+                            max="1000"
+                            step="any"
+                            placeholder="e.g. 100"
+                            required
+                            class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="overflow-hidden rounded-3xl border border-slate-200 shadow-sm">
+
+                <div class="border-b border-slate-200 bg-slate-50 px-5 py-4">
+
+                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+
+                        <div>
+
+                            <h3 class="text-lg font-semibold text-slate-900">
+                                Student Performance
+                            </h3>
+
+                            <p class="mt-1 text-sm text-slate-500">
+                                Enter marks for
+                                {{ classroom.name|title }}
+                                {% if classroom.section %}
+                                    - {{ classroom.section|title }}
+                                {% endif %}
+                            </p>
+
+                        </div>
+
+                        <div class="rounded-xl bg-white px-3 py-2 text-sm font-medium text-slate-600">
+
+                            Students:
+                            <span class="font-semibold text-slate-900">
+                                {{ students|length }}
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="overflow-x-auto">
+
+                    <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
+
+                        <thead class="bg-white text-slate-600">
+
+                            <tr>
+
+                                <th class="px-5 py-3 font-semibold">
+                                    Student Name
+                                </th>
+
+                                <th class="px-5 py-3 font-semibold">
+                                    Class
+                                </th>
+
+                                <th class="px-5 py-3 font-semibold">
+                                    Marks Obtained
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody class="divide-y divide-slate-200 bg-white">
+
+                            {% for student in students %}
+
+                            <tr class="transition hover:bg-slate-50">
+
+                                <td class="whitespace-nowrap px-5 py-3 font-medium text-slate-900">
+                                    {{ student.name|title }}
+                                </td>
+
+
+                                <td class="whitespace-nowrap px-5 py-3 text-slate-600">
+
+                                    {{ student.classroom.name|title }}
+
+                                    {% if student.classroom.section %}
+                                        - {{ student.classroom.section|title }}
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td class="px-5 py-3">
+
+                                    <input
+                                        type="number"
+                                        name="student_{{ student.id }}"
+                                        min="0"
+                                        max="1000"
+                                        step="any"
+                                        placeholder="Enter marks"
+                                        class="w-full max-w-[180px] rounded-2xl border border-slate-200 px-3 py-2 text-sm text-slate-700 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                                    >
+
+                                </td>
+
+                            </tr>
+
+                            {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="3"
+                                    class="px-5 py-10 text-center text-slate-500"
+                                >
+                                    No students found in this class.
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            {% if students %}
+
+            <div class="flex justify-end">
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center gap-2 rounded-2xl bg-blue-600 px-6 py-3 font-semibold text-white shadow-sm transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                    <i class="fa-solid fa-floppy-disk"></i>
+                    Save Marks
+                </button>
+
+            </div>
+
+            {% endif %}
+
+        </section>
+
+    </form>
+
+    {% else %}
+
+    <div class="rounded-3xl border border-dashed border-slate-300 bg-white px-5 py-12 text-center">
+
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-slate-100 text-slate-500">
+
+            <i class="fa-solid fa-users text-xl"></i>
+
+        </div>
+
+        <h3 class="mt-4 text-lg font-semibold text-slate-900">
+            Select a class
+        </h3>
+
+        <p class="mt-1 text-sm text-slate-500">
+            Select a class above to display its students and enter their marks.
+        </p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}
