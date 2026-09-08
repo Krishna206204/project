@@ -54,7 +54,7 @@ urlpatterns = [
     ),
     
     path(
-        "/admin/marks/view/",
+        "admin/marks/view/",
         views.admin_view_marks,
         name="admin-view-marks"
     ),
