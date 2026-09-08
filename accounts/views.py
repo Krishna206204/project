@@ -92,14 +92,13 @@ def admin_logout(request):
     return redirect("home")
 
 
-@login_required
+
 def admin_login(request):
     # If already logged in
     if request.user.is_authenticated:
 
         if request.user.role == "ADMIN" or request.user.is_superuser:
             return redirect("admin-dashboard")
-
         return redirect("dashboard")
 
     # Handle login form
