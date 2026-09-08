@@ -23,13 +23,18 @@ def contact(request):
             subject=request.POST.get("subject"),
             message=request.POST.get("message"),
         )
-
+        messages.success(request, "Your message has been submitted successfully.")
         return redirect("contact")
     
     return render(request, "accounts/contact.html")
     
+    
+    
+    
 def about(request):
     return render(request,"accounts/about.html")
+
+
 
 def teacher_login(request):
     if request.user.is_authenticated:

@@ -1,4 +1,4 @@
-\<!-- Mobile Header -->
+
 <div class="flex items-center justify-between px-4 py-3 lg:hidden">
 
     <!-- School Name -->
@@ -73,7 +73,7 @@
 
             <a
                 href="{% url 'student-dashboard' student_id=student.id %}"
-                class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-white transition hover:bg-white/15">
+                class="flex items-center gap-3 px-4 py-3 text-white transition hover:bg-blue-500">
 
                 <span class="text-base">
                     <i class="fa-solid fa-file-signature"></i>
@@ -88,7 +88,7 @@
 
             <a
                 href="{% url 'student-attendance' student_id=student.id %}"
-                class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-white transition hover:bg-white/15">
+                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
 
                 <span class="text-base">
                     <i class="fa-solid fa-calendar-check"></i>
@@ -103,7 +103,7 @@
 
             <a
                 href="{% url 'student-assignment' student_id=student.id %}"
-                class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-white transition hover:bg-white/15">
+                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
 
                 <span class="text-base">
                     <i class="fa-solid fa-file-signature"></i>
@@ -118,7 +118,7 @@
 
             <a
                 href="{% url 'student-marks' student_id=student.id %}"
-                class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-white transition hover:bg-white/15">
+                class="flex items-center gap-3 px-4 py-3 text-white transition hover:bg-blue-500">
 
                 <span class="text-base">
                     <i class="fa-solid fa-square-poll-vertical"></i>
@@ -133,7 +133,7 @@
 
             <a
                 href="{% url 'student-report-card' student_id=student.id %}"
-                class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-white transition hover:bg-white/15">
+                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
 
                 <span class="text-base">
                     <i class="fa-solid fa-file-lines"></i>
@@ -148,7 +148,7 @@
 
             <a
                 href="{% url 'student-notice' student_id=student.id %}"
-                class="flex items-center gap-3 rounded-xl bg-white/10 px-4 py-3 text-white transition hover:bg-white/15">
+                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
 
                 <span class="text-base">
                     <i class="fa-regular fa-bell"></i>
@@ -168,7 +168,7 @@
                 <a
                     href="{% url "student-logout" %}"
                     id="logout-btn"
-                    class="flex items-center gap-3 rounded-xl px-4 py-3 text-slate-300 transition hover:bg-red-500/20 hover:text-red-300">
+                    class="flex items-center gap-3  px-4 py-3 text-slate-300 transition hover:bg-red-500 hover:text-red-300">
 
                     <span class="text-base">
                         <i class="fa-solid fa-right-from-bracket"></i>
