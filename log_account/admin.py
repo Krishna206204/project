@@ -1,10 +1,8 @@
 from django.contrib import admin
 from django.http import HttpResponse
 from django.utils import timezone
-
 from openpyxl import Workbook
 from openpyxl.styles import Font, Alignment
-
 from reportlab.lib.pagesizes import landscape, A4
 from reportlab.lib.styles import (
     getSampleStyleSheet,
@@ -20,17 +18,13 @@ from reportlab.platypus import (
     Paragraph,
     Spacer,
 )
-
 from .models import ActivityLog
 
 
 @admin.register(ActivityLog)
 class ActivityLogAdmin(admin.ModelAdmin):
 
-    # ==========================================================
     # LIST DISPLAY
-    # ==========================================================
-
     list_display = (
         "log_id",
         "user",
@@ -43,11 +37,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
         "ip_address",
         "timestamp",
     )
-
-    # ==========================================================
     # FILTERS
-    # ==========================================================
-
     list_filter = (
         "user",
         "action_type",
@@ -55,10 +45,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
         "status_code",
     )
 
-    # ==========================================================
     # SEARCH
-    # ==========================================================
-
     search_fields = (
         "user__username",
         "user__first_name",
@@ -69,18 +56,12 @@ class ActivityLogAdmin(admin.ModelAdmin):
         "description",
     )
 
-    # ==========================================================
     # ORDERING
-    # ==========================================================
-
     ordering = (
         "-timestamp",
     )
 
-    # ==========================================================
     # READ ONLY FIELDS
-    # ==========================================================
-
     readonly_fields = (
         "log_id",
         "user",
@@ -96,16 +77,10 @@ class ActivityLogAdmin(admin.ModelAdmin):
         "timestamp",
     )
 
-    # ==========================================================
     # PAGINATION
-    # ==========================================================
-
     list_per_page = 25
 
-    # ==========================================================
     # ADMIN ACTIONS
-    # ==========================================================
-
     actions = (
         # "delete_selected",   # Delete activity logs - commented out
 
@@ -115,10 +90,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
         "download_selected_pdf",
     )
 
-    # ==========================================================
     # REMOVE DEFAULT DELETE ACTION
-    # ==========================================================
-
     def get_actions(self, request):
 
         actions = super().get_actions(request)
@@ -128,17 +100,11 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         return actions
 
-    # ==========================================================
     # DISABLE ADD ACTIVITY LOG
-    # ==========================================================
-
     def has_add_permission(self, request):
         return False
 
-    # ==========================================================
     # USER NAME
-    # ==========================================================
-
     @admin.display(
         description="Name"
     )
@@ -157,10 +123,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         return obj.user.username
 
-    # ==========================================================
     # USER ROLE
-    # ==========================================================
-
     @admin.display(
         description="User Type"
     )
@@ -180,10 +143,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         return "User"
 
-    # ==========================================================
     # USER INFORMATION
-    # ==========================================================
-
     def get_user_info(self, log):
 
         if not log.user:
@@ -221,9 +181,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             role,
         )
 
-    # ==========================================================
     # EXPORT DATE/TIME
-    # ==========================================================
 
     def export_datetime(self):
 
@@ -231,22 +189,14 @@ class ActivityLogAdmin(admin.ModelAdmin):
             "%Y%m%d_%H%M%S"
         )
 
-    # ==========================================================
     # CREATE EXCEL
-    # ==========================================================
 
     def create_excel(self, queryset):
 
         workbook = Workbook()
-
         worksheet = workbook.active
-
         worksheet.title = "Activity Logs"
-
-        # ------------------------------------------------------
         # HEADERS
-        # ------------------------------------------------------
-
         headers = [
             "Log ID",
             "Username",
@@ -261,13 +211,8 @@ class ActivityLogAdmin(admin.ModelAdmin):
             "Description",
             "Timestamp",
         ]
-
         worksheet.append(headers)
-
-        # ------------------------------------------------------
         # HEADER STYLE
-        # ------------------------------------------------------
-
         for cell in worksheet[1]:
 
             cell.font = Font(
@@ -280,10 +225,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
                 wrap_text=True,
             )
 
-        # ------------------------------------------------------
         # LOG DATA
-        # ------------------------------------------------------
-
         logs = (
             queryset
             .select_related("user")
@@ -301,33 +243,20 @@ class ActivityLogAdmin(admin.ModelAdmin):
             worksheet.append([
 
                 log.log_id,
-
                 username,
-
                 full_name,
-
                 role,
-
                 log.get_action_type_display(),
-
                 log.method or "",
-
                 log.path or "",
-
                 log.status_code or "",
-
                 log.ip_address or "",
-
                 log.alert_message or "",
-
                 log.description or "",
-
                 log.nepali_timestamp,
             ])
 
-        # ------------------------------------------------------
         # COLUMN WIDTHS
-        # ------------------------------------------------------
 
         column_widths = {
             "A": 10,
@@ -350,9 +279,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
                 column
             ].width = width
 
-        # ------------------------------------------------------
         # WRAP TEXT
-        # ------------------------------------------------------
 
         for row in worksheet.iter_rows():
 
@@ -363,31 +290,23 @@ class ActivityLogAdmin(admin.ModelAdmin):
                     wrap_text=True,
                 )
 
-        # ------------------------------------------------------
         # FREEZE HEADER
-        # ------------------------------------------------------
 
         worksheet.freeze_panes = "A2"
 
-        # ------------------------------------------------------
         # EXCEL FILTER
-        # ------------------------------------------------------
 
         worksheet.auto_filter.ref = (
             worksheet.dimensions
         )
 
-        # ------------------------------------------------------
         # HEADER HEIGHT
-        # ------------------------------------------------------
 
         worksheet.row_dimensions[1].height = 30
 
         return workbook
 
-    # ==========================================================
     # DOWNLOAD ALL EXCEL
-    # ==========================================================
 
     @admin.action(
         description="Download ALL activity logs as Excel"
@@ -427,9 +346,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         return response
 
-    # ==========================================================
     # DOWNLOAD SELECTED EXCEL
-    # ==========================================================
 
     @admin.action(
         description="Download SELECTED activity logs as Excel"
@@ -464,9 +381,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         return response
 
-    # ==========================================================
     # CREATE PDF
-    # ==========================================================
 
     def create_pdf(self, queryset):
 
@@ -483,9 +398,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             f'attachment; filename="{filename}"'
         )
 
-        # ------------------------------------------------------
         # PDF DOCUMENT
-        # ------------------------------------------------------
 
         document = SimpleDocTemplate(
 
@@ -504,9 +417,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         styles = getSampleStyleSheet()
 
-        # ------------------------------------------------------
         # TITLE STYLE
-        # ------------------------------------------------------
 
         title_style = ParagraphStyle(
 
@@ -528,9 +439,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             title_style,
         )
 
-        # ------------------------------------------------------
         # TOTAL LOGS
-        # ------------------------------------------------------
 
         total = queryset.count()
 
@@ -539,9 +448,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             styles["Normal"],
         )
 
-        # ------------------------------------------------------
         # CELL STYLE
-        # ------------------------------------------------------
 
         cell_style = ParagraphStyle(
 
@@ -560,9 +467,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             spaceBefore=0,
         )
 
-        # ------------------------------------------------------
         # HEADER STYLE
-        # ------------------------------------------------------
 
         header_style = ParagraphStyle(
 
@@ -581,9 +486,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             alignment=TA_CENTER,
         )
 
-        # ------------------------------------------------------
         # TABLE HEADER
-        # ------------------------------------------------------
 
         data = [
 
@@ -640,9 +543,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             ]
         ]
 
-        # ------------------------------------------------------
         # LOG DATA
-        # ------------------------------------------------------
 
         logs = (
             queryset
@@ -723,9 +624,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
                 ),
             ])
 
-        # ------------------------------------------------------
         # PDF TABLE
-        # ------------------------------------------------------
 
         table = LongTable(
 
@@ -750,9 +649,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             ],
         )
 
-        # ------------------------------------------------------
         # TABLE STYLE
-        # ------------------------------------------------------
 
         table.setStyle(
 
@@ -824,9 +721,7 @@ class ActivityLogAdmin(admin.ModelAdmin):
             ])
         )
 
-        # ------------------------------------------------------
         # BUILD PDF
-        # ------------------------------------------------------
 
         document.build([
 
@@ -844,10 +739,8 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         return response
 
-    # ==========================================================
-    # DOWNLOAD ALL PDF
-    # ==========================================================
 
+    # DOWNLOAD ALL PDF
     @admin.action(
         description="Download ALL activity logs as PDF"
     )
@@ -859,17 +752,13 @@ class ActivityLogAdmin(admin.ModelAdmin):
 
         # Get ALL logs from database.
         # This ignores pagination and current selection.
-
         all_logs = ActivityLog.objects.all()
 
         return self.create_pdf(
             all_logs
         )
 
-    # ==========================================================
     # DOWNLOAD SELECTED PDF
-    # ==========================================================
-
     @admin.action(
         description="Download SELECTED activity logs as PDF"
     )
