@@ -5,6 +5,8 @@ from students.models import ClassRoom,Student
 from django.contrib import messages
 from academics.models import Subject
 from .models import User,ContactMessage
+from django.contrib.auth import get_user_model
+User = get_user_model()
 
 
 def login_selection(request):
@@ -57,24 +59,18 @@ def teacher_login(request):
 
 
 
-from django.contrib.auth import get_user_model
-User = get_user_model()
-
 def teacher_forgot_password(request):
-
     if request.method == "POST":
 
         username = request.POST.get("username", "").strip()
         new_password = request.POST.get("new_password", "").strip()
         confirm_password = request.POST.get("confirm_password", "").strip()
-
         # Check username
         try:
             user = User.objects.get(
                 username=username,
                 role="TEACHER"
             )
-
         except User.DoesNotExist:
 
             messages.error(
@@ -151,7 +147,6 @@ def dashboard(request):
     return render(request, "accounts/dashboard.html", context)
 
 
-
 def admin_logout(request):
     logout(request)
     messages.success(
@@ -168,7 +163,7 @@ def admin_login(request):
 
         if request.user.role == "ADMIN" or request.user.is_superuser:
             return redirect("admin-dashboard")
-        return redirect("dashboard")
+        return redirect("home")
 
     # Handle login form
     if request.method == "POST":
@@ -181,25 +176,19 @@ def admin_login(request):
             username=username,
             password=password
         )
-
         # Invalid credentials
         if user is None:
-
             messages.error(
                 request,
                 "Invalid username or password."
             )
-
             return redirect("admin-login")
-
         # Check Admin role
         if user.role != "ADMIN" and not user.is_superuser:
-
             messages.error(
                 request,
                 "You do not have Admin access."
             )
-
             return redirect("admin-login")
 
         login(request, user)
