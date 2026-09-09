@@ -57,6 +57,70 @@ def teacher_login(request):
 
 
 
+from django.contrib.auth import get_user_model
+User = get_user_model()
+
+def teacher_forgot_password(request):
+
+    if request.method == "POST":
+
+        username = request.POST.get("username", "").strip()
+        new_password = request.POST.get("new_password", "").strip()
+        confirm_password = request.POST.get("confirm_password", "").strip()
+
+        # Check username
+        try:
+            user = User.objects.get(
+                username=username,
+                role="TEACHER"
+            )
+
+        except User.DoesNotExist:
+
+            messages.error(
+                request,
+                "Teacher account not found."
+            )
+
+            return redirect("teacher-forgot-password")
+
+        # Check password match
+        if new_password != confirm_password:
+
+            messages.error(
+                request,
+                "Passwords do not match."
+            )
+
+            return redirect("teacher-forgot-password")
+
+        # Check password length
+        if len(new_password) < 8:
+
+            messages.error(
+                request,
+                "Password must be at least 8 characters."
+            )
+
+            return redirect("teacher-forgot-password")
+
+        # Change password securely
+        user.set_password(new_password)
+
+        # Save to database
+        user.save()
+
+        messages.success(
+            request,
+            "Password changed successfully. Please login."
+        )
+
+        return redirect("login")
+
+    return render(
+        request,
+        "accounts/forgot_password.html"
+    )
 
 
 def teacher_logout(request):
