@@ -119,6 +119,35 @@ def student_lookup(request):
     )
 
 
+@student_login_required
+def student_profile(request):
+    student_id = request.session.get("student_id")
+
+    # Student is not logged in
+    if not student_id:
+        messages.error(request, "Please login to access your profile.")
+        return redirect("student-login")
+
+    try:
+        student = Student.objects.select_related("classroom").get(
+            id=student_id
+        )
+    except Student.DoesNotExist:
+        request.session.pop("student_id", None)
+
+        messages.error(request, "Student profile not found.")
+        return redirect("student-login")
+
+    context = {
+        "student": student,
+    }
+
+    return render(
+        request,
+        "students/student_profile.html",
+        context
+    )
+
 
 
 @student_login_required

@@ -5,6 +5,12 @@ from . import views
 urlpatterns = [
     path("list/", views.student, name="student"),
     path("portal/", views.student_lookup, name="student-lookup"),
+    
+    path(
+        "profile/",
+        views.student_profile,
+        name="student-profile"
+    ),
     path("portal/<int:student_id>/", views.student_dashboard, name="student-dashboard"),
     path("portal/<int:student_id>/marks/", views.student_marks, name="student-marks"),
     path(

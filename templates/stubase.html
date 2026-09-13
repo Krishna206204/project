@@ -51,15 +51,15 @@
 
 
         <!-- Header -->
-        <header
+        <header 
             class="border-b border-slate-200 bg-white/90 px-4 py-4 sm:px-6 lg:px-8">
 
-            <div
+            <div 
                 class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
 
                 <div>
 
-                    <p
+                    <p 
                         class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
 
                         {% block page_label %}
@@ -69,7 +69,7 @@
                     </p>
 
 
-                    <h1
+                    <h1 
                         class="mt-1 text-xl font-semibold text-slate-900">
 
                         {% block page_title %}
@@ -80,13 +80,17 @@
 
                 </div>
 
-                <div
-                    class="flex items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-2">
 
-                    <div
-                        class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
+                <!-- Student Profile Link -->
+                <a
+                    href="{% url 'student-profile' %}"
+                    class="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-200 px-2 py-2 hover:bg-amber-400 transition"
+                >
 
-                        Stu
+                    <div 
+                        class="flex h-10 w-10 items-center justify-center rounded-full bg-green-900 text-sm font-semibold text-white">
+
+                        S
 
                     </div>
 
@@ -99,16 +103,9 @@
 
                         </p>
 
-
-                        <p class="text-xs text-slate-800">
-
-                            Student
-
-                        </p>
-
                     </div>
 
-                </div>
+                </a>
 
             </div>
 
@@ -118,7 +115,7 @@
         <!-- Main Content -->
         <main class="p-4 sm:p-6 lg:p-8">
 
-            <div
+            <div 
                 class="rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6 lg:p-8">
 
                 {% block content %}

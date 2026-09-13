@@ -1,0 +1,464 @@
+{% extends "stubase.html" %}
+
+{% block title %}
+    My Profile
+{% endblock %}
+
+{% block content %}
+
+<div class="max-w-5xl mx-auto space-y-6">
+
+    <!-- Page Header -->
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-slate-800">
+                My Profile
+            </h1>
+
+            <p class="text-sm text-slate-500 mt-1">
+                View your personal and academic information
+            </p>
+        </div>
+
+    
+
+    </div>
+
+
+    <!-- Profile Card -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+
+        <!-- Profile Header -->
+        <div class="bg-gradient-to-r from-[#0e1a3a] to-[#162957] px-5 sm:px-8 py-7">
+
+            <div class="flex flex-col sm:flex-row sm:items-center gap-5">
+
+                <!-- Avatar -->
+                <div
+                    class="w-20 h-20 sm:w-24 sm:h-24
+                           rounded-full
+                           bg-white/15
+                           border-2 border-white/30
+                           flex items-center justify-center
+                           text-white
+                           shrink-0"
+                >
+                    <i class="fa-solid fa-user text-4xl"></i>
+                </div>
+
+
+                <!-- Student Name -->
+                <div class="text-white">
+
+                    <h2 class="text-2xl sm:text-3xl font-bold">
+                        {{ student.name |title}}
+                    </h2>
+
+                    <p class="text-white/70 mt-1">
+                        Student ID: {{ student.id }}
+                    </p>
+
+                    <div class="mt-3 inline-flex items-center gap-2
+                                px-3 py-1.5
+                                rounded-full
+                                bg-white/10
+                                text-sm">
+
+                        <i class="fa-solid fa-graduation-cap"></i>
+
+                        <span>
+                            Class {{ student.classroom.name }}
+                            {% if student.classroom.section %}
+                                - {{ student.classroom.section|title }}
+                            {% endif %}
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Personal Information -->
+        <div class="p-5 sm:p-8">
+
+            <div class="flex items-center gap-3 mb-6">
+
+                <div
+                    class="w-10 h-10 rounded-lg
+                           bg-blue-50 text-blue-600
+                           flex items-center justify-center"
+                >
+                    <i class="fa-solid fa-user"></i>
+                </div>
+
+                <div>
+                    <h3 class="text-lg font-bold text-slate-800">
+                        Personal Information
+                    </h3>
+
+                    <p class="text-sm text-slate-500">
+                        Your basic personal details
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- Information Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+
+                <!-- Full Name -->
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200"
+                >
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-slate-400">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Full Name
+                            </p>
+
+                            <p class="mt-1 text-sm sm:text-base
+                                      font-semibold text-slate-800
+                                      break-words">
+                                {{ student.name |title}}
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- Student ID -->
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200"
+                >
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-slate-400">
+                            <i class="fa-solid fa-hashtag"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Student ID
+                            </p>
+
+                            <p class="mt-1 text-sm sm:text-base
+                                      font-semibold text-slate-800">
+                                {{ student.id }}
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- Date of Birth -->
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200"
+                >
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-slate-400">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Date of Birth
+                            </p>
+
+                            <p class="mt-1 text-sm sm:text-base
+                                      font-semibold text-slate-800">
+                                {{ student.date_of_birth|date:"F d, Y" }}
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- Phone -->
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200"
+                >
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-slate-400">
+                            <i class="fa-solid fa-phone"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Phone Number
+                            </p>
+
+                            <p class="mt-1 text-sm sm:text-base
+                                      font-semibold text-slate-800
+                                      break-words">
+
+                                {% if student.phone %}
+                                    {{ student.phone }}
+                                {% else %}
+                                    <span class="text-slate-400 font-normal">
+                                        Not provided
+                                    </span>
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- Address -->
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200
+                           sm:col-span-2"
+                >
+                    <div class="flex items-start gap-3">
+
+                        <div class="text-slate-400 mt-1">
+                            <i class="fa-solid fa-location-dot"></i>
+                        </div>
+
+                        <div class="min-w-0">
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Address
+                            </p>
+
+                            <p class="mt-1 text-sm sm:text-base
+                                      font-semibold text-slate-800
+                                      break-words">
+
+                                {% if student.address %}
+                                    {{ student.address |title}}
+                                {% else %}
+                                    <span class="text-slate-400 font-normal">
+                                        Address not provided
+                                    </span>
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+
+            <!-- Academic Information -->
+            <div class="flex items-center gap-3 mt-10 mb-6">
+
+                <div
+                    class="w-10 h-10 rounded-lg
+                           bg-amber-50 text-amber-600
+                           flex items-center justify-center"
+                >
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+
+                <div>
+
+                    <h3 class="text-lg font-bold text-slate-800">
+                        Academic Information
+                    </h3>
+
+                    <p class="text-sm text-slate-500">
+                        Your current academic details
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+
+                <!-- Class -->
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200"
+                >
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-slate-400">
+                            <i class="fa-solid fa-school"></i>
+                        </div>
+
+                        <div>
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Class
+                            </p>
+
+                            <p class="mt-1 text-base font-semibold
+                                      text-slate-800">
+
+                                {{ student.classroom.name }}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- Section -->
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200"
+                >
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-slate-400">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div>
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Section
+                            </p>
+
+                            <p class="mt-1 text-base font-semibold
+                                      text-slate-800">
+
+                                {% if student.classroom.section %}
+                                    {{ student.classroom.section |title }}
+                                {% else %}
+                                    <span class="text-slate-400 font-normal">
+                                        Not assigned
+                                    </span>
+                                {% endif %}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <!-- Class Teacher -->
+                {% if student.classroom.teacher %}
+                <div
+                    class="p-4 rounded-xl
+                           bg-slate-50
+                           border border-slate-200
+                           sm:col-span-2"
+                >
+                    <div class="flex items-center gap-3">
+
+                        <div class="text-slate-400">
+                            <i class="fa-solid fa-chalkboard-user"></i>
+                        </div>
+
+                        <div>
+
+                            <p class="text-xs font-medium
+                                      uppercase tracking-wide
+                                      text-slate-400">
+                                Class Teacher
+                            </p>
+
+                            <p class="mt-1 text-base font-semibold
+                                      text-slate-800">
+
+                                {{ student.classroom.teacher.get_full_name|default:student.classroom.teacher.username | title}}
+
+                            </p>
+
+                        </div>
+
+                    </div>
+                </div>
+                {% endif %}
+
+            </div>
+
+
+            <!-- Profile Notice -->
+            <div
+                class="mt-8 p-4 rounded-xl
+                       bg-blue-50
+                       border border-blue-100
+                       flex items-start gap-3"
+            >
+
+                <div class="text-blue-600 mt-0.5">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+
+                <div>
+
+                    <p class="text-sm font-semibold text-blue-800">
+                        Profile information
+                    </p>
+
+                    <p class="text-sm text-blue-700 mt-1">
+                        If any of your personal or academic information
+                        is incorrect, please contact the school administration.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

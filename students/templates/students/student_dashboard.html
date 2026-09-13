@@ -45,12 +45,12 @@
 
                     <!-- Class -->
                     <span class="rounded-full border border-slate-200 bg-white px-3 py-2">
-                        Class: {{ classroom.name }}
+                        Class: {{ classroom.name |title}}
                     </span>
 
                     <!-- Section -->
                     <span class="rounded-full border border-slate-200 bg-white px-3 py-2">
-                        Section: {{ classroom.section }}
+                        Section: {{ classroom.section |title}}
                     </span>
 
                 </div>
@@ -190,39 +190,6 @@
             </div>
 
         </a>
-
-
-        <!-- Report Card -->
-        {% comment %} <a
-            href="{% url 'student-report-card' student_id=student.id exam_name=report_exam %}"
-            class="rounded-[1.75rem] border border-slate-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-md">
-
-            <div class="flex items-center justify-between">
-
-                <div>
-
-                    <p class="text-sm font-semibold uppercase tracking-[0.25em] text-slate-500">
-                        View Report Card
-                    </p>
-
-                    <h3 class="mt-2 text-xl font-semibold text-slate-900">
-                        Progress Summary
-                    </h3>
-
-                </div>
-
-
-                <div
-                    class="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
-
-                    <i class="fa-solid fa-file-lines"></i>
-
-                </div>
-
-            </div>
-
-        </a> {% endcomment %}
-
 
         <!-- Assignment -->
         <a
