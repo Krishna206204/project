@@ -60,7 +60,7 @@
         <div class="flex items-center gap-3 rounded-full border border-slate-200 bg-slate-50 px-4 py-2">
 
           <div class="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white">
-            MR
+            T
           </div>
 
           <div>
@@ -69,27 +69,11 @@
               {{ request.user.username|capfirst }}
             </p>
 
-            <p class="text-xs text-slate-500">
+            {% comment %} <p class="text-xs text-slate-500">
               {{ request.user.role|capfirst }}
-            </p>
+            </p> {% endcomment %}
 
           </div>
-
-
-          {% comment %} <!-- Logout -->
-          <div class="border-t border-white/10 p-3">
-            <a
-              href="{% url 'teacher-logout' %}"
-              class="flex items-center gap-3 rounded-xl bg-blue-600 px-4 py-3 text-white transition hover:bg-blue-700">
-              <span class="text-base">
-                <i class="fa-solid fa-right-from-bracket"></i>
-              </span>
-              <span>
-                Logout
-              </span>
-            </a>
-          </div> {% endcomment %}
-
 
         </div>
 
