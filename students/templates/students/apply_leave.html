@@ -1,0 +1,239 @@
+{% extends 'stubase.html' %}
+
+{% block title %}Apply for Leave{% endblock %}
+
+{% block page_label %}Student Portal{% endblock %}
+
+{% block page_title %}Apply for Leave{% endblock %}
+
+
+{% block content %}
+
+<section class="mx-auto max-w-3xl">
+
+    <!-- Back Button -->
+    <div class="mb-5">
+
+        <a href="{% url 'student-leave-applications' %}"
+           class="inline-flex items-center gap-2 text-sm font-medium
+                  text-slate-600 hover:text-[#0e1a3a]">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Leave Applications
+
+        </a>
+
+    </div>
+
+
+    <!-- Form Card -->
+    <div class="overflow-hidden rounded-xl border border-slate-200
+                bg-white shadow-sm">
+
+        <!-- Header -->
+        <div class="border-b border-slate-200 bg-slate-50 px-6 py-5">
+
+            <h2 class="text-lg font-bold text-slate-800">
+                Apply for Leave
+            </h2>
+
+            <p class="mt-1 text-sm text-slate-500">
+                Submit a leave request to your class teacher.
+            </p>
+
+        </div>
+
+
+        <!-- Form -->
+        <form method="POST" class="space-y-6 p-6">
+
+            {% csrf_token %}
+
+
+            <!-- Student -->
+            <div>
+
+                <label class="mb-2 block text-sm font-semibold text-slate-700">
+                    Student
+                </label>
+
+                <div class="rounded-lg border border-slate-200 bg-slate-50
+                            px-4 py-3 text-sm text-slate-700">
+
+                    <i class="fa-solid fa-user mr-2 text-slate-400"></i>
+
+                    {{ student.name |title}}
+
+                </div>
+
+                <p class="mt-1 text-xs text-slate-400">
+                    Your student information is automatically selected.
+                </p>
+
+            </div>
+
+
+            <!-- Date Fields -->
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+                <!-- From -->
+                <div>
+
+                    <label for="leave_from"
+                           class="mb-2 block text-sm font-semibold text-slate-700">
+
+                        Leave From
+
+                        <span class="text-red-500">*</span>
+
+                    </label>
+
+                    <input
+                        type="date"
+                        id="leave_from"
+                        name="leave_from"
+                        min="{{ today|date:'Y-m-d' }}"
+                        max="{{ max_date|date:'Y-m-d' }}"
+                        required
+                        class="w-full rounded-lg border border-slate-300
+                               px-4 py-2.5 text-sm text-slate-700
+                               outline-none transition
+                               focus:border-[#0e1a3a]
+                               focus:ring-2 focus:ring-[#0e1a3a]/10"
+                    >
+
+                    <p class="mt-1 text-xs text-slate-400">
+                        You can select a date from today up to the next 7 days.
+                    </p>
+
+                </div>
+
+
+                <!-- To -->
+                <div>
+
+                    <label for="leave_to"
+                           class="mb-2 block text-sm font-semibold text-slate-700">
+
+                        Leave To
+
+                        <span class="text-red-500">*</span>
+
+                    </label>
+
+                    <input
+                        type="date"
+                        id="leave_to"
+                        name="leave_to"
+                        min="{{ today|date:'Y-m-d' }}"
+                        max="{{ max_date|date:'Y-m-d' }}"
+                        required
+                        class="w-full rounded-lg border border-slate-300
+                               px-4 py-2.5 text-sm text-slate-700
+                               outline-none transition
+                               focus:border-[#0e1a3a]
+                               focus:ring-2 focus:ring-[#0e1a3a]/10"
+                    >
+
+                    <p class="mt-1 text-xs text-slate-400">
+                        Maximum leave duration is 7 days.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- Reason -->
+            <div>
+
+                <label for="reason"
+                       class="mb-2 block text-sm font-semibold text-slate-700">
+
+                    Reason for Leave
+
+                    <span class="text-red-500">*</span>
+
+                </label>
+
+                <textarea
+                    id="reason"
+                    name="reason"
+                    rows="5"
+                    required
+                    placeholder="Enter the reason for your leave..."
+                    class="w-full resize-none rounded-lg border border-slate-300
+                           px-4 py-3 text-sm text-slate-700 outline-none
+                           transition placeholder:text-slate-400
+                           focus:border-[#0e1a3a]
+                           focus:ring-2 focus:ring-[#0e1a3a]/10"
+                ></textarea>
+
+            </div>
+
+
+            <!-- Information -->
+            <div class="rounded-lg border border-blue-100 bg-blue-50 p-4">
+
+                <div class="flex gap-3">
+
+                    <i class="fa-solid fa-circle-info mt-0.5 text-blue-500"></i>
+
+                    <div>
+
+                        <p class="text-sm font-semibold text-blue-800">
+                            Important
+                        </p>
+
+                        <p class="mt-1 text-xs leading-5 text-blue-700">
+                            Your leave application will be sent to your class
+                            teacher for review. You can check the approval
+                            status from the Leave Applications page.
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Buttons -->
+            <div class="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+
+                <!-- Cancel -->
+                <a href="{% url 'student-leave-applications' %}"
+                   class="inline-flex items-center justify-center rounded-lg
+                          border border-slate-300 px-5 py-2.5 text-sm
+                          font-semibold text-slate-700 transition
+                          hover:bg-slate-50">
+
+                    Cancel
+
+                </a>
+
+
+                <!-- Submit -->
+                <button
+                    type="submit"
+                    class="inline-flex items-center justify-center gap-2
+                           rounded-lg bg-[#0e1a3a] px-5 py-2.5 text-sm
+                           font-semibold text-white shadow-sm transition
+                           hover:bg-slate-800">
+
+                    <i class="fa-solid fa-paper-plane"></i>
+
+                    Submit Application
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

@@ -4,10 +4,11 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib.auth.decorators import login_required
 from academics.models import Assignment, Marks, Subject,Notice
 from attendance.models import Attendance
-from students.models import ClassRoom, Student
+from students.models import ClassRoom, Student, LeaveApplication
 from accounts.models import User
 from django.contrib import messages
 from django.core.paginator import Paginator
+from django.utils import timezone
 
 
 # recommend by chatgpt
@@ -586,7 +587,201 @@ def student_notice(request, student_id):
         "students/student_notice.html",
         context
     )
-    
+
+
+@student_login_required
+def student_leave_applications(request):
+    student_id = request.session.get("student_id")
+
+    if not student_id:
+        messages.error(request, "Please login as a student first.")
+        return redirect("student-login")
+
+    try:
+        student = Student.objects.get(id=student_id)
+    except Student.DoesNotExist:
+        messages.error(request, "Student not found.")
+        return redirect("student-login")
+
+    leave_applications = LeaveApplication.objects.filter(
+        student=student
+    )
+
+    context = {
+        "student": student,
+        "leave_applications": leave_applications,
+    }
+
+    return render(
+        request,
+        "students/leave_applications.html",
+        context
+    )
+
+
+from datetime import date, timedelta
+
+@student_login_required
+def student_apply_leave(request):
+
+    student_id = request.session.get("student_id")
+
+    if not student_id:
+        messages.error(request, "Please login as a student first.")
+        return redirect("student-login")
+
+    try:
+        student = Student.objects.get(id=student_id)
+    except Student.DoesNotExist:
+        messages.error(request, "Student not found.")
+        return redirect("student-login")
+
+    today = date.today()
+
+    # Student can apply only within the next 7 days
+    max_date = today + timedelta(days=6)
+
+    if request.method == "POST":
+
+        leave_from = request.POST.get("leave_from")
+        leave_to = request.POST.get("leave_to")
+        reason = request.POST.get("reason", "").strip()
+
+        # Check required fields
+        if not leave_from or not leave_to or not reason:
+            messages.error(
+                request,
+                "Please fill in all required fields."
+            )
+
+            return render(
+                request,
+                "students/apply_leave.html",
+                {
+                    "student": student,
+                    "today": today,
+                    "max_date": max_date,
+                }
+            )
+
+        # Convert strings to date objects
+        try:
+            leave_from = date.fromisoformat(leave_from)
+            leave_to = date.fromisoformat(leave_to)
+
+        except ValueError:
+            messages.error(
+                request,
+                "Invalid leave date."
+            )
+
+            return render(
+                request,
+                "students/apply_leave.html",
+                {
+                    "student": student,
+                    "today": today,
+                    "max_date": max_date,
+                }
+            )
+
+        # 1. Leave cannot start in the past
+        if leave_from < today:
+            messages.error(
+                request,
+                "You cannot apply for leave for a past date."
+            )
+
+            return render(
+                request,
+                "students/apply_leave.html",
+                {
+                    "student": student,
+                    "today": today,
+                    "max_date": max_date,
+                }
+            )
+
+        # 2. Leave ending date cannot be before starting date
+        if leave_to < leave_from:
+            messages.error(
+                request,
+                "The leave end date cannot be before the start date."
+            )
+
+            return render(
+                request,
+                "students/apply_leave.html",
+                {
+                    "student": student,
+                    "today": today,
+                    "max_date": max_date,
+                }
+            )
+
+        # 3. Leave cannot be requested beyond one week
+        if leave_from > max_date or leave_to > max_date:
+            messages.error(
+                request,
+                "Leave can only be requested within the next 7 days."
+            )
+
+            return render(
+                request,
+                "students/apply_leave.html",
+                {
+                    "student": student,
+                    "today": today,
+                    "max_date": max_date,
+                }
+            )
+
+        # 4. Maximum leave duration = 7 days
+        leave_duration = (leave_to - leave_from).days + 1
+
+        if leave_duration > 7:
+            messages.error(
+                request,
+                "You can apply for a maximum of 7 days of leave."
+            )
+
+            return render(
+                request,
+                "students/apply_leave.html",
+                {
+                    "student": student,
+                    "today": today,
+                    "max_date": max_date,
+                }
+            )
+
+        # Create leave application
+        LeaveApplication.objects.create(
+            student=student,
+            leave_from=leave_from,
+            leave_to=leave_to,
+            reason=reason,
+        )
+
+        messages.success(
+            request,
+            "Leave application submitted successfully."
+        )
+
+        return redirect("student-leave-applications")
+
+    return render(
+        request,
+        "students/apply_leave.html",
+        {
+            "student": student,
+            "today": today,
+            "max_date": max_date,
+        }
+    )
+
+
+
     
 # added Logout
 def student_logout(request):
@@ -599,6 +794,151 @@ def student_logout(request):
 
 
 
+@login_required
+def teacher_leave_applications(request):
+    """
+    Display leave applications only from students
+    belonging to classrooms assigned to the logged-in teacher.
+    """
+
+    # Make sure only teachers can access
+    if request.user.role != "TEACHER":
+        messages.error(
+            request,
+            "You are not authorized to access leave applications."
+        )
+        return redirect("dashboard")
+
+    # Get leave applications of students
+    # from classrooms assigned to this teacher
+    leave_applications = LeaveApplication.objects.filter(
+        student__classroom__teacher=request.user
+    ).select_related(
+        "student",
+        "student__classroom"
+    )
+
+    # Counts
+    pending_count = leave_applications.filter(
+        status="PENDING"
+    ).count()
+
+    approved_count = leave_applications.filter(
+        status="APPROVED"
+    ).count()
+
+    rejected_count = leave_applications.filter(
+        status="REJECTED"
+    ).count()
+
+    context = {
+        "leave_applications": leave_applications,
+        "pending_count": pending_count,
+        "approved_count": approved_count,
+        "rejected_count": rejected_count,
+    }
+
+    return render(
+        request,
+        "students/teacher_leave_applications.html",
+        context
+    )
+
+
+@login_required
+def teacher_update_leave(request, leave_id):
+    """
+    Allow a teacher to approve/reject a leave application
+    only if the student belongs to the teacher's classroom.
+    """
+
+    # Make sure only teachers can access
+    if request.user.role != "TEACHER":
+        messages.error(
+            request,
+            "You are not authorized to perform this action."
+        )
+        return redirect("dashboard")
+
+    # Get leave application
+    leave = get_object_or_404(
+        LeaveApplication,
+        id=leave_id
+    )
+
+    # Security check:
+    # Teacher can only update leave requests
+    # from their own assigned classrooms.
+    if leave.student.classroom.teacher != request.user:
+        messages.error(
+            request,
+            "You are not authorized to update this leave application."
+        )
+        return redirect("teacher-leave-applications")
+
+    if request.method == "POST":
+
+        status = request.POST.get("status")
+        teacher_remarks = request.POST.get(
+            "teacher_remarks",
+            ""
+        ).strip()
+
+        # Validate status
+        if status not in ["PENDING", "APPROVED", "REJECTED"]:
+
+            messages.error(
+                request,
+                "Invalid leave status."
+            )
+
+            return redirect(
+                "teacher-update-leave",
+                leave_id=leave.id
+            )
+
+        # Update application
+        leave.status = status
+        leave.teacher_remarks = teacher_remarks
+        leave.reviewed_by = request.user
+        leave.reviewed_at = timezone.now()
+
+        leave.save()
+
+        if status == "APPROVED":
+
+            messages.success(
+                request,
+                "Leave application approved successfully."
+            )
+
+        elif status == "REJECTED":
+
+            messages.success(
+                request,
+                "Leave application rejected successfully."
+            )
+
+        else:
+
+            messages.success(
+                request,
+                "Leave application updated successfully."
+            )
+
+        return redirect(
+            "teacher-leave-applications"
+        )
+
+    context = {
+        "leave": leave,
+    }
+
+    return render(
+        request,
+        "students/teacher_update_leave.html",
+        context
+    )
 # admin
 @login_required
 def admin_students(request):

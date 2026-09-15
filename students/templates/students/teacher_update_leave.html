@@ -1,0 +1,387 @@
+{% extends 'base.html' %}
+
+{% block title %}Review Leave Application{% endblock %}
+
+{% block page_label %}Teacher Portal{% endblock %}
+
+{% block page_title %}Review Leave Application{% endblock %}
+
+
+{% block content %}
+
+<section class="mx-auto max-w-3xl">
+
+
+    <!-- Back -->
+    <div class="mb-5">
+
+        <a
+            href="{% url 'teacher-leave-applications' %}"
+            class="inline-flex items-center gap-2
+                   text-sm font-medium text-slate-600
+                   transition hover:text-[#0e1a3a]">
+
+            <i class="fa-solid fa-arrow-left"></i>
+
+            Back to Leave Applications
+
+        </a>
+
+    </div>
+
+
+    <!-- Main Card -->
+    <div class="overflow-hidden rounded-xl border
+                border-slate-200 bg-white shadow-sm">
+
+
+        <!-- Header -->
+        <div class="border-b border-slate-200
+                    bg-slate-50 px-6 py-5">
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-11 w-11 items-center
+                            justify-center rounded-lg
+                            bg-[#0e1a3a] text-white">
+
+                    <i class="fa-solid fa-file-circle-check"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="text-lg font-bold text-slate-800">
+
+                        Review Leave Application
+
+                    </h2>
+
+                    <p class="mt-1 text-sm text-slate-500">
+
+                        Review the student's leave request
+                        and update its status.
+
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Student Information -->
+        <div class="border-b border-slate-100 p-6">
+
+
+            <h3 class="mb-4 text-sm font-semibold
+                       uppercase tracking-wide text-slate-400">
+
+                Student Information
+
+            </h3>
+
+
+            <div class="grid grid-cols-1 gap-5 sm:grid-cols-2">
+
+
+                <!-- Student -->
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Student
+
+                    </p>
+
+                    <p class="mt-1 font-semibold text-slate-800">
+
+                        {{ leave.student.name|title }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- Class -->
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Class
+
+                    </p>
+
+                    <p class="mt-1 font-semibold text-slate-800">
+
+                        {{ leave.student.classroom |title}}
+
+                    </p>
+
+                </div>
+
+
+                <!-- From -->
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Leave From
+
+                    </p>
+
+                    <p class="mt-1 font-semibold text-slate-800">
+
+                        {{ leave.leave_from|date:"F d, Y" }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- To -->
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Leave To
+
+                    </p>
+
+                    <p class="mt-1 font-semibold text-slate-800">
+
+                        {{ leave.leave_to|date:"F d, Y" }}
+
+                    </p>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <!-- Reason -->
+        <div class="border-b border-slate-100 p-6">
+
+
+            <p class="text-xs font-medium uppercase
+                      tracking-wide text-slate-400">
+
+                Reason for Leave
+
+            </p>
+
+
+            <div class="mt-3 rounded-lg border
+                        border-slate-200 bg-slate-50 p-4">
+
+                <p class="text-sm leading-6 text-slate-700">
+
+                    {{ leave.reason|capfirst }}
+
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <!-- Update Form -->
+        <form method="POST" class="space-y-6 p-6">
+
+            {% csrf_token %}
+
+
+            <!-- Status -->
+            <div>
+
+                <label
+                    for="status"
+                    class="mb-2 block text-sm font-semibold
+                           text-slate-700">
+
+                    Application Status
+
+                    <span class="text-red-500">*</span>
+
+                </label>
+
+
+                <select
+                    id="status"
+                    name="status"
+                    required
+                    class="w-full rounded-lg border
+                           border-slate-300 bg-white
+                           px-4 py-2.5 text-sm text-slate-700
+                           outline-none transition
+                           focus:border-[#0e1a3a]
+                           focus:ring-2
+                           focus:ring-[#0e1a3a]/10"
+                >
+
+                    <option value="PENDING"
+                        {% if leave.status == "PENDING" %}
+                            selected
+                        {% endif %}>
+
+                        Pending
+
+                    </option>
+
+
+                    <option value="APPROVED"
+                        {% if leave.status == "APPROVED" %}
+                            selected
+                        {% endif %}>
+
+                        Approved
+
+                    </option>
+
+
+                    <option value="REJECTED"
+                        {% if leave.status == "REJECTED" %}
+                            selected
+                        {% endif %}>
+
+                        Rejected
+
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <!-- Remarks -->
+            <div>
+
+                <label
+                    for="teacher_remarks"
+                    class="mb-2 block text-sm font-semibold
+                           text-slate-700">
+
+                    Teacher Remarks
+
+                </label>
+
+
+                <textarea
+                    id="teacher_remarks"
+                    name="teacher_remarks"
+                    rows="5"
+                    placeholder="Enter your remarks..."
+                    class="w-full resize-none rounded-lg
+                           border border-slate-300
+                           px-4 py-3 text-sm text-slate-700
+                           outline-none transition
+                           placeholder:text-slate-400
+                           focus:border-[#0e1a3a]
+                           focus:ring-2
+                           focus:ring-[#0e1a3a]/10"
+                >{{ leave.teacher_remarks|default:"" }}</textarea>
+
+
+                <p class="mt-1.5 text-xs text-slate-400">
+
+                    Add a remark if necessary to explain your decision.
+
+                </p>
+
+            </div>
+
+
+            <!-- Current Review Information -->
+            {% if leave.reviewed_by %}
+
+            <div class="rounded-lg border border-slate-200
+                        bg-slate-50 p-4">
+
+                <div class="flex gap-3">
+
+                    <i class="fa-solid fa-circle-info mt-0.5
+                              text-slate-400"></i>
+
+                    <div>
+
+                        <p class="text-sm font-semibold text-slate-700">
+
+                            Previously Reviewed
+
+                        </p>
+
+                        <p class="mt-1 text-xs leading-5 text-slate-500">
+
+                            Reviewed by {{ leave.reviewed_by.username }}
+
+                            {% if leave.reviewed_at %}
+                                on {{ leave.reviewed_at|date:"M d, Y h:i A" }}
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- Buttons -->
+            <div class="flex flex-col-reverse gap-3
+                        border-t border-slate-100 pt-5
+                        sm:flex-row sm:justify-end">
+
+
+                <!-- Cancel -->
+                <a
+                    href="{% url 'teacher-leave-applications' %}"
+                    class="inline-flex items-center
+                           justify-center gap-2 rounded-lg
+                           border border-slate-300 px-5 py-2.5
+                           text-sm font-semibold text-slate-700
+                           transition hover:bg-slate-50">
+
+                    <i class="fa-solid fa-xmark"></i>
+
+                    Cancel
+
+                </a>
+
+
+                <!-- Update -->
+                <button
+                    type="submit"
+                    class="inline-flex items-center
+                           justify-center gap-2 rounded-lg
+                           bg-[#0e1a3a] px-5 py-2.5
+                           text-sm font-semibold text-white
+                           shadow-sm transition
+                           hover:bg-slate-800">
+
+                    <i class="fa-solid fa-floppy-disk"></i>
+
+                    Update Application
+
+                </button>
+
+            </div>
+
+
+        </form>
+
+    </div>
+
+</section>
+
+{% endblock %}

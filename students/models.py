@@ -25,3 +25,58 @@ class Student(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class LeaveApplication(models.Model):
+
+    STATUS_CHOICES = [
+        ("PENDING", "Pending"),
+        ("APPROVED", "Approved"),
+        ("REJECTED", "Rejected"),
+    ]
+
+    student = models.ForeignKey(
+        Student,
+        on_delete=models.CASCADE,
+        related_name="leave_applications"
+    )
+
+    leave_from = models.DateField()
+
+    leave_to = models.DateField()
+
+    reason = models.TextField()
+
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default="PENDING"
+    )
+
+    teacher_remarks = models.TextField(
+        blank=True,
+        null=True
+    )
+
+    applied_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    reviewed_at = models.DateTimeField(
+        blank=True,
+        null=True
+    )
+
+    reviewed_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+        related_name="reviewed_leave_applications"
+    )
+
+    class Meta:
+        ordering = ["-applied_at"]
+
+    def __str__(self):
+        return f"{self.student.name} - {self.leave_from} to {self.leave_to}"

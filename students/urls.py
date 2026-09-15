@@ -24,10 +24,10 @@ urlpatterns = [
         name="student-report-card",
     ),
     path(
-    "portal/<int:student_id>/report-card/",
-    views.student_report_card,
-    name="student-report-card",
-),
+        "portal/<int:student_id>/report-card/",
+        views.student_report_card,
+        name="student-report-card",
+    ),
     
 # Added manually
     path("accounts/logout/", views.student_logout, name="student-logout"), 
@@ -39,6 +39,31 @@ urlpatterns = [
         views.student_notice,
         name="student-notice"
     ),
+    
+    path(
+        "leave/",
+        views.student_leave_applications,
+        name="student-leave-applications"
+    ),
+
+    path(
+        "leave/apply/",
+        views.student_apply_leave,
+        name="student-apply-leave"
+    ),
+    
+    
+    path(
+        "teacher/leave/",
+        views.teacher_leave_applications,
+        name="teacher-leave-applications"
+    ),
+
+    path(
+        "teacher/leave/<int:leave_id>/update/",
+        views.teacher_update_leave,
+        name="teacher-update-leave"
+    ),  
     
      path(
         "admin/students/",

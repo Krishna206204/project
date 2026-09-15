@@ -1,0 +1,550 @@
+{% extends 'base.html' %}
+
+{% block title %}Leave Applications{% endblock %}
+
+{% block page_label %}Teacher Portal{% endblock %}
+
+{% block page_title %}Leave Applications{% endblock %}
+
+
+{% block content %}
+
+<section class="space-y-6">
+
+
+    <!-- Page Header -->
+    <div class="flex flex-col gap-4 sm:flex-row
+                sm:items-center sm:justify-between">
+
+        <div>
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-11 w-11 shrink-0
+                            items-center justify-center
+                            rounded-lg bg-[#0e1a3a] text-white">
+
+                    <i class="fa-solid fa-calendar-days"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="text-xl font-bold text-slate-800">
+                        Leave Applications
+                    </h2>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Review and manage leave applications
+                        from your students.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Statistics -->
+    <div class="grid grid-cols-1 gap-4 sm:grid-cols-3">
+
+
+        <!-- Pending -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white p-5 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Pending
+
+                    </p>
+
+                    <p class="mt-2 text-2xl font-bold text-yellow-600">
+
+                        {{ pending_count }}
+
+                    </p>
+
+                </div>
+
+                <div class="flex h-10 w-10 items-center
+                            justify-center rounded-lg bg-yellow-50
+                            text-yellow-500">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Approved -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white p-5 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Approved
+
+                    </p>
+
+                    <p class="mt-2 text-2xl font-bold text-green-600">
+
+                        {{ approved_count }}
+
+                    </p>
+
+                </div>
+
+                <div class="flex h-10 w-10 items-center
+                            justify-center rounded-lg bg-green-50
+                            text-green-500">
+
+                    <i class="fa-solid fa-circle-check"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Rejected -->
+        <div class="rounded-xl border border-slate-200
+                    bg-white p-5 shadow-sm">
+
+            <div class="flex items-center justify-between">
+
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Rejected
+
+                    </p>
+
+                    <p class="mt-2 text-2xl font-bold text-red-600">
+
+                        {{ rejected_count }}
+
+                    </p>
+
+                </div>
+
+                <div class="flex h-10 w-10 items-center
+                            justify-center rounded-lg bg-red-50
+                            text-red-500">
+
+                    <i class="fa-solid fa-circle-xmark"></i>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Applications -->
+    <div class="overflow-hidden rounded-xl border
+                border-slate-200 bg-white shadow-sm">
+
+
+        {% if leave_applications %}
+
+
+        <!-- Desktop Table -->
+        <div class="hidden overflow-x-auto md:block">
+
+            <table class="w-full text-left text-sm">
+
+                <thead class="bg-slate-50 text-xs uppercase
+                              tracking-wide text-slate-500">
+
+                    <tr>
+
+                        <th class="px-6 py-4">
+                            S.N
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Student
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Class
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Leave Period
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Reason
+                        </th>
+
+                        <th class="px-6 py-4">
+                            Status
+                        </th>
+
+                        <th class="px-6 py-4 text-right">
+                            Action
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody class="divide-y divide-slate-100">
+
+
+                    {% for leave in leave_applications %}
+
+                    <tr class="transition hover:bg-slate-50">
+
+
+                        <!-- Number -->
+                        <td class="px-6 py-4 font-medium text-slate-700">
+
+                            {{ forloop.counter }}
+
+                        </td>
+
+
+                        <!-- Student -->
+                        <td class="px-6 py-4">
+
+                            <div class="font-semibold text-slate-800">
+
+                                {{ leave.student.name|title }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Class -->
+                        <td class="px-6 py-4">
+
+                            <span class="rounded-md bg-slate-100
+                                         px-2.5 py-1 text-xs
+                                         font-medium text-slate-600">
+
+                                {{ leave.student.classroom |title}}
+
+                            </span>
+
+                        </td>
+
+
+                        <!-- Leave Period -->
+                        <td class="whitespace-nowrap px-6 py-4">
+
+                            <div class="font-medium text-slate-700">
+
+                                {{ leave.leave_from|date:"M d, Y" }}
+
+                            </div>
+
+                            <div class="mt-1 text-xs text-slate-400">
+
+                                to {{ leave.leave_to|date:"M d, Y" }}
+
+                            </div>
+
+                        </td>
+
+
+                        <!-- Reason -->
+                        <td class="max-w-xs px-6 py-4">
+
+                            <p class="line-clamp-2 text-slate-600">
+
+                                {{ leave.reason |capfirst}}
+
+                            </p>
+
+                        </td>
+
+
+                        <!-- Status -->
+                        <td class="px-6 py-4">
+
+
+                            {% if leave.status == "PENDING" %}
+
+                            <span class="inline-flex items-center
+                                         gap-1.5 rounded-full
+                                         bg-yellow-100 px-3 py-1
+                                         text-xs font-semibold
+                                         text-yellow-700">
+
+                                <i class="fa-solid fa-clock"></i>
+
+                                Pending
+
+                            </span>
+
+
+                            {% elif leave.status == "APPROVED" %}
+
+                            <span class="inline-flex items-center
+                                         gap-1.5 rounded-full
+                                         bg-green-100 px-3 py-1
+                                         text-xs font-semibold
+                                         text-green-700">
+
+                                <i class="fa-solid fa-circle-check"></i>
+
+                                Approved
+
+                            </span>
+
+
+                            {% elif leave.status == "REJECTED" %}
+
+                            <span class="inline-flex items-center
+                                         gap-1.5 rounded-full
+                                         bg-red-100 px-3 py-1
+                                         text-xs font-semibold
+                                         text-red-700">
+
+                                <i class="fa-solid fa-circle-xmark"></i>
+
+                                Rejected
+
+                            </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <!-- Action -->
+                        <td class="px-6 py-4 text-right">
+
+                            <a
+                                href="{% url 'teacher-update-leave' leave.id %}"
+                                class="inline-flex items-center gap-2
+                                       rounded-lg bg-[#0e1a3a]
+                                       px-3.5 py-2 text-xs
+                                       font-semibold text-white
+                                       transition hover:bg-slate-800">
+
+                                <i class="fa-solid fa-eye"></i>
+
+                                Review
+
+                            </a>
+
+                        </td>
+
+
+                    </tr>
+
+                    {% endfor %}
+
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- Mobile Cards -->
+        <div class="divide-y divide-slate-100 md:hidden">
+
+
+            {% for leave in leave_applications %}
+
+            <div class="space-y-4 p-5">
+
+
+                <!-- Student + Status -->
+                <div class="flex items-start
+                            justify-between gap-3">
+
+                    <div>
+
+                        <h3 class="font-semibold text-slate-800">
+
+                            {{ leave.student.name |title}}
+
+                        </h3>
+
+                        <p class="mt-1 text-xs text-slate-400">
+
+                            {{ leave.student.classroom |title}}
+
+                        </p>
+
+                    </div>
+
+
+                    {% if leave.status == "PENDING" %}
+
+                    <span class="shrink-0 rounded-full
+                                 bg-yellow-100 px-3 py-1
+                                 text-xs font-semibold
+                                 text-yellow-700">
+
+                        Pending
+
+                    </span>
+
+                    {% elif leave.status == "APPROVED" %}
+
+                    <span class="shrink-0 rounded-full
+                                 bg-green-100 px-3 py-1
+                                 text-xs font-semibold
+                                 text-green-700">
+
+                        Approved
+
+                    </span>
+
+                    {% elif leave.status == "REJECTED" %}
+
+                    <span class="shrink-0 rounded-full
+                                 bg-red-100 px-3 py-1
+                                 text-xs font-semibold
+                                 text-red-700">
+
+                        Rejected
+
+                    </span>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Dates -->
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Leave Period
+
+                    </p>
+
+                    <p class="mt-1 text-sm font-medium text-slate-700">
+
+                        {{ leave.leave_from|date:"M d, Y" }}
+
+                        <span class="mx-1 text-slate-400">
+                            →
+                        </span>
+
+                        {{ leave.leave_to|date:"M d, Y" }}
+
+                    </p>
+
+                </div>
+
+
+                <!-- Reason -->
+                <div>
+
+                    <p class="text-xs font-medium uppercase
+                              tracking-wide text-slate-400">
+
+                        Reason
+
+                    </p>
+
+                    <p class="mt-1 text-sm leading-6 text-slate-600">
+
+                        {{ leave.reason |capfirst}}
+
+                    </p>
+
+                </div>
+
+
+                <!-- Review Button -->
+                <div>
+
+                    <a
+                        href="{% url 'teacher-update-leave' leave.id %}"
+                        class="inline-flex w-full items-center
+                               justify-center gap-2 rounded-lg
+                               bg-[#0e1a3a] px-4 py-2.5
+                               text-sm font-semibold text-white
+                               transition hover:bg-slate-800">
+
+                        <i class="fa-solid fa-eye"></i>
+
+                        Review Application
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+
+        </div>
+
+
+        {% else %}
+
+
+        <!-- Empty State -->
+        <div class="flex flex-col items-center
+                    justify-center px-6 py-16 text-center">
+
+            <div class="flex h-16 w-16 items-center
+                        justify-center rounded-full
+                        bg-slate-100 text-slate-400">
+
+                <i class="fa-solid fa-calendar-xmark text-2xl"></i>
+
+            </div>
+
+            <h3 class="mt-5 text-lg font-semibold text-slate-800">
+
+                No Leave Applications
+
+            </h3>
+
+            <p class="mt-2 max-w-sm text-sm leading-6 text-slate-500">
+
+                There are currently no leave applications
+                from your students.
+
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+    </div>
+
+</section>
+
+{% endblock %}

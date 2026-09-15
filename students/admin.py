@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ClassRoom,Student
+from .models import ClassRoom,Student,LeaveApplication
 # Register your models here.
 
 # admin.site.register(ClassRoom)
@@ -20,5 +20,16 @@ class StudentAdmin(admin.ModelAdmin):
         'address',
         'phone',
         'date_of_birth',
+        
+    )
+@admin.register(LeaveApplication)
+class LeaveApplicationAdmin(admin.ModelAdmin):
+    list_display=(
+        'student',
+        'applied_at',
+        'status',
+        'reason',
+        'leave_from',
+        'leave_to',
         
     )
