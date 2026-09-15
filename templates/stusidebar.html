@@ -1,16 +1,10 @@
 
 <div class="flex items-center justify-between px-4 py-3 lg:hidden">
 
-    <!-- School Name -->
-    <a href="{% url 'home' %}"
-       class="text-lg font-semibold text-slate-900">
-        Jhime Malika Secondary School
-    </a>
-
     <!-- Menu Button -->
     <button
         id="menu-btn"
-        class="rounded-lg bg-[#0e1a3a] px-4 py-3 text-white"
+        class="shrink-0 rounded-lg bg-[#0e1a3a] px-4 py-3 text-white transition hover:bg-blue-700"
         type="button">
 
         <i class="fa-solid fa-bars text-xl"></i>
@@ -20,180 +14,172 @@
 </div>
 
 
-<!-- Mobile Overlay -->
 <div
     id="menu-overlay"
     class="fixed inset-0 z-40 hidden bg-black/40 lg:hidden">
 </div>
 
-
-<!-- Student Sidebar -->
 <aside
     id="sidebar"
-    class="fixed inset-y-0 left-0 z-50 hidden w-72 bg-[#0e1a3a] p-0 text-slate-100 shadow-2xl lg:flex lg:w-72 lg:flex-col lg:justify-between">
+    class="fixed inset-y-0 left-0 z-50 flex w-[85vw] max-w-72 -translate-x-full flex-col bg-[#0e1a3a] p-0 text-slate-100 shadow-2xl transition-transform duration-300 ease-in-out lg:w-72 lg:translate-x-0">
 
-    <div>
 
-        <!-- Sidebar Header -->
-        <div class="border-b border-white/10 px-6 py-6">
+    <div class="shrink-0 border-b border-white/10 px-5 py-5 sm:px-6 sm:py-6">
 
-            <p class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
-                School Portal
-            </p>
+        <p class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400 sm:tracking-[0.35em]">
+            School Portal
+        </p>
 
-            <div class="mt-4 flex items-center gap-3">
+        <div class="mt-4 flex items-center gap-3">
 
-                <div
-                    class="flex h-11 w-11 items-center justify-center rounded-full bg-white/10 text-lg font-semibold">
+            <div
+                class="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-lg font-semibold">
 
-                    S
+                S
 
-                </div>
+            </div>
 
-                <div>
+            <div class="min-w-0">
 
-                    <p class="font-semibold">
-                        Student Panel
-                    </p>
+                <p class="truncate font-semibold">
+                    Student Panel
+                </p>
 
-                    <p class="text-sm text-slate-400">
-                        Academic Management
-                    </p>
-
-                </div>
+                <p class="truncate text-sm text-slate-400">
+                    Academic Management
+                </p>
 
             </div>
 
         </div>
 
+    </div>
+
+
+    <div
+        class="min-h-0 flex-1 overflow-y-auto overscroll-contain">
 
         <!-- Sidebar Navigation -->
-        <nav class="mt-6 space-y-2 px-3">
+        <nav class="mt-4 space-y-1 px-3 pb-4 sm:mt-6 sm:space-y-2">
 
+
+            <!-- Dashboard -->
 
             <a
                 href="{% url 'student-dashboard' student_id=student.id %}"
-                class="flex items-center gap-3 px-4 py-3 text-white transition hover:bg-blue-500">
+                class="flex items-center gap-3 rounded-lg px-4 py-3 text-white transition hover:bg-blue-500">
 
-                <span class="text-base">
+                <span class="shrink-0 text-base">
                     <i class="fa-solid fa-file-signature"></i>
                 </span>
 
-                <span>
+                <span class="truncate">
                     Dashboard
                 </span>
 
             </a>
 
 
+            <!-- Student Attendance -->
+
             <a
                 href="{% url 'student-attendance' student_id=student.id %}"
-                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
+                class="flex items-center gap-3 rounded-lg px-4 py-3 text-white transition hover:bg-blue-500">
 
-                <span class="text-base">
+                <span class="shrink-0 text-base">
                     <i class="fa-solid fa-calendar-check"></i>
                 </span>
 
-                <span>
+                <span class="truncate">
                     Student Attendance
                 </span>
 
             </a>
 
 
+            <!-- Student Assignment -->
+
             <a
                 href="{% url 'student-assignment' student_id=student.id %}"
-                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
+                class="flex items-center gap-3 rounded-lg px-4 py-3 text-white transition hover:bg-blue-500">
 
-                <span class="text-base">
+                <span class="shrink-0 text-base">
                     <i class="fa-solid fa-file-signature"></i>
                 </span>
 
-                <span>
+                <span class="truncate">
                     Student Assignment
                 </span>
 
             </a>
 
 
+            <!-- Marks -->
+
             <a
                 href="{% url 'student-marks' student_id=student.id %}"
-                class="flex items-center gap-3 px-4 py-3 text-white transition hover:bg-blue-500">
+                class="flex items-center gap-3 rounded-lg px-4 py-3 text-white transition hover:bg-blue-500">
 
-                <span class="text-base">
+                <span class="shrink-0 text-base">
                     <i class="fa-solid fa-square-poll-vertical"></i>
                 </span>
 
-                <span>
+                <span class="truncate">
                     Marks
                 </span>
 
             </a>
 
 
+            <!-- Report Card -->
+
             <a
                 href="{% url 'student-report-card' student_id=student.id %}"
-                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
+                class="flex items-center gap-3 rounded-lg px-4 py-3 text-white transition hover:bg-blue-500">
 
-                <span class="text-base">
+                <span class="shrink-0 text-base">
                     <i class="fa-solid fa-file-lines"></i>
                 </span>
 
-                <span>
+                <span class="truncate">
                     Report Card
                 </span>
 
             </a>
 
 
+            <!-- Notice -->
+
             <a
                 href="{% url 'student-notice' student_id=student.id %}"
-                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
+                class="flex items-center gap-3 rounded-lg px-4 py-3 text-white transition hover:bg-blue-500">
 
-                <span class="text-base">
+                <span class="shrink-0 text-base">
                     <i class="fa-regular fa-bell"></i>
                 </span>
 
-                <span>
+                <span class="truncate">
                     Notice
                 </span>
 
             </a>
-            <a
-                href="{% url 'student-leave-applications'%}"
-                class="flex items-center gap-3  px-4 py-3 text-white transition hover:bg-blue-500">
 
-                <span class="text-base">
+
+            <!-- Leave Application -->
+
+            <a
+                href="{% url 'student-leave-applications' %}"
+                class="flex items-center gap-3 rounded-lg px-4 py-3 text-white transition hover:bg-blue-500">
+
+                <span class="shrink-0 text-base">
                     <i class="fa-solid fa-calendar-days"></i>
                 </span>
 
-                <span>
+                <span class="truncate">
                     Leave Application
                 </span>
 
             </a>
-
-
-        
-
-            <div class="border-t border-white/10 p-3">
-
-                <a
-                    href="{% url "student-logout" %}"
-                    id="logout-btn"
-                    class="flex items-center gap-3  px-4 py-3 text-slate-300 transition hover:bg-red-500 hover:text-red-300">
-
-                    <span class="text-base">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                    </span>
-
-                    <span>
-                        Logout
-                    </span>
-
-                </a>
-
-            </div>
 
 
         </nav>
@@ -201,37 +187,98 @@
     </div>
 
 
+    <div
+        class="shrink-0 border-t border-white/10 bg-[#0e1a3a] p-3">
+
+        <a
+            href="{% url 'student-logout' %}"
+            id="logout-btn"
+            class="flex items-center gap-3 rounded-lg px-4 py-3 text-slate-300 transition hover:bg-red-500 hover:text-white">
+
+            <span class="shrink-0 text-base">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </span>
+
+            <span>
+                Logout
+            </span>
+
+        </a>
+
+    </div>
+
+
 </aside>
 
 
-<!-- Responsive Sidebar JavaScript -->
 <script>
 
     const menuBtn = document.getElementById("menu-btn");
     const sidebar = document.getElementById("sidebar");
     const menuOverlay = document.getElementById("menu-overlay");
+    const logoutBtn = document.getElementById("logout-btn");
 
 
-    // Open sidebar
+
     menuBtn.addEventListener("click", function () {
 
-        sidebar.classList.remove("hidden");
+        sidebar.classList.remove("-translate-x-full");
         menuOverlay.classList.remove("hidden");
 
+        // Prevent background page scrolling
+        document.body.classList.add("overflow-hidden");
+
     });
 
 
-    // Close sidebar
-    menuOverlay.addEventListener("click", function () {
+    function closeSidebar() {
 
-        sidebar.classList.add("hidden");
+        sidebar.classList.add("-translate-x-full");
         menuOverlay.classList.add("hidden");
 
+        // Restore page scrolling
+        document.body.classList.remove("overflow-hidden");
+
+    }
+    menuOverlay.addEventListener("click", function () {
+
+        closeSidebar();
+
     });
 
 
-    // Logout confirmation
-    const logoutBtn = document.getElementById("logout-btn");
+    const menuLinks = sidebar.querySelectorAll("nav a");
+
+    menuLinks.forEach(function (link) {
+
+        link.addEventListener("click", function () {
+
+            if (window.innerWidth < 1024) {
+
+                closeSidebar();
+
+            }
+
+        });
+
+    });
+
+    window.addEventListener("resize", function () {
+
+        if (window.innerWidth >= 1024) {
+
+            sidebar.classList.remove("-translate-x-full");
+            menuOverlay.classList.add("hidden");
+
+            document.body.classList.remove("overflow-hidden");
+
+        } else {
+
+            sidebar.classList.add("-translate-x-full");
+
+        }
+
+    });
 
     logoutBtn.addEventListener("click", function (event) {
 
