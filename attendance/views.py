@@ -69,16 +69,6 @@ def mark_attendance(request):
 @login_required
 def attendance_history(request):
 
-    # Only Admin / Superuser
-    if request.user.role != "ADMIN" and not request.user.is_superuser:
-
-        messages.error(
-            request,
-            "You are not authorized to access this page."
-        )
-
-        return redirect("dashboard")
-
     from_date = request.GET.get("from")
     to_date = request.GET.get("to")
 
