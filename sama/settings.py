@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-*mb!-vne$zuna&4_e0#oo(n*%l1z^)8%bli^24ay(ho0l@x115
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -127,7 +127,7 @@ AUTH_USER_MODEL="accounts.User"
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
-
+STATIC_ROOT=BASE_DIR/'static'
 LOGIN_URL="/"
 
 
