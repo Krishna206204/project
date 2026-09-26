@@ -144,11 +144,10 @@ def notice_list(request):
     
     
 def notice(request):
-
     notices = (
         Notice.objects
         .all()
-        .order_by("-created_at")
+        .order_by("-created_at")[:5]
     )
 
     return render(
