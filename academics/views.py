@@ -213,6 +213,64 @@ def admin_add_notice(request):
         request,
         "academics/admin_add_notice.html"
     )
+    
+
+
+def admin_edit_notice(request, notice_id):
+
+    notice = get_object_or_404(Notice, id=notice_id)
+
+    if request.method == "POST":
+
+        title = request.POST.get("title", "").strip()
+        description = request.POST.get("description", "").strip()
+
+        if not title:
+            messages.error(request, "Notice title is required.")
+            return render(
+                request,
+                "academics/admin_edit_notice.html",
+                {"notice": notice}
+            )
+
+        notice.title = title
+        notice.description = description
+        notice.save()
+
+        messages.success(
+            request,
+            "Notice updated successfully."
+        )
+
+        return redirect("admin-notice-list")
+
+    return render(
+        request,
+        "academics/admin_edit_notice.html",
+        {"notice": notice}
+    )
+
+
+def admin_delete_notice(request, notice_id):
+
+    notice = get_object_or_404(Notice, id=notice_id)
+
+    if request.method == "POST":
+
+        notice.delete()
+
+        messages.success(
+            request,
+            "Notice deleted successfully."
+        )
+
+        return redirect("admin-notice-list")
+
+    return render(
+        request,
+        "academics/admin_delete_notice.html",
+        {"notice": notice}
+    )
 
 
 @login_required

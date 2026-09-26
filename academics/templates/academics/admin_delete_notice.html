@@ -1,0 +1,111 @@
+{% extends "adminbase.html" %}
+
+{% block title %}
+    Delete Notice
+{% endblock %}
+
+{% block page_label %}
+    Administration
+{% endblock %}
+
+{% block page_title %}
+    Delete Notice
+{% endblock %}
+
+{% block content %}
+
+<div class="mx-auto max-w-2xl">
+
+    <div class="overflow-hidden rounded-2xl border border-red-200 bg-white shadow-sm">
+
+        <!-- Header -->
+        <div class="border-b border-red-100 bg-red-50 px-6 py-5">
+
+            <div class="flex items-center gap-3">
+
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-red-100 text-red-600">
+
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+
+                </div>
+
+                <div>
+
+                    <h2 class="text-xl font-semibold text-slate-900">
+                        Delete Notice
+                    </h2>
+
+                    <p class="mt-1 text-sm text-slate-500">
+                        Please confirm this action.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Content -->
+        <div class="p-6">
+
+            <p class="text-sm leading-6 text-slate-600">
+                Are you sure you want to delete the following notice?
+            </p>
+
+
+            <!-- Notice Preview -->
+            <div class="mt-5 rounded-xl border border-slate-200 bg-slate-50 p-5">
+
+                <h3 class="text-lg font-semibold text-slate-900">
+                    {{ notice.title }}
+                </h3>
+
+                {% if notice.description %}
+
+                <p class="mt-2 text-sm leading-6 text-slate-600">
+                    {{ notice.description }}
+                </p>
+
+                {% endif %}
+
+                <p class="mt-3 text-xs text-slate-500">
+                    Published:
+                    {{ notice.created_at|date:"l, M d, Y" }}
+                </p>
+
+            </div>
+
+
+            <!-- Buttons -->
+            <form method="POST" class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
+
+                {% csrf_token %}
+
+                <a
+                    href="{% url 'admin-notice-list' %}"
+                    class="inline-flex items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                    Cancel
+                </a>
+
+                <button
+                    type="submit"
+                    class="inline-flex items-center justify-center rounded-xl bg-red-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                >
+
+                    <i class="fa-solid fa-trash mr-2"></i>
+
+                    Delete Notice
+
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

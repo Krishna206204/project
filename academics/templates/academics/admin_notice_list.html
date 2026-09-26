@@ -112,6 +112,10 @@
                             Description
                         </th>
 
+                        <th class="px-5 py-3 text-center font-semibold">
+                            Actions
+                        </th>
+
                     </tr>
 
                 </thead>
@@ -146,9 +150,50 @@
 
 
                         <!-- Description -->
-                        <td class="px-5 py-4 text-slate-700">
+                        <td class="max-w-md px-5 py-4 text-slate-700">
 
-                            {{ notice.description|default:"No description provided."|title }}
+                            <div class="line-clamp-3">
+                                {{ notice.description|default:"No description provided."|title }}
+                            </div>
+
+                        </td>
+
+
+
+                        <!-- Actions -->
+                        <td class="px-5 py-4">
+
+                            <div class="flex flex-wrap items-center justify-center gap-2">
+
+
+                                <!-- Edit Button -->
+                                <a
+                                    href="{% url 'admin-edit-notice' notice.id %}"
+                                    class="inline-flex items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
+                                >
+
+                                    <i class="fa-solid fa-pen-to-square mr-1.5"></i>
+
+                                    Edit
+
+                                </a>
+
+
+
+                                <!-- Delete Button -->
+                                <a
+                                    href="{% url 'admin-delete-notice' notice.id %}"
+                                    class="inline-flex items-center justify-center rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-400"
+                                >
+
+                                    <i class="fa-solid fa-trash mr-1.5"></i>
+
+                                    Delete
+
+                                </a>
+
+
+                            </div>
 
                         </td>
 
@@ -161,7 +206,7 @@
                     <tr>
 
                         <td
-                            colspan="3"
+                            colspan="4"
                             class="px-5 py-10 text-center text-slate-500"
                         >
 
@@ -170,7 +215,6 @@
                         </td>
 
                     </tr>
-
 
                     {% endfor %}
 

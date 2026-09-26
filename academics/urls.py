@@ -48,6 +48,19 @@ urlpatterns = [
     
     
     path(
+        "admin/notices/<int:notice_id>/edit/",
+        views.admin_edit_notice,
+        name="admin-edit-notice"
+    ),
+
+    # Delete Notice
+    path(
+        "admin/notices/<int:notice_id>/delete/",
+        views.admin_delete_notice,
+        name="admin-delete-notice"
+    ),
+    
+    path(
         "admin/add-marks/",
         views.admin_add_marks,
         name="admin-add-marks"
