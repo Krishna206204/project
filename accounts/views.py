@@ -52,7 +52,7 @@ def teacher_login(request):
             messages.success(request, "Login successful")
             return redirect("dashboard")
         else:
-            messages.error(request, "Invalid credentials")
+            messages.error(request, "Invalid username or password.")
             return redirect("login")
 
     return render(request, "accounts/login.html")
@@ -195,7 +195,7 @@ def admin_login(request):
 
         messages.success(
             request,
-            "Admin login successful."
+            "Login successful."
         )
 
         return redirect("admin-dashboard")
