@@ -390,168 +390,189 @@ def add_marks(request):
     
     
 @login_required
-def view_marks(request):
+def view_marks(request): 
 
-    classroom = ClassRoom.objects.filter(
-        teacher=request.user
-    ).first()
+    classroom = ClassRoom.objects.filter( 
+        teacher=request.user 
+    ).first() 
 
-    marks = Marks.objects.none()
-    subjects = Subject.objects.none()
-    exam_names = []
+    marks = Marks.objects.none() 
+    subjects = Subject.objects.none() 
+    exam_names = [] 
 
-    student_name = request.GET.get(
-        "student",
-        ""
-    ).strip()
+    student_name = request.GET.get( 
+        "student", 
+        "" 
+    ).strip() 
 
-    subject_id = request.GET.get(
-        "subject",
-        ""
-    ).strip()
+    subject_id = request.GET.get( 
+        "subject", 
+        "" 
+    ).strip() 
 
-    selected_exam = request.GET.get(
-        "exam",
-        ""
-    ).strip()
+    selected_exam = request.GET.get( 
+        "exam", 
+        "" 
+    ).strip() 
 
-    if classroom:
+    if classroom: 
 
-        subjects = Subject.objects.filter(
-            classroom=classroom
-        )
-        exam_names = list(
-            Marks.objects
-            .filter(
-                student__classroom=classroom
-            )
-            .values_list(
-                "exam_name",
-                flat=True
-            )
-            .distinct()
-        )
+        subjects = Subject.objects.filter( 
+            classroom=classroom 
+        ) 
 
-        latest_exam = (
-            Marks.objects
-            .filter(
-                student__classroom=classroom
-            )
-            .order_by("-id")
-            .values_list(
-                "exam_name",
-                flat=True
-            )
-            .first()
-        )
-        
-        if not selected_exam:
-            selected_exam = latest_exam
+        exam_names = list( 
+            Marks.objects 
+            .filter( 
+                student__classroom=classroom 
+            ) 
+            .values_list( 
+                "exam_name", 
+                flat=True 
+            ) 
+            .distinct() 
+        ) 
 
-        marks = (
-            Marks.objects
-            .filter(
-                student__classroom=classroom
-            )
-            .select_related(
-                "student",
-                "subject"
-            )
-            .order_by(
-                "student__name"
-            )
-        )
+        latest_exam = ( 
+            Marks.objects 
+            .filter( 
+                student__classroom=classroom 
+            ) 
+            .order_by("-id") 
+            .values_list( 
+                "exam_name", 
+                flat=True 
+            ) 
+            .first() 
+        ) 
 
+        if not selected_exam: 
+            selected_exam = latest_exam 
 
-        if student_name:
+        marks = ( 
+            Marks.objects 
+            .filter( 
+                student__classroom=classroom 
+            ) 
+            .select_related( 
+                "student", 
+                "subject" 
+            ) 
+            .order_by( 
+                "student__name" 
+            ) 
+        ) 
 
-            marks = marks.filter(
-                student__name__icontains=student_name
-            )
+        if student_name: 
 
-        if subject_id:
+            marks = marks.filter( 
+                student__name__icontains=student_name 
+            ) 
 
-            marks = marks.filter(
-                subject_id=subject_id
-            )
+        if subject_id: 
 
+            marks = marks.filter( 
+                subject_id=subject_id 
+            ) 
 
-        if selected_exam:
+        if selected_exam: 
 
-            marks = marks.filter(
-                exam_name=selected_exam
-            )
+            marks = marks.filter( 
+                exam_name=selected_exam 
+            ) 
 
+    paginator = Paginator( 
+        marks, 
+        8 
+    ) 
 
-    paginator = Paginator(
-        marks,
-        8
+    page_number = request.GET.get( 
+        "page" 
+    ) 
+
+    page_obj = paginator.get_page( 
+        page_number 
+    ) 
+
+    # GRADE CALCULATION - SAME AS STUDENT REPORT CARD
+    for mark in page_obj: 
+
+        full_marks = mark.full_marks or 0 
+        obtained_marks = mark.marks_obtained or 0 
+
+        percentage = ( 
+            round((obtained_marks / full_marks) * 100, 2)
+            if full_marks 
+            else 0 
+        ) 
+
+        if percentage < 40: 
+            mark.grade = "NG" 
+        elif percentage >= 90: 
+            mark.grade = "A+" 
+        elif percentage >= 80: 
+            mark.grade = "A" 
+        elif percentage >= 70: 
+            mark.grade = "B+" 
+        elif percentage >= 60: 
+            mark.grade = "B" 
+        elif percentage >= 50: 
+            mark.grade = "C+" 
+        else: 
+            mark.grade = "C" 
+
+    current_page = page_obj.number 
+    total_pages = paginator.num_pages 
+
+    page_range = [] 
+
+    for num in range( 
+        1, 
+        total_pages + 1 
+    ): 
+
+        if ( 
+            num == 1 
+            or num == total_pages 
+            or current_page - 2 <= num <= current_page + 2 
+        ): 
+
+            page_range.append(num) 
+
+        elif ( 
+            page_range 
+            and page_range[-1] != "..." 
+        ): 
+
+            page_range.append("...") 
+
+    context = { 
+
+        "marks": page_obj, 
+
+        "page_obj": page_obj, 
+
+        "paginator": paginator, 
+
+        "page_range": page_range, 
+
+        "subjects": subjects, 
+
+        "exam_names": exam_names, 
+
+        "selected_student": student_name, 
+
+        "selected_subject": subject_id, 
+
+        "selected_exam": selected_exam, 
+    } 
+
+    return render( 
+        request, 
+        "academics/marks_list.html", 
+        context 
     )
-
-    page_number = request.GET.get(
-        "page"
-    )
-
-    page_obj = paginator.get_page(
-        page_number
-    )
-
-
-    current_page = page_obj.number
-    total_pages = paginator.num_pages
-
-    page_range = []
-
-    for num in range(
-        1,
-        total_pages + 1
-    ):
-
-        if (
-            num == 1
-            or num == total_pages
-            or current_page - 2 <= num <= current_page + 2
-        ):
-
-            page_range.append(num)
-
-        elif (
-            page_range
-            and page_range[-1] != "..."
-        ):
-
-            page_range.append("...")
-
-
-    context = {
-
-        "marks": page_obj,
-
-        "page_obj": page_obj,
-
-        "paginator": paginator,
-
-        "page_range": page_range,
-
-        "subjects": subjects,
-
-        "exam_names": exam_names,
-
-        "selected_student": student_name,
-
-        "selected_subject": subject_id,
-
-        "selected_exam": selected_exam,
-    }
-
-    return render(
-        request,
-        "academics/marks_list.html",
-        context
-    )
-
-
-
+    
 @login_required
 def edit_marks(request, mark_id):
 
@@ -719,11 +740,29 @@ def report_card(request, student_id, exam_name):
     subject_rows = []
     total_full_marks = 0
     total_obtained_marks = 0
+    has_failed_subject = False
 
     for mark in marks:
         full_marks = mark.full_marks or 0
         obtained_marks = mark.marks_obtained or 0
         percentage = round((obtained_marks / full_marks) * 100, 2) if full_marks else 0
+
+        # Subject Grade
+        if percentage < 40:
+            subject_grade = "NG"
+            has_failed_subject = True
+        elif percentage >= 90:
+            subject_grade = "A+"
+        elif percentage >= 80:
+            subject_grade = "A"
+        elif percentage >= 70:
+            subject_grade = "B+"
+        elif percentage >= 60:
+            subject_grade = "B"
+        elif percentage >= 50:
+            subject_grade = "C+"
+        else:
+            subject_grade = "C"
 
         total_full_marks += full_marks
         total_obtained_marks += obtained_marks
@@ -734,6 +773,7 @@ def report_card(request, student_id, exam_name):
                 "full_marks": full_marks,
                 "obtained_marks": obtained_marks,
                 "percentage": percentage,
+                "grade": subject_grade,
             }
         )
 
@@ -743,7 +783,16 @@ def report_card(request, student_id, exam_name):
         else 0
     )
 
-    if overall_percentage >= 90:
+    # FINAL RESULT - Same as student_report_card()
+    if overall_percentage >= 40 and not has_failed_subject:
+        result = "PASS"
+    else:
+        result = "FAIL"
+
+    # OVERALL GRADE - Same as student_report_card()
+    if result == "FAIL":
+        grade = "NG"
+    elif overall_percentage >= 90:
         grade = "A+"
     elif overall_percentage >= 80:
         grade = "A"
@@ -752,16 +801,19 @@ def report_card(request, student_id, exam_name):
     elif overall_percentage >= 60:
         grade = "B"
     elif overall_percentage >= 50:
+        grade = "C+"
+    else:
         grade = "C"
-    else:
-        grade = "F"
 
-    if overall_percentage >= 40:
-        result = "PASS"
-    else:
-        result = "FAIL"
+    # REMARKS - Same as student_report_card()
+    if result == "FAIL":
 
-    if overall_percentage >= 90:
+        if has_failed_subject:
+            remarks = "Failed in one or more subjects. Improvement is required."
+        else:
+            remarks = "Overall percentage is below the passing percentage."
+
+    elif overall_percentage >= 90:
         remarks = "Outstanding Performance"
     elif overall_percentage >= 80:
         remarks = "Excellent Work"
@@ -772,7 +824,7 @@ def report_card(request, student_id, exam_name):
     elif overall_percentage >= 50:
         remarks = "Satisfactory"
     else:
-        remarks = "Needs Improvement"
+        remarks = "Passed. Continue working to improve your performance."
 
     context = {
         "school_name": "Jhime Malika Secondary School",
@@ -798,6 +850,7 @@ def report_card(request, student_id, exam_name):
     }
 
     return render(request, "academics/report_card.html", context)
+
 
 
 @login_required
@@ -881,12 +934,27 @@ def student_results(request):
 
         total_full_marks = 0
         total_obtained_marks = 0
+        has_failed_subject = False
 
         for mark in marks_qs:
 
-            total_full_marks += mark.full_marks or 0
-            total_obtained_marks += mark.marks_obtained or 0
+            full_marks = mark.full_marks or 0
+            obtained_marks = mark.marks_obtained or 0
 
+            total_full_marks += full_marks
+            total_obtained_marks += obtained_marks
+
+            # Subject grade calculation - same as student report card
+            subject_percentage = (
+                round((obtained_marks / full_marks) * 100, 2)
+                if full_marks
+                else 0
+            )
+
+            if subject_percentage < 40:
+                has_failed_subject = True
+
+        # Overall percentage
         if total_full_marks > 0:
             percentage = round(
                 (total_obtained_marks / total_full_marks) * 100,
@@ -895,7 +963,16 @@ def student_results(request):
         else:
             percentage = 0
 
-        if percentage >= 90:
+        # Final result - same as student report card
+        if percentage >= 40 and not has_failed_subject:
+            result = "PASS"
+        else:
+            result = "FAIL"
+
+        # Overall grade - same as student report card
+        if result == "FAIL":
+            grade = "NG"
+        elif percentage >= 90:
             grade = "A+"
         elif percentage >= 80:
             grade = "A"
@@ -904,9 +981,9 @@ def student_results(request):
         elif percentage >= 60:
             grade = "B"
         elif percentage >= 50:
-            grade = "C"
+            grade = "C+"
         else:
-            grade = "F"
+            grade = "C"
 
         percentages.append(percentage)
 
@@ -927,6 +1004,7 @@ def student_results(request):
             "obtained_marks": total_obtained_marks,
             "percentage": percentage,
             "grade": grade,
+            "result": result,
             "report_url": report_url,
         })
 
