@@ -1,129 +1,92 @@
+
 {% extends 'stubase.html' %}
 
-{% block title %}
-    Student Report Card
-{% endblock %}
+{% block title %}Student Report Card{% endblock %}
 
-{% block page_label %}
-    Academics
-{% endblock %}
+{% block page_label %}Academics{% endblock %}
 
-{% block page_title %}
-    Student Report Card
-{% endblock %}
+{% block page_title %}Student Report Card{% endblock %}
 
 {% block content %}
 
-<section class="space-y-6">
+<div class="space-y-4">
 
     <!-- ================= Academic Overview / Exam Filter ================= -->
-    <div
-        class="mb-6 rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-4 shadow-sm sm:p-6 print:hidden"
-    >
+    <section class="print:hidden rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 p-4 text-white shadow-sm sm:p-5">
 
-        <div class="flex flex-col gap-5">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
 
             <!-- Heading -->
-            <div class="text-center">
-
-                <p class="text-xs font-bold uppercase tracking-[0.35em] text-slate-500">
+            <div class="min-w-0">
+                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300">
                     Academic Overview
                 </p>
 
-                <h2 class="mt-2 text-xl font-bold text-slate-900 sm:text-3xl">
-                    Monitor Classroom Performance
+                <h2 class="mt-1.5 text-xl font-semibold sm:text-2xl">
+                    Student Report Cards
                 </h2>
 
-                <p class="mt-2 text-sm text-slate-500">
-                    Select an exam to view your academic result
+                <p class="mt-1.5 max-w-xl text-xs leading-5 text-slate-300 sm:text-sm">
+                    Select an examination to view your academic performance and download your report card.
                 </p>
-
             </div>
 
+            <!-- Exam Filter and Download -->
+            <div class="w-full rounded-xl border border-white/10 bg-white p-3 shadow-sm sm:p-4 lg:w-auto lg:min-w-[360px]">
 
-            <!-- Filter Controls -->
-            <div
-                class="mx-auto flex w-full max-w-4xl flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4"
-            >
-
-                <!-- Exam Filter Form -->
-                <form
-                    method="get"
-                    class="flex w-full flex-col gap-3 sm:flex-row sm:items-end sm:justify-center"
-                >
+                <form method="get" class="flex flex-col gap-3 sm:flex-row sm:items-end">
 
                     <!-- Exam Filter -->
-                    <div class="w-full sm:flex-1">
-
-                        <label
-                            for="exam"
-                            class="mb-2 flex items-center gap-2 text-sm font-semibold text-slate-700"
-                        >
-
+                    <div class="min-w-0 flex-1">
+                        <label for="exam" class="mb-1.5 flex items-center gap-2 text-xs font-semibold text-slate-700 sm:text-sm">
                             <i class="fa-solid fa-graduation-cap text-slate-500"></i>
-
                             Filter by Exam
-
                         </label>
-
 
                         <select
                             id="exam"
                             name="exam"
-                            class="w-full rounded-xl border border-slate-300 bg-slate-50 px-3 py-3 text-sm font-medium text-slate-700 outline-none transition duration-200 hover:border-slate-400 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 sm:px-4 sm:text-base"
+                            class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                         >
-
-                            
-
                             {% for exam in available_exams %}
-
                                 <option
                                     value="{{ exam }}"
                                     {% if selected_exam == exam %}selected{% endif %}
                                 >
                                     {{ exam|title }}
                                 </option>
-
+                            {% empty %}
+                                <option value="">No Exams Available</option>
                             {% endfor %}
-
                         </select>
-
                     </div>
-
 
                     <!-- Apply Button -->
                     <button
                         type="submit"
-                        class="inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-6 text-sm font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-slate-800 hover:shadow-lg active:translate-y-0 sm:w-auto"
+                        class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2"
                     >
-
-                        <i class="fa-solid fa-filter"></i>
-
+                        <i class="fa-solid fa-filter text-xs"></i>
                         Apply
-
                     </button>
 
                 </form>
-
 
                 <!-- Download PDF Button -->
                 <button
                     type="button"
                     onclick="downloadReportCard()"
-                    class="inline-flex h-[50px] w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-6 text-sm font-semibold text-white shadow-md transition duration-200 hover:-translate-y-0.5 hover:bg-emerald-800 hover:shadow-lg active:translate-y-0 sm:w-auto sm:self-center"
+                    class="mt-3 inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 text-sm font-semibold text-white transition hover:bg-emerald-800 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2"
                 >
-
                     <i class="fa-solid fa-file-pdf"></i>
-
-                    Download PDF
-
+                    Download / Print Report Card
                 </button>
 
             </div>
 
         </div>
 
-    </div>
+    </section>
 
 
     <!-- ================= Report Card ================= -->
@@ -132,434 +95,346 @@
         class="mx-auto w-full max-w-5xl overflow-hidden border-2 border-slate-900 bg-white text-slate-900 shadow-sm sm:rounded-xl"
     >
 
-
         <!-- ================= School Header ================= -->
-        <div class="border-b-2 border-slate-900 px-3 py-5 text-center sm:px-8 sm:py-6">
+        <header class="border-b-2 border-slate-900 bg-white px-3 py-5 text-center sm:px-6 sm:py-6">
 
-            <h1
-                class="break-words text-xl font-bold uppercase tracking-wide sm:text-3xl"
-            >
+            <p class="mb-2 text-[10px] font-bold uppercase tracking-[0.25em] text-slate-500 sm:text-xs">
+                Academic Records
+            </p>
+
+            <h1 class="break-words text-xl font-bold uppercase tracking-wide text-slate-900 sm:text-3xl">
                 {{ school_name|upper }}
             </h1>
 
-            <h4 class="mt-1 break-words text-xs text-slate-700 sm:text-sm">
+            <p class="mt-1 break-words text-xs text-slate-600 sm:text-sm">
                 {{ school_address|upper }}
-            </h4>
+            </p>
 
-            <h2 class="mt-4 text-lg font-bold uppercase sm:text-2xl">
-                {{ report_title }}
-            </h2>
+            <div class="mx-auto mt-4 max-w-md border-t border-slate-300 pt-3">
 
-            <h3 class="mt-1 text-xs font-semibold sm:text-base">
-                {{ exam_name }}
-            </h3>
+                <h2 class="text-lg font-bold uppercase tracking-wide text-slate-900 sm:text-2xl">
+                    {{ report_title }}
+                </h2>
 
-        </div>
+                <p class="mt-1 text-xs font-semibold text-slate-600 sm:text-sm">
+                    {{ exam_name|title }}
+                </p>
+
+            </div>
+
+        </header>
 
 
         <!-- ================= Student Information ================= -->
-        <div
-            class="grid grid-cols-1 border-b-2 border-slate-900 sm:grid-cols-2"
-        >
+        <section class="border-b-2 border-slate-900">
 
-            <!-- Student Name -->
-            <div
-                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:border-r sm:px-4 sm:py-3 sm:text-base"
-            >
+            <div class="grid grid-cols-1 sm:grid-cols-2">
 
-                <span class="font-bold">
-                    Student Name:
-                </span>
+                <!-- Student Name -->
+                <div class="min-w-0 border-b border-slate-200 px-3 py-2.5 sm:border-r sm:px-4">
+                    <span class="text-xs font-bold text-slate-700 sm:text-sm">
+                        Student Name:
+                    </span>
 
-                <span class="break-words">
-                    {{ student.name|title }}
-                </span>
+                    <span class="ml-1 break-words text-xs text-slate-900 sm:text-sm">
+                        {{ student.name|title }}
+                    </span>
+                </div>
 
-            </div>
+                <!-- Student ID -->
+                <div class="min-w-0 border-b border-slate-200 px-3 py-2.5 sm:px-4">
+                    <span class="text-xs font-bold text-slate-700 sm:text-sm">
+                        Student ID:
+                    </span>
 
+                    <span class="ml-1 text-xs text-slate-900 sm:text-sm">
+                        STD-00{{ student.id }}
+                    </span>
+                </div>
 
-            <!-- Student ID -->
-            <div
-                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base"
-            >
+                <!-- Class -->
+                <div class="min-w-0 border-b border-slate-200 px-3 py-2.5 sm:border-r sm:px-4">
+                    <span class="text-xs font-bold text-slate-700 sm:text-sm">
+                        Class:
+                    </span>
 
-                <span class="font-bold">
-                    Student ID:
-                </span>
+                    <span class="ml-1 text-xs text-slate-900 sm:text-sm">
+                        {{ student.classroom.name|default:"-"|title }}
+                    </span>
+                </div>
 
-                <span>
-                    STD-00{{ student.id }}
-                </span>
+                <!-- Section -->
+                <div class="min-w-0 border-b border-slate-200 px-3 py-2.5 sm:px-4">
+                    <span class="text-xs font-bold text-slate-700 sm:text-sm">
+                        Section:
+                    </span>
 
-            </div>
+                    <span class="ml-1 text-xs text-slate-900 sm:text-sm">
+                        {{ student.classroom.section|default:"-"|title }}
+                    </span>
+                </div>
 
+                <!-- Academic Session -->
+                <div class="min-w-0 border-b border-slate-200 px-3 py-2.5 sm:border-b-0 sm:border-r sm:px-4">
+                    <span class="text-xs font-bold text-slate-700 sm:text-sm">
+                        Academic Session:
+                    </span>
 
-            <!-- Class -->
-            <div
-                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:border-r sm:px-4 sm:py-3 sm:text-base"
-            >
+                    <span class="ml-1 text-xs text-slate-900 sm:text-sm">
+                        {{ academic_session }}
+                    </span>
+                </div>
 
-                <span class="font-bold">
-                    Class:
-                </span>
+                <!-- Exam -->
+                <div class="min-w-0 px-3 py-2.5 sm:px-4">
+                    <span class="text-xs font-bold text-slate-700 sm:text-sm">
+                        Exam:
+                    </span>
 
-                <span>
-                    {{ student.classroom.name|title }}
-                </span>
-
-            </div>
-
-
-            <!-- Section -->
-            <div
-                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base"
-            >
-
-                <span class="font-bold">
-                    Section:
-                </span>
-
-                <span>
-                    {{ student.classroom.section|title }}
-                </span>
-
-            </div>
-
-
-            <!-- Academic Session -->
-            <div
-                class="border-b border-slate-900 px-3 py-2.5 text-sm sm:border-b-0 sm:border-r sm:px-4 sm:py-3 sm:text-base"
-            >
-
-                <span class="font-bold">
-                    Academic Session:
-                </span>
-
-                <span>
-                    {{ academic_session }}
-                </span>
+                    <span class="ml-1 break-words text-xs text-slate-900 sm:text-sm">
+                        {{ exam_name|title }}
+                    </span>
+                </div>
 
             </div>
 
-
-            <!-- Exam -->
-            <div
-                class="px-3 py-2.5 text-sm sm:px-4 sm:py-3 sm:text-base"
-            >
-
-                <span class="font-bold">
-                    Exam:
-                </span>
-
-                <span>
-                    {{ exam_name|title }}
-                </span>
-
-            </div>
-
-        </div>
+        </section>
 
 
         <!-- ================= Marks Table ================= -->
-        <div class="w-full overflow-x-auto">
+        <section>
 
-            <table
-                class="w-full min-w-[600px] border-collapse text-xs sm:min-w-[650px] sm:text-sm"
-            >
+            <div class="overflow-x-auto">
 
-                <!-- Table Header -->
-                <thead>
+                <table class="w-full min-w-[480px] table-auto border-collapse text-xs sm:min-w-0 sm:text-sm">
 
-                    <tr class="bg-slate-100">
+                    <thead>
+                        <tr class="bg-slate-100 text-slate-700">
 
-                        <th
-                            class="w-[40%] border-b border-r border-slate-900 px-2 py-2 text-left font-bold sm:px-4 sm:py-3"
-                        >
-                            Subject
-                        </th>
+                            <th class="w-[40%] border-b border-r border-slate-900 px-2 py-2.5 text-left font-bold sm:px-4 sm:py-3">
+                                Subject
+                            </th>
 
+                            <th class="w-[20%] border-b border-r border-slate-900 px-2 py-2.5 text-center font-bold sm:px-3 sm:py-3">
+                                Full Marks
+                            </th>
 
-                        <th
-                            class="w-[20%] border-b border-r border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3"
-                        >
-                            Full Marks
-                        </th>
+                            <th class="w-[22%] border-b border-r border-slate-900 px-2 py-2.5 text-center font-bold sm:px-3 sm:py-3">
+                                Obtained
+                            </th>
 
+                            <th class="w-[18%] border-b border-slate-900 px-2 py-2.5 text-center font-bold sm:px-3 sm:py-3">
+                                Grade
+                            </th>
 
-                        <th
-                            class="w-[20%] border-b border-r border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3"
-                        >
-                            Obtained Marks
-                        </th>
+                        </tr>
+                    </thead>
 
+                    <tbody>
 
-                        <th
-                            class="w-[20%] border-b border-slate-900 px-2 py-2 text-center font-bold sm:px-4 sm:py-3"
-                        >
-                            Grade
-                        </th>
+                        {% for row in subject_rows %}
 
-                    </tr>
+                            <tr class="even:bg-slate-50 transition-colors hover:bg-slate-100/70">
 
-                </thead>
+                                <!-- Subject -->
+                                <td class="break-words border-b border-r border-slate-200 px-2 py-2.5 font-medium text-slate-800 sm:px-4 sm:py-3">
+                                    {{ row.subject|title }}
+                                </td>
 
+                                <!-- Full Marks -->
+                                <td class="whitespace-nowrap border-b border-r border-slate-200 px-2 py-2.5 text-center text-slate-700 sm:px-3 sm:py-3">
+                                    {{ row.full_marks }}
+                                </td>
 
-                <!-- Table Body -->
-                <tbody>
+                                <!-- Obtained Marks -->
+                                <td class="whitespace-nowrap border-b border-r border-slate-200 px-2 py-2.5 text-center font-medium text-slate-800 sm:px-3 sm:py-3">
+                                    {{ row.obtained_marks }}
+                                </td>
 
-                    {% for row in subject_rows %}
+                                <!-- Grade -->
+                                <td class="whitespace-nowrap border-b border-slate-200 px-2 py-2.5 text-center sm:px-3 sm:py-3">
 
-                    <tr class="even:bg-slate-50">
+                                    {% if row.grade == "NG" %}
+                                        <span class="inline-flex items-center justify-center rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 sm:text-xs">
+                                            NG
+                                        </span>
+                                    {% elif row.grade %}
+                                        <span class="inline-flex items-center justify-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 sm:text-xs">
+                                            {{ row.grade }}
+                                        </span>
+                                    {% else %}
+                                        <span class="text-slate-400">-</span>
+                                    {% endif %}
 
-                        <!-- Subject -->
-                        <td
-                            class="border-b border-r border-slate-900 px-2 py-2 font-medium sm:px-4 sm:py-2.5"
-                        >
-                            {{ row.subject|title }}
-                        </td>
+                                </td>
 
+                            </tr>
 
-                        <!-- Full Marks -->
-                        <td
-                            class="border-b border-r border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5"
-                        >
-                            {{ row.full_marks }}
-                        </td>
+                        {% empty %}
 
+                            <tr>
+                                <td colspan="4" class="border-b border-slate-200 px-3 py-8 text-center text-xs text-slate-500 sm:text-sm">
+                                    <i class="fa-solid fa-clipboard-list mb-2 block text-xl text-slate-300"></i>
+                                    No marks found for this student and exam.
+                                </td>
+                            </tr>
 
-                        <!-- Obtained Marks -->
-                        <td
-                            class="border-b border-r border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5"
-                        >
-                            {{ row.obtained_marks }}
-                        </td>
+                        {% endfor %}
 
+                    </tbody>
 
-                        <!-- Percentage -->
-                        <td
-                            class="border-b border-slate-900 px-2 py-2 text-center sm:px-4 sm:py-2.5"
-                        >
-                            {{ row.grade|title }}
-                        </td>
+                </table>
 
-                    </tr>
+            </div>
 
-
-                    {% empty %}
-
-                    <tr>
-
-                        <td
-                            colspan="4"
-                            class="border-b border-slate-900 px-4 py-6 text-center text-slate-500"
-                        >
-                            No marks found for this student and exam.
-                        </td>
-
-                    </tr>
-
-                    {% endfor %}
-
-                </tbody>
-
-            </table>
-
-        </div>
+        </section>
 
 
         <!-- ================= Result Summary ================= -->
-        <div
-            class="grid grid-cols-2 border-b-2 border-slate-900 sm:grid-cols-5"
-        >
+        <section class="border-b-2 border-slate-900">
 
-            <!-- Total Marks -->
-            <div
-                class="border-b border-r border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:px-3 sm:text-sm"
-            >
+            <div class="grid grid-cols-2 sm:grid-cols-5">
 
-                <p class="font-bold">
-                    Total Marks
-                </p>
+                <!-- Total Marks -->
+                <div class="border-b border-r border-slate-200 px-2 py-3 text-center sm:border-b-0 sm:px-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">
+                        Total Marks
+                    </p>
 
-                <p class="mt-1">
-                    {{ total_full_marks }}
-                </p>
+                    <p class="mt-1 text-sm font-semibold text-slate-900 sm:text-base">
+                        {{ total_full_marks }}
+                    </p>
+                </div>
 
-            </div>
+                <!-- Obtained Marks -->
+                <div class="border-b border-slate-200 px-2 py-3 text-center sm:border-b-0 sm:border-r sm:px-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">
+                        Obtained
+                    </p>
 
+                    <p class="mt-1 text-sm font-semibold text-slate-900 sm:text-base">
+                        {{ total_obtained_marks }}
+                    </p>
+                </div>
 
-            <!-- Obtained Marks -->
-            <div
-                class="border-b border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:border-r sm:px-3 sm:text-sm"
-            >
+                <!-- Percentage -->
+                <div class="border-b border-r border-slate-200 px-2 py-3 text-center sm:border-b-0 sm:px-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">
+                        Percentage
+                    </p>
 
-                <p class="font-bold">
-                    Obtained
-                </p>
+                    <p class="mt-1 text-sm font-semibold text-slate-900 sm:text-base">
+                        {{ overall_percentage }}%
+                    </p>
+                </div>
 
-                <p class="mt-1">
-                    {{ total_obtained_marks }}
-                </p>
+                <!-- Overall Grade -->
+                <div class="border-b border-slate-200 px-2 py-3 text-center sm:border-b-0 sm:border-r sm:px-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">
+                        Grade
+                    </p>
 
-            </div>
+                    <p class="mt-1 text-sm font-bold sm:text-base {% if grade == 'NG' %}text-red-700{% else %}text-emerald-700{% endif %}">
+                        {{ grade }}
+                    </p>
+                </div>
 
+                <!-- Result -->
+                <div class="col-span-2 px-2 py-3 text-center sm:col-span-1 sm:px-3">
+                    <p class="text-[10px] font-bold uppercase tracking-wide text-slate-500 sm:text-xs">
+                        Result
+                    </p>
 
-            <!-- Overall Percentage -->
-            <div
-                class="border-b border-r border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:px-3 sm:text-sm"
-            >
-
-                <p class="font-bold">
-                    Percentage
-                </p>
-
-                <p class="mt-1">
-                    {{ overall_percentage }}%
-                </p>
-
-            </div>
-
-
-            <!-- Grade -->
-            <div
-                class="border-b border-slate-900 px-2 py-3 text-center text-xs sm:border-b-0 sm:border-r sm:px-3 sm:text-sm"
-            >
-
-                <p class="font-bold">
-                    Grade
-                </p>
-
-                <p class="mt-1">
-                    {{ grade }}
-                </p>
+                    <p class="mt-1 text-sm font-bold sm:text-base {% if result == 'FAIL' %}text-red-700{% else %}text-emerald-700{% endif %}">
+                        {{ result }}
+                    </p>
+                </div>
 
             </div>
 
-
-            <!-- Result -->
-            <div
-                class="col-span-2 px-2 py-3 text-center text-xs sm:col-span-1 sm:px-3 sm:text-sm"
-            >
-
-                <p class="font-bold">
-                    Result
-                </p>
-
-                <p class="mt-1 font-semibold">
-                    {{ result }}
-                </p>
-
-            </div>
-
-        </div>
+        </section>
 
 
         <!-- ================= Teacher Remarks ================= -->
-        <div
-            class="min-h-[110px] border-b-2 border-slate-900 px-3 py-4 text-sm sm:px-6 sm:text-base"
-        >
+        <section class="min-h-[90px] border-b-2 border-slate-900 px-3 py-4 sm:min-h-[100px] sm:px-5 sm:py-5">
 
-            <p class="font-bold">
+            <h3 class="text-xs font-bold text-slate-800 sm:text-sm">
                 Teacher Remarks:
-            </p>
+            </h3>
 
-
-            <div class="mt-4 min-h-[45px] leading-7 break-words">
-                {{ remarks|title }}
+            <div class="mt-2 min-h-[35px] break-words text-xs leading-6 text-slate-700 sm:min-h-[40px] sm:text-sm">
+                {{ remarks }}
             </div>
 
-        </div>
+        </section>
 
 
         <!-- ================= Signature Section ================= -->
-        <div
-            class="grid grid-cols-2 gap-4 px-4 pb-5 pt-10 sm:gap-8 sm:px-12 sm:pt-14"
-        >
+        <section class="grid grid-cols-2 gap-6 px-4 pb-5 pt-10 sm:gap-12 sm:px-12 sm:pt-14">
 
             <!-- Class Teacher -->
-            <div class="text-center text-xs sm:text-sm">
-
+            <div class="mx-auto w-full max-w-[200px] text-center">
                 <div class="mb-2 border-t border-slate-900"></div>
 
-                <p class="font-semibold">
+                <p class="text-xs font-semibold text-slate-700 sm:text-sm">
                     Class Teacher
                 </p>
-
             </div>
-
 
             <!-- Principal -->
-            <div class="text-center text-xs sm:text-sm">
-
+            <div class="mx-auto w-full max-w-[200px] text-center">
                 <div class="mb-2 border-t border-slate-900"></div>
 
-                <p class="font-semibold">
+                <p class="text-xs font-semibold text-slate-700 sm:text-sm">
                     Principal
                 </p>
-
             </div>
 
-        </div>
+        </section>
 
     </div>
 
-</section>
+</div>
 
 
-<!-- ================= Download PDF JavaScript ================= -->
+<!-- ================= Download / Print JavaScript ================= -->
 <script>
-
     function downloadReportCard() {
         window.print();
     }
-
 </script>
 
 
-<!-- ================= Print / PDF Styling ================= -->
+<!-- ================= Responsive and Print Styling ================= -->
 <style>
-
-    /* ================= Responsive Screen Layout ================= */
-
-    @media screen and (max-width: 640px) {
-
-        /* Report card */
-        #report-card {
-            width: 100%;
-            max-width: 100%;
-            border-width: 2px;
-        }
-
-        /* Prevent long text from overflowing */
-        #report-card span {
-            overflow-wrap: anywhere;
-        }
-
-        /* Marks table */
-        #report-card table {
-            font-size: 12px;
-        }
-
-        #report-card th,
-        #report-card td {
-            white-space: nowrap;
-        }
-
-        /* Student information */
-        #report-card .grid > div {
-            min-width: 0;
-        }
-
-        /* Result summary */
-        #report-card .grid-cols-2 > div {
-            min-width: 0;
-        }
-
+    /* Prevent horizontal overflow on small screens */
+    #report-card {
+        box-sizing: border-box;
+        width: 100%;
+        max-width: 100%;
     }
 
+    #report-card *,
+    #report-card *::before,
+    #report-card *::after {
+        box-sizing: border-box;
+    }
 
-    /* ================= Print / PDF Styling ================= */
+    /* Ensure long school names and student details wrap */
+    #report-card h1,
+    #report-card h2,
+    #report-card p,
+    #report-card span,
+    #report-card td {
+        overflow-wrap: anywhere;
+    }
 
+    /* Keep the report card table readable */
+    #report-card table {
+        border-spacing: 0;
+    }
+
+    /* ================= Print / PDF ================= */
     @media print {
 
         @page {
@@ -567,157 +442,127 @@
             margin: 8mm;
         }
 
-
+        html,
         body {
-            background: white !important;
+            width: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
+            background: #ffffff !important;
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
 
-
-        /*
-         * Hide everything when printing.
-         * This includes:
-         * - Academic Overview heading
-         * - Exam Search/Filter
-         * - Apply button
-         * - Download PDF button
-         * - Base page navigation/sidebar
-         */
+        /* Hide the rest of the portal */
         body * {
-            visibility: hidden;
+            visibility: hidden !important;
         }
 
-
-        /*
-         * Show only the report card.
-         */
+        /* Display only the report card */
         #report-card,
         #report-card * {
-            visibility: visible;
+            visibility: visible !important;
         }
 
-
-        /*
-         * Position report card at the top of the PDF.
-         */
         #report-card {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            max-width: none;
-            margin: 0;
-            border-width: 2px !important;
+            position: absolute !important;
+            top: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            overflow: visible !important;
+            border: 1.5px solid #0f172a !important;
             border-radius: 0 !important;
             box-shadow: none !important;
-            font-size: 11px;
+            color: #0f172a !important;
+            font-size: 10px !important;
         }
 
-
-        /* School name */
-        #report-card h1 {
-            font-size: 20px !important;
-        }
-
-
-        /* Report title */
-        #report-card h2 {
-            font-size: 16px !important;
-        }
-
-
-        /* Exam name */
-        #report-card h3 {
-            font-size: 11px !important;
-        }
-
-
-        /* Horizontal padding */
-        #report-card .px-3,
-        #report-card .px-4 {
-            padding-left: 8px !important;
-            padding-right: 8px !important;
-        }
-
-
-        /* Header padding */
-        #report-card .py-5,
-        #report-card .py-6 {
-            padding-top: 10px !important;
-            padding-bottom: 10px !important;
-        }
-
-
-        /* Remarks padding */
-        #report-card .py-4 {
-            padding-top: 8px !important;
-            padding-bottom: 8px !important;
-        }
-
-
-        /* Student information / summary padding */
-        #report-card .py-2\.5,
-        #report-card .py-3 {
-            padding-top: 5px !important;
-            padding-bottom: 5px !important;
-        }
-
-
-        /* Table padding */
-        #report-card .py-2 {
-            padding-top: 4px !important;
-            padding-bottom: 4px !important;
-        }
-
-
-        /* Signature spacing */
-        #report-card .pt-10,
-        #report-card .pt-14 {
-            padding-top: 30px !important;
-        }
-
-
-        #report-card .pb-5 {
-            padding-bottom: 10px !important;
-        }
-
-
-        /* Teacher remarks height */
-        #report-card .min-h-\[110px\] {
-            min-height: 70px !important;
-        }
-
-
-        #report-card .min-h-\[45px\] {
-            min-height: 25px !important;
-        }
-
-
-        /*
-         * Hide all print:hidden elements.
-         * This makes sure the search/filter area
-         * and download button never appear in PDF.
-         */
+        /* Hide exam filter and download controls */
         .print\:hidden {
             display: none !important;
         }
 
-
-        /* Table page behavior */
-        table {
-            page-break-inside: auto;
+        /* Compact school header */
+        #report-card header {
+            padding: 10px 8px !important;
+            background: #ffffff !important;
         }
 
-
-        tr {
-            page-break-inside: avoid;
-            page-break-after: auto;
+        #report-card header h1 {
+            font-size: 20px !important;
+            line-height: 1.3 !important;
         }
 
+        #report-card header h2 {
+            font-size: 15px !important;
+        }
+
+        #report-card header p {
+            font-size: 10px !important;
+        }
+
+        /* Compact student information */
+        #report-card section > div > div {
+            padding-top: 5px !important;
+            padding-bottom: 5px !important;
+        }
+
+        /* Compact marks table */
+        #report-card table {
+            width: 100% !important;
+            min-width: 0 !important;
+            table-layout: fixed !important;
+            font-size: 10px !important;
+        }
+
+        #report-card th,
+        #report-card td {
+            padding: 5px 7px !important;
+            white-space: normal !important;
+            overflow-wrap: break-word !important;
+        }
+
+        /* Result summary */
+        #report-card .grid {
+            break-inside: avoid;
+        }
+
+        /* Remarks section */
+        #report-card .min-h-\[90px\],
+        #report-card .min-h-\[100px\] {
+            min-height: 65px !important;
+            padding: 8px !important;
+        }
+
+        #report-card .min-h-\[35px\],
+        #report-card .min-h-\[40px\] {
+            min-height: 25px !important;
+        }
+
+        /* Signature section */
+        #report-card section.grid {
+            padding-top: 28px !important;
+            padding-bottom: 12px !important;
+            gap: 30px !important;
+        }
+
+        /* Keep rows together where possible */
+        #report-card tr {
+            break-inside: avoid !important;
+            page-break-inside: avoid !important;
+        }
+
+        #report-card header,
+        #report-card section {
+            break-inside: avoid;
+        }
+
+        /* Remove hover styling in printed output */
+        #report-card .hover\:bg-slate-100\/70:hover {
+            background: inherit !important;
+        }
     }
-
 </style>
-
 
 {% endblock %}
