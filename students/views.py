@@ -478,6 +478,8 @@ def student_report_card(request, student_id):
         grade = "B+"
     elif overall_percentage >= 60:
         grade = "B"
+    elif overall_percentage >= 50:
+        grade = "C+"
     else:
         grade = "C"
 
