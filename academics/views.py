@@ -731,41 +731,123 @@ def report_card(request, student_id, exam_name):
         pk=student_id,
     )
 
+    available_exams = list(
+        Marks.objects
+        .filter(student=student)
+        .values_list("exam_name", flat=True)
+        .distinct()
+    )
+
+
+    # Remove empty exam names if any
+    available_exams = [
+        exam for exam in available_exams
+        if exam
+    ]
+
+
+    # Sort exams alphabetically
+    available_exams = sorted(
+        available_exams,
+        key=lambda x: x.lower()
+    )
+
+
+    # =========================================================
+    # SELECTED EXAM
+    # =========================================================
+    # If the user selects an exam from the dropdown,
+    # ?exam=First Term will be used.
+    #
+    # Otherwise, the exam_name from the URL will be used.
+    # =========================================================
+    selected_exam = request.GET.get("exam", "").strip()
+
+
+    if selected_exam:
+
+        # Make sure selected exam actually exists
+        if selected_exam in available_exams:
+            exam_name = selected_exam
+        else:
+            # If invalid exam is supplied, use URL exam
+            selected_exam = exam_name
+
+    else:
+        selected_exam = exam_name
+
+
     marks = (
-        Marks.objects.filter(student=student, exam_name=exam_name)
-        .select_related("subject", "student__classroom")
+        Marks.objects
+        .filter(
+            student=student,
+            exam_name=exam_name,
+        )
+        .select_related(
+            "subject",
+            "student__classroom",
+        )
         .order_by("subject__name")
     )
 
+
     subject_rows = []
+
     total_full_marks = 0
     total_obtained_marks = 0
+
     has_failed_subject = False
 
+
     for mark in marks:
+
         full_marks = mark.full_marks or 0
         obtained_marks = mark.marks_obtained or 0
-        percentage = round((obtained_marks / full_marks) * 100, 2) if full_marks else 0
 
-        # Subject Grade
+
+        percentage = (
+            round(
+                (obtained_marks / full_marks) * 100,
+                2
+            )
+            if full_marks
+            else 0
+        )
+
+
         if percentage < 40:
+
             subject_grade = "NG"
             has_failed_subject = True
+
         elif percentage >= 90:
+
             subject_grade = "A+"
+
         elif percentage >= 80:
+
             subject_grade = "A"
+
         elif percentage >= 70:
+
             subject_grade = "B+"
+
         elif percentage >= 60:
+
             subject_grade = "B"
+
         elif percentage >= 50:
+
             subject_grade = "C+"
+
         else:
+
             subject_grade = "C"
+
 
         total_full_marks += full_marks
         total_obtained_marks += obtained_marks
+
 
         subject_rows.append(
             {
@@ -777,80 +859,157 @@ def report_card(request, student_id, exam_name):
             }
         )
 
+
     overall_percentage = (
-        round((total_obtained_marks / total_full_marks) * 100, 2)
+        round(
+            (total_obtained_marks / total_full_marks) * 100,
+            2
+        )
         if total_full_marks
         else 0
     )
 
-    # FINAL RESULT - Same as student_report_card()
+
     if overall_percentage >= 40 and not has_failed_subject:
+
         result = "PASS"
+
     else:
+
         result = "FAIL"
 
-    # OVERALL GRADE - Same as student_report_card()
+
     if result == "FAIL":
+
         grade = "NG"
+
     elif overall_percentage >= 90:
+
         grade = "A+"
+
     elif overall_percentage >= 80:
+
         grade = "A"
+
     elif overall_percentage >= 70:
+
         grade = "B+"
+
     elif overall_percentage >= 60:
+
         grade = "B"
+
     elif overall_percentage >= 50:
+
         grade = "C+"
+
     else:
+
         grade = "C"
 
-    # REMARKS - Same as student_report_card()
+
     if result == "FAIL":
 
         if has_failed_subject:
-            remarks = "Failed in one or more subjects. Improvement is required."
+
+            remarks = (
+                "Failed in one or more subjects. "
+                "Improvement is required."
+            )
+
         else:
-            remarks = "Overall percentage is below the passing percentage."
+
+            remarks = (
+                "Overall percentage is below "
+                "the passing percentage."
+            )
 
     elif overall_percentage >= 90:
+
         remarks = "Outstanding Performance"
+
     elif overall_percentage >= 80:
+
         remarks = "Excellent Work"
+
     elif overall_percentage >= 70:
+
         remarks = "Very Good Performance"
+
     elif overall_percentage >= 60:
+
         remarks = "Good Effort"
+
     elif overall_percentage >= 50:
+
         remarks = "Satisfactory"
+
     else:
-        remarks = "Passed. Continue working to improve your performance."
+
+        remarks = (
+            "Passed. Continue working to improve "
+            "your performance."
+        )
+
+
+    if student.classroom and student.classroom.teacher:
+
+        teacher = student.classroom.teacher
+
+        class_teacher = (
+            teacher.get_full_name()
+            or teacher.username
+        )
+
+    else:
+
+        class_teacher = "Class Teacher"
+
 
     context = {
+
+        # School information
         "school_name": "Jhime Malika Secondary School",
         "school_address": "K.i singh 04, Doti",
+
+        # Report information
         "report_title": "Report Card",
         "academic_session": "2026",
+
+        # Student
         "student": student,
+
+        # Exam
         "exam_name": exam_name,
+        "selected_exam": selected_exam,
+        "available_exams": available_exams,
+
+        # Marks
         "subject_rows": subject_rows,
+
+        # Totals
         "total_full_marks": total_full_marks,
         "total_obtained_marks": total_obtained_marks,
         "overall_percentage": overall_percentage,
+
+        # Result
         "grade": grade,
         "result": result,
+
+        # Remarks
         "remarks": remarks,
-        "class_teacher": (
-            student.classroom.teacher.get_full_name()
-            or student.classroom.teacher.username
-            if student.classroom.teacher
-            else "Class Teacher"
-        ),
+
+        # Teachers
+        "class_teacher": class_teacher,
         "principal_name": "Nar Bahadur Karki",
     }
 
-    return render(request, "academics/report_card.html", context)
 
+    return render(
+        request,
+        "academics/report_card.html",
+        context
+    )
 
 
 @login_required
