@@ -1004,27 +1004,15 @@ def admin_report_cards(request):
     ).all()
 
     if search:
-
         if search.isdigit():
-
-            students = students.filter(
-                id=int(search)
-            )
-
+            students = students.filter(id=int(search))
         else:
-
-            students = students.filter(
-                name__icontains=search
-            )
+            students = students.filter(name__icontains=search)
 
     if classroom_id:
-
-        students = students.filter(
-            classroom_id=classroom_id
-        )
+        students = students.filter(classroom_id=classroom_id)
 
     if exam_name:
-
         students = students.filter(
             marks__exam_name__iexact=exam_name
         ).distinct()
@@ -1040,33 +1028,92 @@ def admin_report_cards(request):
         "section"
     )
 
-    paginator = Paginator(
-        students,
-        25
-    )
+    paginator = Paginator(students, 25)
 
     page_number = request.GET.get("page")
 
-    page_obj = paginator.get_page(
-        page_number
-    )
+    page_obj = paginator.get_page(page_number)
+
+    # Calculate overall percentage, grade, and result for each student
+    for student in page_obj:
+
+        marks = Marks.objects.filter(
+            student=student,
+            exam_name__iexact=exam_name
+        ) if exam_name else Marks.objects.none()
+
+        total_full_marks = 0
+        total_obtained_marks = 0
+        has_failed_subject = False
+
+        for mark in marks:
+
+            full_marks = mark.full_marks or 0
+            obtained_marks = mark.marks_obtained or 0
+
+            percentage = (
+                (obtained_marks / full_marks) * 100
+                if full_marks > 0
+                else 0
+            )
+
+            total_full_marks += full_marks
+            total_obtained_marks += obtained_marks
+
+            if percentage < 40:
+                has_failed_subject = True
+
+        overall_percentage = (
+            round(
+                (total_obtained_marks / total_full_marks) * 100,
+                2
+            )
+            if total_full_marks > 0
+            else 0
+        )
+
+        # PASS only when overall percentage is at least 40
+        # and no subject is below 40%
+        if overall_percentage >= 40 and not has_failed_subject:
+            result = "PASS"
+        else:
+            result = "FAIL"
+
+        # Overall grade
+        if result == "FAIL":
+            grade = "NG"
+
+        elif overall_percentage >= 90:
+            grade = "A+"
+
+        elif overall_percentage >= 80:
+            grade = "A"
+
+        elif overall_percentage >= 70:
+            grade = "B+"
+
+        elif overall_percentage >= 60:
+            grade = "B"
+
+        elif overall_percentage >= 50:
+            grade = "C+"
+
+        else:
+            grade = "C"
+
+        # Attach calculated values to the student object
+        student.report_percentage = overall_percentage
+        student.report_grade = grade
+        student.report_result = result
 
     context = {
-
         "students": page_obj,
-
         "page_obj": page_obj,
-
         "paginator": paginator,
-
         "classrooms": classrooms,
-
         "exam_names": exam_names,
-
         "search": search,
-
         "selected_classroom": classroom_id,
-
         "selected_exam": exam_name,
     }
 
@@ -1075,13 +1122,13 @@ def admin_report_cards(request):
         "students/admin_report_card.html",
         context
     )
-
+    
 
 @login_required
 def admin_student_report_card(request, student_id):
 
+    # Only Admin / Superuser
     if request.user.role != "ADMIN" and not request.user.is_superuser:
-
         return redirect("home")
 
     student = get_object_or_404(
@@ -1103,7 +1150,6 @@ def admin_student_report_card(request, student_id):
     ).strip()
 
     if not selected_exam:
-
         selected_exam = exam_names.first()
 
     marks = (
@@ -1123,7 +1169,9 @@ def admin_student_report_card(request, student_id):
 
     total_full_marks = 0
     total_obtained_marks = 0
+    has_failed_subject = False
 
+    # Calculate subject-wise percentage and grade
     for mark in marks:
 
         full_marks = mark.full_marks or 0
@@ -1138,6 +1186,29 @@ def admin_student_report_card(request, student_id):
             else 0
         )
 
+        # Subject grade
+        if percentage < 40:
+            subject_grade = "NG"
+            has_failed_subject = True
+
+        elif percentage >= 90:
+            subject_grade = "A+"
+
+        elif percentage >= 80:
+            subject_grade = "A"
+
+        elif percentage >= 70:
+            subject_grade = "B+"
+
+        elif percentage >= 60:
+            subject_grade = "B"
+
+        elif percentage >= 50:
+            subject_grade = "C+"
+
+        else:
+            subject_grade = "C"
+
         total_full_marks += full_marks
         total_obtained_marks += obtained_marks
 
@@ -1146,6 +1217,7 @@ def admin_student_report_card(request, student_id):
             "full_marks": full_marks,
             "obtained_marks": obtained_marks,
             "percentage": percentage,
+            "grade": subject_grade,
         })
 
     # Overall percentage
@@ -1158,7 +1230,17 @@ def admin_student_report_card(request, student_id):
         else 0
     )
 
-    if overall_percentage >= 90:
+    # Final result: every subject must have at least 40%
+    if overall_percentage >= 40 and not has_failed_subject:
+        result = "PASS"
+    else:
+        result = "FAIL"
+
+    # Overall grade
+    if result == "FAIL":
+        grade = "NG"
+
+    elif overall_percentage >= 90:
         grade = "A+"
 
     elif overall_percentage >= 80:
@@ -1171,18 +1253,24 @@ def admin_student_report_card(request, student_id):
         grade = "B"
 
     elif overall_percentage >= 50:
-        grade = "C"
+        grade = "C+"
 
     else:
-        grade = "F"
+        grade = "C"
 
-    result = (
-        "PASS"
-        if overall_percentage >= 40
-        else "FAIL"
-    )
+    # Remarks
+    if result == "FAIL" and has_failed_subject:
+        remarks = (
+            "Failed in one or more subjects. "
+            "Improvement is required."
+        )
 
-    if overall_percentage >= 90:
+    elif result == "FAIL":
+        remarks = (
+            "Overall percentage is below the passing percentage."
+        )
+
+    elif overall_percentage >= 90:
         remarks = "Outstanding Performance"
 
     elif overall_percentage >= 80:
@@ -1198,36 +1286,24 @@ def admin_student_report_card(request, student_id):
         remarks = "Satisfactory"
 
     else:
-        remarks = "Needs Improvement"
+        remarks = (
+            "Passed. Continue working to improve your performance."
+        )
 
     context = {
-
         "student": student,
-
         "exam_name": selected_exam,
-
         "exam_names": exam_names,
-
         "subject_rows": subject_rows,
-
         "total_full_marks": total_full_marks,
-
         "total_obtained_marks": total_obtained_marks,
-
         "overall_percentage": overall_percentage,
-
         "grade": grade,
-
         "result": result,
-
         "remarks": remarks,
-
         "school_name": "Jhime Malika Secondary School",
-
         "school_address": "K.i singh 04, doti",
-
         "report_title": "Report Card",
-
         "academic_session": "2026",
     }
 
@@ -1236,4 +1312,3 @@ def admin_student_report_card(request, student_id):
         "students/admin_student_report_card.html",
         context
     )
-

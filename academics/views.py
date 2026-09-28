@@ -1053,109 +1053,135 @@ def student_results(request):
 
 
 @login_required
-def admin_view_marks(request):
+def admin_view_marks(request): 
+
+    if request.user.role != "ADMIN" and not request.user.is_superuser: 
+        return redirect("home") 
+
+    marks = ( 
+        Marks.objects 
+        .select_related( 
+            "student", 
+            "student__classroom", 
+            "subject", 
+        ) 
+        .all() 
+        .order_by("-id") 
+    ) 
+
+    classrooms = ( 
+        ClassRoom.objects 
+        .all() 
+        .order_by("name", "section") 
+    ) 
+
+    subjects = ( 
+        Subject.objects 
+        .all() 
+        .order_by("name") 
+    ) 
+
+    exam_names = ( 
+        Marks.objects 
+        .exclude(exam_name__isnull=True) 
+        .exclude(exam_name="") 
+        .values_list("exam_name", flat=True) 
+        .distinct() 
+        .order_by("exam_name") 
+    ) 
+
+    selected_student = request.GET.get("student", "").strip() 
+    selected_class = request.GET.get("classroom", "").strip() 
+    selected_subject = request.GET.get("subject", "").strip() 
+    selected_exam = request.GET.get("exam", "").strip() 
+
+    if not selected_exam: 
+
+        latest_mark = ( 
+            Marks.objects 
+            .exclude(exam_name__isnull=True) 
+            .exclude(exam_name="") 
+            .order_by("-id") 
+            .first() 
+        ) 
+
+        if latest_mark: 
+            selected_exam = latest_mark.exam_name 
+
+    if selected_student: 
+        marks = marks.filter( 
+            student__name__icontains=selected_student 
+        ) 
+
+    if selected_class: 
+        marks = marks.filter( 
+            student__classroom_id=selected_class 
+        ) 
+
+    if selected_subject: 
+        marks = marks.filter( 
+            subject_id=selected_subject 
+        ) 
+
+    if selected_exam: 
+        marks = marks.filter( 
+            exam_name=selected_exam 
+        ) 
+
+    paginator = Paginator(marks, 10) 
+
+    page_number = request.GET.get("page") 
+
+    page_obj = paginator.get_page(page_number) 
+
+    # GRADE CALCULATION - SAME AS STUDENT REPORT CARD
+    for mark in page_obj:
+
+        full_marks = mark.full_marks or 0
+        obtained_marks = mark.marks_obtained or 0
+
+        percentage = (
+            round((obtained_marks / full_marks) * 100, 2)
+            if full_marks
+            else 0
+        )
+
+        if percentage < 40:
+            mark.grade = "NG"
+        elif percentage >= 90:
+            mark.grade = "A+"
+        elif percentage >= 80:
+            mark.grade = "A"
+        elif percentage >= 70:
+            mark.grade = "B+"
+        elif percentage >= 60:
+            mark.grade = "B"
+        elif percentage >= 50:
+            mark.grade = "C+"
+        else:
+            mark.grade = "C"
+
+    context = { 
+        "marks": page_obj, 
+        "page_obj": page_obj, 
+        "page_range": paginator.get_elided_page_range( 
+            number=page_obj.number 
+        ), 
+        "classrooms": classrooms, 
+        "subjects": subjects, 
+        "exam_names": exam_names, 
+        "selected_student": selected_student, 
+        "selected_class": selected_class, 
+        "selected_subject": selected_subject, 
+        "selected_exam": selected_exam, 
+    } 
+
+    return render( 
+        request, 
+        "academics/admin_view_marks.html", 
+        context 
+    )
     
-    if request.user.role != "ADMIN" and not request.user.is_superuser:
-        return redirect("home")
-    
-    marks = (
-        Marks.objects
-        .select_related(
-            "student",
-            "student__classroom",
-            "subject",
-        )
-        .all()
-        .order_by("-id")
-    )
-
-    classrooms = (
-        ClassRoom.objects
-        .all()
-        .order_by("name", "section")
-    )
-
-    subjects = (
-        Subject.objects
-        .all()
-        .order_by("name")
-    )
-
-    exam_names = (
-        Marks.objects
-        .exclude(exam_name__isnull=True)
-        .exclude(exam_name="")
-        .values_list("exam_name", flat=True)
-        .distinct()
-        .order_by("exam_name")
-    )
-
-    selected_student = request.GET.get("student", "").strip()
-    selected_class = request.GET.get("classroom", "").strip()
-    selected_subject = request.GET.get("subject", "").strip()
-    selected_exam = request.GET.get("exam", "").strip()
-
-    if not selected_exam:
-
-        latest_mark = (
-            Marks.objects
-            .exclude(exam_name__isnull=True)
-            .exclude(exam_name="")
-            .order_by("-id")
-            .first()
-        )
-
-        if latest_mark:
-            selected_exam = latest_mark.exam_name
-
-    if selected_student:
-        marks = marks.filter(
-            student__name__icontains=selected_student
-        )
-
-    if selected_class:
-        marks = marks.filter(
-            student__classroom_id=selected_class
-        )
-
-    if selected_subject:
-        marks = marks.filter(
-            subject_id=selected_subject
-        )
-
-    if selected_exam:
-        marks = marks.filter(
-            exam_name=selected_exam
-        )
-
-    paginator = Paginator(marks, 10)
-
-    page_number = request.GET.get("page")
-
-    page_obj = paginator.get_page(page_number)
-
-    context = {
-        "marks": page_obj,
-        "page_obj": page_obj,
-        "page_range": paginator.get_elided_page_range(
-            number=page_obj.number
-        ),
-        "classrooms": classrooms,
-        "subjects": subjects,
-        "exam_names": exam_names,
-        "selected_student": selected_student,
-        "selected_class": selected_class,
-        "selected_subject": selected_subject,
-        "selected_exam": selected_exam,
-    }
-
-    return render(
-        request,
-        "academics/admin_view_marks.html",
-        context
-    )
-
-
 
 @login_required
 def admin_add_marks(request):

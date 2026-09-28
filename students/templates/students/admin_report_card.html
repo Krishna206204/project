@@ -1,3 +1,4 @@
+
 {% extends 'adminbase.html' %}
 
 {% block title %}Student Report Cards{% endblock %}
@@ -8,143 +9,111 @@
 
 {% block content %}
 
-<div class="space-y-6">
+<div class="space-y-4">
 
-    <section class="rounded-3xl bg-gradient-to-br from-slate-900 to-slate-700 p-6 text-white shadow-sm">
-
-        <p class="text-sm font-semibold uppercase tracking-[0.3em] text-slate-300">
+    <!-- Header -->
+    <section class="rounded-2xl bg-gradient-to-br from-slate-900 to-slate-700 p-4 text-white shadow-sm sm:p-5">
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-slate-300">
             Administration
         </p>
 
-        <h2 class="mt-2 text-2xl font-semibold">
+        <h2 class="mt-1.5 text-xl font-semibold sm:text-2xl">
             Student Report Cards
         </h2>
 
-        <p class="mt-2 max-w-2xl text-sm text-slate-300">
+        <p class="mt-1.5 max-w-2xl text-xs leading-5 text-slate-300 sm:text-sm">
             Search students by name, student ID, class, or exam and view their academic report cards.
         </p>
-
     </section>
 
-
-    <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+    <!-- Search and Filters -->
+    <section class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
 
         <form method="GET">
 
-            <div class="grid gap-4 lg:grid-cols-[1fr_200px_200px_auto]">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(200px,1fr)_150px_150px_auto]">
 
-                <div>
-
-                    <label class="mb-2 block text-sm font-semibold text-slate-700">
+                <!-- Student Search -->
+                <div class="min-w-0">
+                    <label for="student-search" class="mb-1.5 block text-xs font-semibold text-slate-700 sm:text-sm">
                         Search Student
                     </label>
 
-                    <div class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3">
-
-                        <i class="fa-solid fa-magnifying-glass text-slate-400"></i>
+                    <div class="flex h-10 items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 transition focus-within:border-slate-400 focus-within:ring-2 focus-within:ring-slate-100">
+                        <i class="fa-solid fa-magnifying-glass shrink-0 text-xs text-slate-400"></i>
 
                         <input
+                            id="student-search"
                             type="text"
                             name="search"
                             value="{{ search }}"
-                            placeholder="Search by student name or ID"
-                            class="w-full border-0 bg-transparent text-sm outline-none"
+                            placeholder="Student name or ID"
+                            class="w-full min-w-0 border-0 bg-transparent text-sm text-slate-800 outline-none focus:ring-0"
                         >
-
                     </div>
-
                 </div>
 
-
-                <div>
-
-                    <label class="mb-2 block text-sm font-semibold text-slate-700">
+                <!-- Class Filter -->
+                <div class="min-w-0">
+                    <label for="classroom-filter" class="mb-1.5 block text-xs font-semibold text-slate-700 sm:text-sm">
                         Class
                     </label>
 
                     <select
+                        id="classroom-filter"
                         name="classroom"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-slate-400"
+                        class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                     >
-
-                        <option value="">
-                            All Classes
-                        </option>
+                        <option value="">All Classes</option>
 
                         {% for classroom in classrooms %}
-
-                        <option
-                            value="{{ classroom.id }}"
-                            {% if selected_classroom == classroom.id|stringformat:"s" %}
-                                selected
-                            {% endif %}
-                        >
-
-                            {{ classroom.name }}
-
-                            {% if classroom.section %}
-                                - {{ classroom.section|title }}
-                            {% endif %}
-
-                        </option>
-
+                            <option
+                                value="{{ classroom.id }}"
+                                {% if selected_classroom == classroom.id|stringformat:"s" %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ classroom.name }}{% if classroom.section %} - {{ classroom.section|title }}{% endif %}
+                            </option>
                         {% endfor %}
-
                     </select>
-
                 </div>
 
-
-                <div>
-
-                    <label class="mb-2 block text-sm font-semibold text-slate-700">
+                <!-- Exam Filter -->
+                <div class="min-w-0">
+                    <label for="exam-filter" class="mb-1.5 block text-xs font-semibold text-slate-700 sm:text-sm">
                         Exam
                     </label>
 
                     <select
+                        id="exam-filter"
                         name="exam_name"
-                        class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none focus:border-slate-400"
+                        class="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-700 outline-none transition focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                     >
-
                         {% for exam in exam_names %}
-
-                        <option
-                            value="{{ exam }}"
-                            {% if selected_exam == exam %}
-                                selected
-                            {% endif %}
-                        >
-
-                            {{ exam|title }}
-
-                        </option>
-
+                            <option
+                                value="{{ exam }}"
+                                {% if selected_exam == exam %}
+                                    selected
+                                {% endif %}
+                            >
+                                {{ exam|title }}
+                            </option>
                         {% empty %}
-
-                        <option value="">
-                            No Exams Available
-                        </option>
-
+                            <option value="">No Exams Available</option>
                         {% endfor %}
-
                     </select>
-
                 </div>
 
-
-                <div class="flex items-end">
-
+                <!-- Search Button -->
+                <div class="flex items-end sm:col-span-2 xl:col-span-1">
                     <button
                         type="submit"
-                        class="w-full rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-700 lg:w-auto"
+                        class="inline-flex h-10 w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 xl:w-auto"
                     >
-
-                        <i class="fa-solid fa-filter mr-2"></i>
-
+                        <i class="fa-solid fa-filter text-xs"></i>
                         Search
-
                     </button>
-
                 </div>
 
             </div>
@@ -153,147 +122,174 @@
 
     </section>
 
+    <!-- Student List -->
+    <section class="min-w-0 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm sm:p-4">
 
-    <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-
-        <div class="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <!-- Table Heading -->
+        <div class="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 
             <div>
-
-                <h3 class="text-lg font-semibold text-slate-900">
+                <h3 class="text-base font-semibold text-slate-900 sm:text-lg">
                     Students
                 </h3>
 
-                <p class="text-sm text-slate-500">
+                <p class="mt-0.5 text-xs text-slate-500 sm:text-sm">
                     Select a student to view their report card.
                 </p>
-
             </div>
 
             {% if page_obj.paginator.count > 0 %}
-
-            <p class="text-sm text-slate-500">
-
-                Showing
-                <span class="font-semibold text-slate-700">
-                    {{ page_obj.start_index }}
-                </span>
-
-                -
-                <span class="font-semibold text-slate-700">
-                    {{ page_obj.end_index }}
-                </span>
-
-                of
-                <span class="font-semibold text-slate-700">
-                    {{ page_obj.paginator.count }}
-                </span>
-
-                students
-
-            </p>
-
+                <p class="text-xs text-slate-500 sm:text-sm">
+                    Showing
+                    <span class="font-semibold text-slate-700">{{ page_obj.start_index }}</span>
+                    -
+                    <span class="font-semibold text-slate-700">{{ page_obj.end_index }}</span>
+                    of
+                    <span class="font-semibold text-slate-700">{{ page_obj.paginator.count }}</span>
+                    students
+                </p>
             {% endif %}
 
         </div>
 
+        <!-- Responsive Table -->
+        <div class="w-full overflow-hidden rounded-xl border border-slate-200">
 
-        <div class="overflow-hidden rounded-2xl border border-slate-200">
+            <div class="w-full overflow-x-auto">
 
-            <div class="overflow-x-auto">
+                <table class="w-full min-w-[650px] table-auto divide-y divide-slate-200 text-left text-xs sm:text-sm">
 
-                <table class="min-w-full divide-y divide-slate-200 text-left text-sm">
-
+                    <!-- Table Header -->
                     <thead class="bg-slate-50 text-slate-600">
-
                         <tr>
-
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="whitespace-nowrap px-2 py-2.5 font-semibold sm:px-3">
                                 Student ID
                             </th>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="px-2 py-2.5 font-semibold sm:px-3">
                                 Student Name
                             </th>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="whitespace-nowrap px-2 py-2.5 font-semibold sm:px-3">
                                 Class
                             </th>
 
-                            <th class="px-5 py-3 font-semibold">
+                            <th class="whitespace-nowrap px-2 py-2.5 font-semibold sm:px-3">
                                 Section
                             </th>
 
-                            <th class="px-5 py-3 text-right font-semibold">
-                                Action
+                            <th class="whitespace-nowrap px-2 py-2.5 text-center font-semibold sm:px-3">
+                                Grade
                             </th>
 
-                        </tr>
+                            <th class="whitespace-nowrap px-2 py-2.5 text-center font-semibold sm:px-3">
+                                Result
+                            </th>
 
+                            <th class="whitespace-nowrap px-2 py-2.5 text-center font-semibold sm:px-3">
+                                Action
+                            </th>
+                        </tr>
                     </thead>
 
-
-                    <tbody class="divide-y divide-slate-200 bg-white">
+                    <!-- Table Body -->
+                    <tbody class="divide-y divide-slate-100 bg-white">
 
                         {% for student in students %}
 
-                        <tr class="hover:bg-slate-50">
+                            <tr class="transition-colors hover:bg-slate-50">
 
-                            <td class="px-5 py-4 font-medium text-slate-900">
-                                STD-00{{ student.id }}
-                            </td>
+                                <!-- Student ID -->
+                                <td class="whitespace-nowrap px-2 py-3 font-medium text-slate-900 sm:px-3">
+                                    STD-00{{ student.id }}
+                                </td>
 
-                            <td class="px-5 py-4">
-                                {{ student.name|title }}
-                            </td>
+                                <!-- Student Name -->
+                                <td class="max-w-[180px] px-2 py-3 font-medium text-slate-800 sm:px-3">
+                                    <span class="block truncate" title="{{ student.name|title }}">
+                                        {{ student.name|title }}
+                                    </span>
+                                </td>
 
-                            <td class="px-5 py-4">
-                                {{ student.classroom.name }}
-                            </td>
+                                <!-- Class -->
+                                <td class="whitespace-nowrap px-2 py-3 text-slate-600 sm:px-3">
+                                    {{ student.classroom.name|default:"-" }}
+                                </td>
 
-                            <td class="px-5 py-4">
-                                {{ student.classroom.section|title }}
-                            </td>
+                                <!-- Section -->
+                                <td class="whitespace-nowrap px-2 py-3 text-slate-600 sm:px-3">
+                                    {{ student.classroom.section|default:"-"|title }}
+                                </td>
 
-                            <td class="px-5 py-4 text-right">
+                                <!-- Overall Grade -->
+                                <td class="whitespace-nowrap px-2 py-3 text-center sm:px-3">
 
-                                <a
-                                    href="{% url 'admin-student-report-card' student_id=student.id %}{% if selected_exam %}?exam_name={{ selected_exam|urlencode }}{% endif %}"
-                                    class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-xs font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50"
-                                >
+                                    {% if student.report_grade == "NG" %}
+                                        <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 sm:text-xs">
+                                            NG
+                                        </span>
 
-                                    <i class="fa-solid fa-file-lines"></i>
+                                    {% elif student.report_grade %}
+                                        <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 sm:text-xs">
+                                            {{ student.report_grade }}
+                                        </span>
 
-                                    View Report
+                                    {% else %}
+                                        <span class="text-slate-400">-</span>
+                                    {% endif %}
 
-                                </a>
+                                </td>
 
-                            </td>
+                                <!-- Overall Result -->
+                                <td class="whitespace-nowrap px-2 py-3 text-center sm:px-3">
 
-                        </tr>
+                                    {% if student.report_result == "FAIL" %}
+                                        <span class="inline-flex items-center rounded-full bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-700 sm:text-xs">
+                                            FAIL
+                                        </span>
+
+                                    {% elif student.report_result == "PASS" %}
+                                        <span class="inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 sm:text-xs">
+                                            PASS
+                                        </span>
+
+                                    {% else %}
+                                        <span class="text-slate-400">-</span>
+                                    {% endif %}
+
+                                </td>
+
+                                <!-- View Report Button -->
+                                <td class="whitespace-nowrap px-2 py-3 text-center sm:px-3">
+                                    <a
+                                        href="{% url 'admin-student-report-card' student_id=student.id %}{% if selected_exam %}?exam_name={{ selected_exam|urlencode }}{% endif %}"
+                                        class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[10px] font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-100 sm:px-3 sm:text-xs"
+                                        title="View report card for {{ student.name|title }}"
+                                    >
+                                        <i class="fa-solid fa-file-lines"></i>
+                                        <span>View Report</span>
+                                    </a>
+                                </td>
+
+                            </tr>
 
                         {% empty %}
 
-                        <tr>
+                            <tr>
+                                <td colspan="7" class="px-3 py-10 text-center text-slate-500">
 
-                            <td
-                                colspan="5"
-                                class="px-5 py-10 text-center text-slate-500"
-                            >
+                                    <i class="fa-solid fa-user-slash mb-3 text-2xl text-slate-300"></i>
 
-                                <i class="fa-solid fa-user-slash mb-3 text-2xl"></i>
+                                    <p class="text-sm font-medium">
+                                        No students found.
+                                    </p>
 
-                                <p class="font-medium">
-                                    No students found.
-                                </p>
+                                    <p class="mt-1 text-xs sm:text-sm">
+                                        Try another student name, ID, class, or exam.
+                                    </p>
 
-                                <p class="mt-1 text-sm">
-                                    Try another student name, ID, class, or exam.
-                                </p>
-
-                            </td>
-
-                        </tr>
+                                </td>
+                            </tr>
 
                         {% endfor %}
 
@@ -305,87 +301,72 @@
 
         </div>
 
+        <!-- Mobile Table Hint -->
+        <p class="mt-2 text-[11px] text-slate-400 sm:hidden">
+            <i class="fa-solid fa-arrows-left-right mr-1"></i>
+            Swipe horizontally to see all columns.
+        </p>
 
+        <!-- Pagination -->
         {% if page_obj.paginator.num_pages > 1 %}
 
-        <div class="mt-6 flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
+            <div class="mt-4 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
 
-            <div class="text-sm text-slate-500">
+                <!-- Page Information -->
+                <div class="text-xs text-slate-500 sm:text-sm">
+                    Page
+                    <span class="font-semibold text-slate-700">{{ page_obj.number }}</span>
+                    of
+                    <span class="font-semibold text-slate-700">{{ page_obj.paginator.num_pages }}</span>
+                </div>
 
-                Page
-                <span class="font-semibold text-slate-700">
-                    {{ page_obj.number }}
-                </span>
+                <!-- Pagination Buttons -->
+                <div class="flex flex-wrap items-center gap-1.5">
 
-                of
-
-                <span class="font-semibold text-slate-700">
-                    {{ page_obj.paginator.num_pages }}
-                </span>
-
-            </div>
-
-
-            <div class="flex flex-wrap items-center gap-2">
-
-                {% if page_obj.has_previous %}
-
-                <a
-                    href="?search={{ search|urlencode }}&classroom={{ selected_classroom|urlencode }}&exam_name={{ selected_exam|urlencode }}&page={{ page_obj.previous_page_number }}"
-                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                >
-
-                    <i class="fa-solid fa-chevron-left text-xs"></i>
-
-                    Previous
-
-                </a>
-
-                {% endif %}
-
-
-                {% for num in page_obj.paginator.page_range %}
-
-                    {% if num == page_obj.number %}
-
-                    <span
-                        class="inline-flex h-10 min-w-10 items-center justify-center rounded-xl bg-slate-900 px-3 text-sm font-semibold text-white"
-                    >
-                        {{ num }}
-                    </span>
-
-                    {% elif num > page_obj.number|add:"-2" and num < page_obj.number|add:"2" %}
-
-                    <a
-                        href="?search={{ search|urlencode }}&classroom={{ selected_classroom|urlencode }}&exam_name={{ selected_exam|urlencode }}&page={{ num }}"
-                        class="inline-flex h-10 min-w-10 items-center justify-center rounded-xl border border-slate-200 bg-white px-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                    >
-                        {{ num }}
-                    </a>
-
+                    {% if page_obj.has_previous %}
+                        <a
+                            href="?search={{ search|urlencode }}&classroom={{ selected_classroom|urlencode }}&exam_name={{ selected_exam|urlencode }}&page={{ page_obj.previous_page_number }}"
+                            class="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:px-3 sm:text-sm"
+                        >
+                            <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                            Previous
+                        </a>
                     {% endif %}
 
-                {% endfor %}
+                    {% for num in page_obj.paginator.page_range %}
 
+                        {% if num == page_obj.number %}
 
-                {% if page_obj.has_next %}
+                            <span class="inline-flex h-9 min-w-9 items-center justify-center rounded-lg bg-slate-900 px-2.5 text-xs font-semibold text-white sm:text-sm">
+                                {{ num }}
+                            </span>
 
-                <a
-                    href="?search={{ search|urlencode }}&classroom={{ selected_classroom|urlencode }}&exam_name={{ selected_exam|urlencode }}&page={{ page_obj.next_page_number }}"
-                    class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                >
+                        {% elif num > page_obj.number|add:"-2" and num < page_obj.number|add:"2" %}
 
-                    Next
+                            <a
+                                href="?search={{ search|urlencode }}&classroom={{ selected_classroom|urlencode }}&exam_name={{ selected_exam|urlencode }}&page={{ num }}"
+                                class="inline-flex h-9 min-w-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:text-sm"
+                            >
+                                {{ num }}
+                            </a>
 
-                    <i class="fa-solid fa-chevron-right text-xs"></i>
+                        {% endif %}
 
-                </a>
+                    {% endfor %}
 
-                {% endif %}
+                    {% if page_obj.has_next %}
+                        <a
+                            href="?search={{ search|urlencode }}&classroom={{ selected_classroom|urlencode }}&exam_name={{ selected_exam|urlencode }}&page={{ page_obj.next_page_number }}"
+                            class="inline-flex h-9 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 sm:px-3 sm:text-sm"
+                        >
+                            Next
+                            <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                        </a>
+                    {% endif %}
+
+                </div>
 
             </div>
-
-        </div>
 
         {% endif %}
 
