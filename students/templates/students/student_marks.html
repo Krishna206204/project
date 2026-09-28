@@ -84,8 +84,6 @@
                         class="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none transition focus:border-slate-500 focus:ring-2 focus:ring-slate-200"
                     >
 
-                        
-
                         <!-- Available Exams -->
                         {% for exam in available_exams %}
 
@@ -157,7 +155,7 @@
                 </div>
 
                 <div class="text-xl text-amber-700">
-                     {{student.name|title}} your marks in {{selected_exam|title}} 
+                    {{ student.name|title }} your marks in {{ selected_exam|title }}
                 </div>
 
             </div>
@@ -198,7 +196,7 @@
                             </th>
 
                             <th class="px-5 py-4 font-semibold">
-                                Percentage
+                                Grade
                             </th>
 
                         </tr>
@@ -237,9 +235,9 @@
                             </td>
 
 
-                            <!-- Percentage -->
+                            <!-- Grade -->
                             <td class="px-5 py-4 font-medium text-slate-900">
-                                {{ row.percentage }}%
+                                {{ row.grade }}
                             </td>
 
                         </tr>
