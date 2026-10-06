@@ -35,13 +35,13 @@
       <div class="relative mb-8">
 
         <!-- Back Button -->
-        <a
+        {% comment %} <a
           href="{% url 'login-selection' %}"
           class="absolute -top-7 left-1/2 -translate-x-1/2 inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700"
         >
           <i class="fa-solid fa-arrow-left"></i>
           <p>Back</p>
-        </a>
+        </a> {% endcomment %}
 
         <div class="pt-1 text-center">
 
@@ -126,7 +126,11 @@
             class="text-sm font-medium text-sky-600 transition hover:text-sky-700 hover:underline"
           >
             Forgot Password?
-          </a>
+          </a><br>
+          <a
+            href="{% url 'login-selection' %}"
+            class="text-sm font-medium text-amber-600 transition hover:text-sky-700 hover:underline">
+          <i class="fa-solid fa-arrow-left"></i>Back
 
         </div>
 
